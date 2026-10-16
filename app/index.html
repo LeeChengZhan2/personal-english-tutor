@@ -1,0 +1,1890 @@
+<title>Blue Pencil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<style>
+/* Blue Pencil: a copy editor's desk. Cool paper and ink; corrections in blue pencil; deletions struck through in red.
+   Layout: one reading column of sections; tabs at the bottom on phones and at the top from 900px. */
+:root {
+  --paper: #f4f6f9;
+  --surface: #ffffff;
+  --sunk: #eceff4;
+  --ink: #14171d;
+  --muted: #586070;
+  --faint: #8a92a0;
+  --line: #dde2ea;
+  --pencil: #2b58cf;
+  --pencil-ink: #ffffff;
+  --pencil-soft: #e5ebfa;
+  --pencil-line: #b6c7f1;
+  --mark: #c0362c;
+  --mark-soft: #fbe7e4;
+  --ok: #17774a;
+  --ok-soft: #dff2e7;
+  --amber: #9a5d00;
+  --amber-soft: #fbefd9;
+  --shadow: rgba(18, 27, 46, 0.08);
+  --scrim: rgba(10, 14, 22, 0.42);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #101318; --surface: #181c23; --sunk: #1f242d; --ink: #e8ebf1; --muted: #a2a9b6; --faint: #6f7786; --line: #2a303b;
+    --pencil: #8eadff; --pencil-ink: #0d1530; --pencil-soft: #1c2741; --pencil-line: #34487a;
+    --mark: #ff8a7d; --mark-soft: #3a1d1a; --ok: #63d49c; --ok-soft: #14301f; --amber: #f0b45a; --amber-soft: #33270f;
+    --shadow: rgba(0, 0, 0, 0.35); --scrim: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #101318; --surface: #181c23; --sunk: #1f242d; --ink: #e8ebf1; --muted: #a2a9b6; --faint: #6f7786; --line: #2a303b;
+  --pencil: #8eadff; --pencil-ink: #0d1530; --pencil-soft: #1c2741; --pencil-line: #34487a;
+  --mark: #ff8a7d; --mark-soft: #3a1d1a; --ok: #63d49c; --ok-soft: #14301f; --amber: #f0b45a; --amber-soft: #33270f;
+  --shadow: rgba(0, 0, 0, 0.35); --scrim: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--pencil); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+.ic { width: 20px; height: 20px; flex: none; }
+
+/* ---------- shell ---------- */
+.app { min-height: 100%; padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--paper); border-bottom: 1px solid var(--line); }
+.brand { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -0.02em; }
+.brand .ic { color: var(--pencil); width: 22px; height: 22px; }
+.bar-meta { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar-meta .streak { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); font-weight: 700; }
+.bar-meta .streak .ic { width: 17px; height: 17px; }
+.icon-btn { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.icon-btn:hover { color: var(--ink); }
+.tabs { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); }
+.tabs a { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 1px; border-radius: 10px; color: var(--muted); text-decoration: none; font-size: 11.5px; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tabs a[aria-current="page"] { color: var(--pencil); background: var(--pencil-soft); }
+.notice { margin: 12px 16px 0; padding: 10px 14px; border-radius: 10px; background: var(--amber-soft); color: var(--ink); font-size: 14px; }
+.view { display: block; max-width: 760px; margin: 0 auto; padding: 20px 16px 32px; }
+.view:focus { outline: none; }
+@media (min-width: 900px) {
+  .app { padding-bottom: 0; }
+  .bar { padding: 12px 24px; }
+  .tabs { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 61px); bottom: auto; display: flex; justify-content: center; gap: 4px; padding: 8px 24px; border-top: 0; border-bottom: 1px solid var(--line); background: var(--paper); }
+  .tabs a { flex-direction: row; gap: 8px; padding: 8px 14px; font-size: 14px; }
+  .view { padding: 32px 24px 64px; }
+}
+
+/* ---------- type and layout ---------- */
+.stack { display: grid; gap: 28px; }
+.stack-sm { display: grid; gap: 12px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.display { font-size: clamp(30px, 7vw, 44px); font-weight: 800; letter-spacing: -0.025em; }
+.title { font-size: 22px; font-weight: 700; }
+.sub { font-size: 17px; font-weight: 700; font-family: var(--font-display); }
+.lede { font-size: 17px; color: var(--muted); max-width: 60ch; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.spread { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+.section-head a, .link { color: var(--pencil); font-weight: 700; text-decoration: none; font-size: 14px; background: none; border: 0; padding: 0; }
+.panel { padding: 18px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 2px var(--shadow); }
+.list { display: grid; }
+.list > * { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.list > *:last-child { border-bottom: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 700; text-decoration: none; }
+.btn:hover { border-color: var(--pencil-line); }
+.btn.primary { background: var(--pencil); border-color: var(--pencil); color: var(--pencil-ink); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.big { min-height: 54px; padding: 14px 24px; font-size: 18px; border-radius: 14px; }
+.btn.quiet { background: transparent; border-color: transparent; color: var(--pencil); padding-inline: 8px; }
+.btn[disabled] { opacity: 0.45; cursor: default; filter: none; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 14px; font-weight: 700; color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.pill { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--sunk); font-size: 14px; color: var(--muted); }
+.pill b { color: var(--ink); font-size: 16px; font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; background: var(--sunk); color: var(--muted); }
+.tag.error { background: var(--mark-soft); color: var(--mark); }
+.tag.unnatural { background: var(--amber-soft); color: var(--amber); }
+.tag.typo, .tag.style { background: var(--sunk); color: var(--muted); }
+
+/* ---------- proofreading marks ---------- */
+del.x { color: var(--mark); text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--mark); background: var(--mark-soft); border-radius: 3px; padding: 0 2px; }
+ins.x { color: var(--pencil); text-decoration: none; background: var(--pencil-soft); border-radius: 3px; padding: 0 2px; font-weight: 700; }
+ins.x::before { content: ""; display: inline-block; width: 0; height: 0; margin-right: 3px; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 7px solid var(--pencil); vertical-align: -1px; }
+.proof { font-size: 17px; line-height: 1.65; overflow-wrap: anywhere; }
+.quote { padding-left: 14px; border-left: 3px solid var(--line); color: var(--muted); overflow-wrap: anywhere; }
+.blank { display: inline-block; min-width: 4.5em; border-bottom: 2.5px solid var(--pencil); color: transparent; }
+
+/* ---------- today ---------- */
+.hero { display: grid; gap: 14px; padding-top: 6px; }
+.hero .row { margin-top: 6px; }
+.focus { display: grid; gap: 10px; padding: 18px; border-radius: var(--radius); background: var(--pencil-soft); border: 1px solid var(--pencil-line); }
+.focus .rule { font-size: 17px; }
+.example-pair { display: grid; gap: 4px; font-size: 16px; }
+.example-pair .w { color: var(--mark); text-decoration: line-through; text-decoration-thickness: 2px; }
+.example-pair .r { color: var(--ok); font-weight: 700; }
+
+/* ---------- patterns ---------- */
+.cat { display: grid; gap: 6px; }
+.cat h2 { font-size: 20px; }
+.pattern-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: center; padding: 14px 4px; border-bottom: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; width: 100%; color: var(--ink); }
+.pattern-row:hover { background: var(--surface); }
+.pattern-row .name { font-weight: 700; font-size: 17px; }
+.pattern-row .meta { grid-column: 1; font-size: 14px; color: var(--muted); }
+.pattern-row .bar-wrap { grid-row: 1 / span 2; grid-column: 2; display: grid; gap: 4px; justify-items: end; font-size: 13px; color: var(--muted); }
+.mastery { width: 96px; height: 8px; border-radius: 99px; background: var(--sunk); overflow: hidden; display: flex; }
+.mastery span { display: block; height: 100%; }
+.mastery .m { background: var(--ok); }
+.mastery .l { background: var(--pencil-line); }
+.card-row { display: grid; gap: 6px; }
+
+/* ---------- messages ---------- */
+.msg { display: grid; gap: 10px; }
+.msg .head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+.msg .body { font-size: 16px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg .body.clamp { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.msg .polished { padding: 12px 14px; border-radius: 12px; background: var(--ok-soft); white-space: pre-wrap; overflow-wrap: anywhere; }
+.seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--sunk); }
+.seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px var(--shadow); }
+
+/* ---------- write ---------- */
+textarea.field { width: 100%; min-height: 150px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-size: 17px; line-height: 1.55; resize: vertical; }
+textarea.field:focus { outline: 2px solid var(--pencil); border-color: var(--pencil); }
+.finding { display: grid; gap: 6px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.finding:last-child { border-bottom: 0; }
+
+/* ---------- progress ---------- */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.kpi { padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.kpi b { display: block; font-family: var(--font-display); font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.kpi span { font-size: 14px; color: var(--muted); }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .line { fill: none; stroke: var(--pencil); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.chart .area { fill: var(--pencil-soft); }
+.chart .dot { fill: var(--surface); stroke: var(--pencil); stroke-width: 2.5; }
+.chart .end { fill: var(--pencil); }
+.chart .bar-a { fill: var(--pencil-line); }
+.chart .bar-c { fill: var(--pencil); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.catbar { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 14px; }
+.catbar .track { height: 12px; border-radius: 99px; background: var(--sunk); overflow: hidden; display: flex; }
+.catbar .track span { height: 100%; }
+.catbar .track .m { background: var(--ok); }
+.catbar .track .l { background: var(--pencil-line); }
+.table-wrap { overflow-x: auto; }
+table.plain { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.plain th { text-align: left; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); }
+table.plain td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+/* ---------- practice ---------- */
+.practice { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; background: var(--paper); padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+.p-top { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
+.p-progress { flex: 1; height: 8px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
+.p-progress span { display: block; height: 100%; background: var(--pencil); border-radius: 99px; transition: width 0.25s ease; }
+.p-count { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; }
+.p-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.p-body { max-width: 680px; margin: 0 auto; padding: 8px 16px 24px; display: grid; gap: 18px; }
+.p-kind { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pencil); }
+.p-prompt { font-size: 22px; font-weight: 700; font-family: var(--font-display); }
+.p-sentence { font-size: 21px; line-height: 1.6; overflow-wrap: anywhere; }
+.options { display: grid; gap: 10px; }
+.option { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 12px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); text-align: left; font-size: 18px; }
+.option .key { flex: none; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--sunk); color: var(--muted); font-size: 13px; font-weight: 700; }
+.option:hover:not([disabled]) { border-color: var(--pencil-line); }
+.option.right { border-color: var(--ok); background: var(--ok-soft); }
+.option.wrong { border-color: var(--mark); background: var(--mark-soft); }
+.option[disabled] { cursor: default; }
+.words { display: flex; flex-wrap: wrap; gap: 8px; }
+.word { padding: 8px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); font-size: 19px; }
+.word:hover:not([disabled]) { border-color: var(--pencil-line); }
+.word.target { border-color: var(--ok); background: var(--ok-soft); }
+.word.missed { border-color: var(--mark); background: var(--mark-soft); }
+.word[disabled] { cursor: default; }
+.answer { width: 100%; min-height: 110px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); font-size: 19px; line-height: 1.5; resize: vertical; }
+.answer:focus { outline: none; border-color: var(--pencil); }
+.feedback { display: grid; gap: 10px; padding: 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+.feedback.good { border-color: var(--ok); }
+.feedback.bad { border-color: var(--mark); }
+.verdict { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; font-weight: 800; }
+.feedback.good .verdict { color: var(--ok); }
+.feedback.bad .verdict { color: var(--mark); }
+.zh { color: var(--muted); font-size: 15px; }
+.p-foot { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: 10px; padding: 12px 16px; background: var(--paper); border-top: 1px solid var(--line); }
+.p-foot .inner { width: 100%; max-width: 680px; margin: 0 auto; display: flex; gap: 10px; justify-content: flex-end; }
+.lesson { display: grid; gap: 12px; }
+.lesson .rule { font-size: 19px; line-height: 1.55; }
+.done-score { font-family: var(--font-display); font-size: 64px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+
+/* ---------- sheet ---------- */
+.sheet { position: fixed; inset: 0; z-index: 60; display: grid; align-items: end; justify-items: center; background: var(--scrim); }
+.sheet-card { width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; padding: 20px 18px calc(20px + env(safe-area-inset-bottom, 0px)); border-radius: 18px 18px 0 0; background: var(--surface); display: grid; gap: 16px; }
+@media (min-width: 640px) { .sheet { align-items: center; } .sheet-card { border-radius: 18px; } }
+.setting { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.setting:last-of-type { border-bottom: 0; }
+.setting label { display: grid; gap: 2px; }
+.setting small { color: var(--muted); font-size: 13px; }
+.switch { appearance: none; width: 46px; height: 28px; border-radius: 99px; background: var(--sunk); border: 1px solid var(--line); position: relative; flex: none; cursor: pointer; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--faint); transition: transform 0.15s ease; }
+.switch:checked { background: var(--pencil); border-color: var(--pencil); }
+.switch:checked::after { transform: translateX(18px); background: var(--pencil-ink); }
+select.pick { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+
+/* ---------- words ---------- */
+.word-row { display: grid; gap: 6px; }
+.word-row .top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 10px; }
+.word-row .lemma { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+.word-row .pos { font-size: 13px; font-style: italic; color: var(--muted); }
+.word-row .meaning { font-size: 16px; }
+.word-row .ex { font-size: 15px; color: var(--muted); font-style: italic; }
+mark { background: var(--pencil-soft); color: var(--pencil); font-style: normal; font-weight: 700; border-radius: 3px; padding: 0 2px; }
+.status { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 12px; font-weight: 700; background: var(--sunk); color: var(--muted); }
+.status.learning { background: var(--pencil-soft); color: var(--pencil); }
+.status.mastered { background: var(--ok-soft); color: var(--ok); }
+.wotd { display: grid; gap: 8px; padding: 18px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.wotd .lemma { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+.big-word { font-family: var(--font-display); font-size: clamp(30px, 8vw, 40px); font-weight: 800; letter-spacing: -0.02em; }
+.hint { font-size: 15px; color: var(--muted); }
+.wfb { display: grid; gap: 6px; }
+input.answer-line { width: 100%; min-height: 56px; padding: 12px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); font-size: 22px; font-family: var(--font-body); }
+input.answer-line:focus { outline: none; border-color: var(--pencil); }
+
+/* ---------- guide ---------- */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: flow; }
+.flow li { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 14px; padding-bottom: 22px; }
+.flow li::before { counter-increment: flow; content: counter(flow); grid-row: span 2; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--pencil); color: var(--pencil-ink); font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+.flow li::after { content: ""; position: absolute; left: 19px; top: 44px; bottom: 4px; width: 2px; background: var(--pencil-line); }
+.flow li:last-child::after { display: none; }
+.flow h3 { font-size: 18px; padding-top: 8px; }
+.flow p { grid-column: 2; color: var(--muted); }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.guide-grid > div { display: grid; gap: 4px; align-content: start; padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.guide-grid b { font-family: var(--font-display); font-size: 17px; }
+.guide-grid span { color: var(--muted); font-size: 15px; }
+.schedule { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 14px; }
+.schedule span { padding: 4px 10px; border-radius: 99px; background: var(--pencil-soft); color: var(--pencil); font-weight: 700; font-variant-numeric: tabular-nums; }
+.steps-list { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+code.inline { padding: 1px 6px; border-radius: 6px; background: var(--sunk); font-family: var(--font-mono); font-size: 0.9em; overflow-wrap: anywhere; }
+.welcome { display: grid; gap: 10px; padding: 18px; border-radius: var(--radius); border: 1.5px solid var(--pencil-line); background: var(--pencil-soft); }
+
+.empty { display: grid; gap: 12px; padding: 28px 20px; border-radius: var(--radius); border: 1.5px dashed var(--line); text-align: left; }
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid var(--pencil-line); border-top-color: var(--pencil); animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.5s; } .p-progress span { transition: none; } }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+
+<div class="app" id="app">
+  <header class="bar">
+    <a class="brand" href="#today" aria-label="Blue Pencil home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>Blue Pencil</a>
+    <div class="bar-meta" id="bar-meta"></div>
+    <a class="icon-btn" id="guide-btn" href="#guide" aria-label="How Blue Pencil works" title="How it works"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></a>
+    <button class="icon-btn" id="settings-btn" type="button" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></button>
+  </header>
+  <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+  <div class="notice" id="notice" hidden></div>
+  <main class="view" id="view" tabindex="-1">
+    <div class="stack">
+      <div class="hero"><p class="eyebrow">Blue Pencil</p><h1 class="display">Loading your lessons</h1><p class="lede">Practice made from the mistakes in your own Claude Code messages.</p></div>
+    </div>
+  </main>
+</div>
+<section class="practice" id="practice" hidden role="dialog" aria-modal="true" aria-label="Practice round"></section>
+<section class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Settings"></section>
+
+<script>
+(() => {
+  "use strict";
+
+  // ===================================================================== helpers
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const SVGNS = "http://www.w3.org/2000/svg";
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v;
+      else if (k === "style") el.style.cssText = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+      else if (k === "value") el.value = v;
+      else if (v === true) el.setAttribute(k, "");
+      else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false || kid === "") continue;
+      el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  function s(tag, props, ...kids) {
+    const el = document.createElementNS(SVGNS, tag);
+    for (const [k, v] of Object.entries(props || {})) if (v != null) el.setAttribute(k, v);
+    for (const kid of kids.flat(Infinity)) if (kid != null && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+    return el;
+  }
+  const ICONS = {
+    today: '<path d="M12 3v2"/><path d="M12 19v2"/><path d="m5.6 5.6 1.4 1.4"/><path d="m17 17 1.4 1.4"/><path d="M3 12h2"/><path d="M19 12h2"/><path d="m5.6 18.4 1.4-1.4"/><path d="m17 7 1.4-1.4"/><circle cx="12" cy="12" r="4"/>',
+    patterns: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>',
+    messages: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    write: '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+    progress: '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/>',
+    flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+    play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    cross: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+    arrow: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    back: '<path d="m15 18-6-6 6-6"/>',
+    sparkles: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+    words: '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+    help: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  };
+  function icon(name, cls) {
+    const el = s("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true", class: cls || "ic" });
+    el.innerHTML = ICONS[name] || "";
+    return el;
+  }
+
+  const MIN = 60e3, DAY = 864e5;
+  const INTERVALS = [0, 10 * MIN, DAY, 3 * DAY, 7 * DAY, 16 * DAY, 35 * DAY, 90 * DAY];
+  const MASTERED = 5;
+  const SEV_WEIGHT = { error: 3, unnatural: 2, style: 1, typo: 1 };
+  const SEV_LABEL = { error: "Mistake", unnatural: "Unnatural", style: "Tone", typo: "Typo" };
+  const WORD_KINDS = {
+    spelling: { title: "Mistyped", long: "Words you mistype", blurb: "Words you often type wrong. Typing them correctly a few times is what fixes the habit." },
+    know: { title: "To know", long: "Words to know", blurb: "Words you used in the wrong form, or needed but didn't have. Learn what each one means and where it fits." },
+    clearer: { title: "Clearer", long: "Words that say it clearer", blurb: "Words and phrases that make your point sharper than what you wrote." },
+  };
+
+  const pad = (n) => String(n).padStart(2, "0");
+  const dayKey = (t = Date.now()) => { const d = new Date(t); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const fmtDay = (ts) => ts ? new Date(ts).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }) : "";
+  const fmtShort = (ts) => ts ? new Date(ts).toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "";
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : (many || one + "s")}`;
+  const squash = (t) => String(t || "").replace(/\s+/g, " ").trim();
+  const norm = (t) => squash(String(t || "").replace(/[’‘]/g, "'").replace(/[“”]/g, '"')).replace(/^[.!?,;:]+|[.!?,;:]+$/g, "").trim().toLowerCase();
+  const answerKey = (t) => squash(String(t || "").replace(/[’‘]/g, "'").replace(/[“”]/g, '"')).replace(/[.!?]+$/g, "").trim();
+
+  function hashStr(str) { let x = 2166136261; for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; }
+  function shuffled(arr, seed) {
+    let a = hashStr(String(seed)) || 1;
+    const rand = () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const out = arr.slice();
+    for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
+    return out;
+  }
+  function readLocal(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function writeLocal(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage unavailable */ } }
+
+  async function sha1Hex(text) {
+    try {
+      const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    } catch (e) {
+      return (hashStr(text).toString(16) + hashStr(text + "#").toString(16)).padStart(16, "0");
+    }
+  }
+  async function cardId(pattern, wrong, right) {
+    let w = norm(wrong), r = norm(right);
+    if (w === r) { w = squash(wrong); r = squash(right); }
+    return (await sha1Hex(`${pattern}|${w}|${r}`)).slice(0, 10);
+  }
+
+  // ===================================================================== word diff (proofreading marks)
+  function tokens(t) { return String(t || "").match(/\s+|[\p{L}\p{N}'’_-]+|[^\s\p{L}\p{N}]/gu) || []; }
+  function diffParts(a, b) {
+    const A = tokens(a), B = tokens(b), n = A.length, m = B.length;
+    if (!n || !m || n * m > 360000) return null;
+    const W = m + 1, L = new Uint16Array((n + 1) * W);
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i * W + j] = A[i] === B[j] ? L[(i + 1) * W + j + 1] + 1 : Math.max(L[(i + 1) * W + j], L[i * W + j + 1]);
+    const ops = []; let i = 0, j = 0;
+    while (i < n && j < m) {
+      if (A[i] === B[j]) { ops.push(["=", A[i]]); i++; j++; }
+      else if (L[(i + 1) * W + j] >= L[i * W + j + 1]) { ops.push(["-", A[i++]]); }
+      else { ops.push(["+", B[j++]]); }
+    }
+    while (i < n) ops.push(["-", A[i++]]);
+    while (j < m) ops.push(["+", B[j++]]);
+    // group runs of changes; a space between two changes joins them
+    const parts = []; let cur = null;
+    for (let k = 0; k < ops.length; k++) {
+      const [op, t] = ops[k];
+      if (op === "=") {
+        const between = cur && /^\s+$/.test(t) && ops[k + 1] && ops[k + 1][0] !== "=";
+        if (between) { cur.del += t; cur.ins += t; continue; }
+        if (cur) { parts.push(cur); cur = null; }
+        parts.push({ same: t });
+      } else {
+        if (!cur) cur = { del: "", ins: "" };
+        if (op === "-") cur.del += t; else cur.ins += t;
+      }
+    }
+    if (cur) parts.push(cur);
+    return parts;
+  }
+  function proof(a, b, cls) {
+    const parts = diffParts(a, b);
+    const el = h("span", { class: cls || "proof" });
+    if (!parts) { el.append(String(b || a || "")); return el; }
+    for (const p of parts) {
+      if (p.same != null) { el.append(p.same); continue; }
+      const d = p.del.trim(), n = p.ins.trim();
+      if (d) el.append(h("del", { class: "x" }, d));
+      if (d && n) el.append(" ");
+      if (n) el.append(h("ins", { class: "x" }, n));
+      if (/\s$/.test(p.del) || /\s$/.test(p.ins)) el.append(" ");
+    }
+    return el;
+  }
+
+  // ===================================================================== settings (this device only)
+  const coarse = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+  const settings = Object.assign({ zh: false, quick: coarse, round: 8, perDay: 12 }, readLocal("bp-settings", {}));
+  const saveSettings = () => writeLocal("bp-settings", settings);
+
+  // ===================================================================== state
+  const S = {
+    mode: "loading",          // loading | live | example
+    db: null, sample: null, canWrite: false,
+    batches: new Map(), baseCatalog: null, progressDocs: new Map(),
+    loaded: { lessons: false, progress: false },
+    patterns: {}, categories: {}, cards: [], cardById: new Map(), messages: [], findingsByMsg: new Map(),
+    words: [], wordById: new Map(), wordFilter: "spelling",
+    srs: {}, srsLocal: {}, stats: { days: {}, rounds: 0 },
+    view: "today", param: null,
+    msgFilter: "mistakes", msgShow: {},
+    write: { text: "", busy: false, result: null, error: "", saved: false },
+  };
+
+  const FALLBACK_CATEGORIES = {
+    verbs: { title: "Verbs", zh: "动词" }, structure: { title: "Sentence structure", zh: "句子结构" },
+    nouns: { title: "Nouns & articles", zh: "名词与冠词" }, words: { title: "Word choice", zh: "用词" },
+    mechanics: { title: "Spelling & punctuation", zh: "拼写与标点" }, tone: { title: "Tone & clarity", zh: "语气与清晰度" },
+  };
+
+  // Example lessons for a view with no database (a saved copy of the page, or a preview).
+  const EXAMPLE = {
+    catalog: {
+      categories: FALLBACK_CATEGORIES,
+      patterns: {
+        "passive-voice": { category: "verbs", title: "be + past participle", rule: "When something is done to a thing, use be / been + the -ed form: should be allowed, has been removed.", rule_zh: "被动语态：be / been + 过去分词。", examples: [] },
+        "missing-be": { category: "verbs", title: "Don't drop am / is / are", rule: "An English sentence needs a verb. Before an adjective, add am / is / are: I'm not satisfied.", rule_zh: "形容词前要有 am / is / are。", examples: [] },
+        "articles": { category: "nouns", title: "a / an / the", rule: "Use a / an for one thing you haven't mentioned yet, the for a specific thing you both know.", rule_zh: "a / an 表示“一个”，the 表示特指。", examples: [] },
+        "apostrophes": { category: "mechanics", title: "don't, I'm, it's", rule: "Short forms need an apostrophe: don't, can't, I'm.", rule_zh: "缩写要加撇号。", examples: [] },
+      },
+    },
+    batches: [{
+      id: "example", source: "example", created: "2026-10-13T09:00:00+08:00",
+      messages: [
+        { id: "e1", ts: "2026-10-13T09:00:00+08:00", project: "example", text: "Actually should allowed 1100-1200 booking. Help me check why blocked", fixed: "Actually, the 11:00-12:00 booking should be allowed. Help me check why it was blocked.", polished: "The 11:00-12:00 booking should be allowed. Could you check why it was blocked?", words: 10, issues: 2 },
+        { id: "e2", ts: "2026-10-13T09:05:00+08:00", project: "example", text: "I not satisfied with the output. dont change the code first", fixed: "I'm not satisfied with the output. Don't change the code yet.", polished: "I'm not happy with the output yet. Please don't change the code for now.", words: 11, issues: 2 },
+      ],
+      findings: [
+        { card: "ex1", message_id: "e1", ts: "2026-10-13T09:00:00+08:00", pattern: "passive-voice", severity: "error", sentence: "The 11:00-12:00 booking should allowed.", wrong: "should allowed", right: "should be allowed", corrected: "The 11:00-12:00 booking should be allowed.", explain: "The booking doesn't allow; it is allowed. Use be + -ed after should.", explain_zh: "被动语态：should be allowed。", distractors: ["should allow", "should been allowed"] },
+        { card: "ex2", message_id: "e2", ts: "2026-10-13T09:05:00+08:00", pattern: "missing-be", severity: "error", sentence: "I not satisfied with the output.", wrong: "I not", right: "I'm not", corrected: "I'm not satisfied with the output.", explain: "Satisfied is an adjective, so it needs am: I'm not satisfied.", explain_zh: "形容词前要加 am。", distractors: ["I no", "I don't"] },
+        { card: "ex3", message_id: "e2", ts: "2026-10-13T09:05:00+08:00", pattern: "apostrophes", severity: "typo", sentence: "Dont change the code yet.", wrong: "Dont", right: "Don't", corrected: "Don't change the code yet.", explain: "Short forms need an apostrophe: don't.", explain_zh: "缩写要加撇号。", distractors: ["Do'nt", "Dont'"] },
+        { card: "ex4", message_id: "e1", ts: "2026-10-13T09:00:00+08:00", pattern: "articles", severity: "error", sentence: "Help me check why it was blocked and give me commit message.", wrong: "give me commit message", right: "give me a commit message", corrected: "Help me check why it was blocked and give me a commit message.", explain: "Commit message is one countable thing you haven't mentioned yet: a commit message.", explain_zh: "可数单数名词前加 a。", distractors: ["give me the commits message", "give me an commit message"] },
+      ],
+      vocab: [
+        { id: "exw1", kind: "spelling", word: "satisfied", pos: "adjective", meaning: "happy with what you got", meaning_zh: "满意的", example: "I'm not satisfied with the output yet.", you_wrote: "statisfied", message_id: "e2", ts: "2026-10-13T09:05:00+08:00", distractors: ["satisified", "satisfyed"] },
+        { id: "exw2", kind: "know", word: "response", pos: "noun", meaning: "an answer or reply", meaning_zh: "回复", example: "Give me an example response first.", you_wrote: "respond", message_id: "e2", ts: "2026-10-13T09:05:00+08:00", distractors: ["respond", "responding"] },
+        { id: "exw3", kind: "clearer", word: "back-to-back", pos: "phrase", meaning: "one right after the other, with no gap", meaning_zh: "紧接着的", example: "Back-to-back bookings in the same room are allowed.", you_wrote: "", message_id: "e1", ts: "2026-10-13T09:00:00+08:00", distractors: ["side by side", "one by one"] },
+      ],
+      patterns: {},
+    }],
+  };
+
+  // ===================================================================== data → cards
+  function firstTs(batch) { return (batch.messages && batch.messages[0] && batch.messages[0].ts) || batch.created || ""; }
+
+  function derive() {
+    const cat = S.baseCatalog || {};
+    S.categories = Object.assign({}, FALLBACK_CATEGORIES, cat.categories || {});
+    S.patterns = Object.assign({}, cat.patterns || {});
+    const batches = [...S.batches.values()].sort((a, b) => firstTs(a).localeCompare(firstTs(b)));
+    const cards = new Map();
+    const msgs = new Map();
+    const byMsg = new Map();
+    for (const b of batches) {
+      for (const [key, p] of Object.entries(b.patterns || {})) if (!S.patterns[key]) S.patterns[key] = p;
+      for (const m of b.messages || []) if (!msgs.has(m.id)) msgs.set(m.id, Object.assign({}, m, { batch: b.id, source: b.source }));
+      for (const f of b.findings || []) {
+        if (!f || !f.card || !f.sentence || !f.wrong) continue;
+        let c = cards.get(f.card);
+        if (!c) {
+          c = { id: f.card, pattern: f.pattern, severity: f.severity, wrong: f.wrong, right: f.right, explain: f.explain, explain_zh: f.explain_zh, distractors: [], examples: [], first: f.ts, last: f.ts, source: b.source };
+          cards.set(f.card, c);
+        }
+        c.examples.push({ sentence: f.sentence, wrong: f.wrong, right: f.right, corrected: f.corrected || f.sentence.replace(f.wrong, f.right), ts: f.ts, message: f.message_id });
+        for (const d of f.distractors || []) if (d && !c.distractors.includes(d)) c.distractors.push(d);
+        if ((f.ts || "") >= (c.last || "")) { c.last = f.ts; if (f.explain) { c.explain = f.explain; c.explain_zh = f.explain_zh || c.explain_zh; } }
+        if ((SEV_WEIGHT[f.severity] || 0) > (SEV_WEIGHT[c.severity] || 0)) c.severity = f.severity;
+        if (!byMsg.has(f.message_id)) byMsg.set(f.message_id, []);
+        byMsg.get(f.message_id).push(c);
+      }
+    }
+    for (const c of cards.values()) {
+      if (!S.patterns[c.pattern]) S.patterns[c.pattern] = { category: "words", title: c.pattern.replace(/-/g, " "), rule: "", rule_zh: "" };
+      c.times = new Set(c.examples.map((e) => e.message)).size;
+    }
+    S.cards = [...cards.values()];
+    S.cardById = cards;
+    S.messages = [...msgs.values()].sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+    S.findingsByMsg = byMsg;
+    deriveWords(batches);
+  }
+
+  // Vocabulary: the same word of the same kind is one word card, however many messages it came from.
+  function deriveWords(batches) {
+    const words = new Map();
+    for (const b of batches) {
+      for (const v of b.vocab || []) {
+        if (!v || !v.id || !v.word || !WORD_KINDS[v.kind]) continue;
+        let w = words.get(v.id);
+        if (!w) {
+          w = { id: v.id, isWord: true, kind: v.kind, word: v.word, pos: v.pos || "", meaning: v.meaning || "", meaning_zh: v.meaning_zh || "", example: v.example || "", wrote: [], distractors: [], first: v.ts, last: v.ts, times: 0 };
+          words.set(v.id, w);
+        }
+        w.times++;
+        if (v.you_wrote && !w.wrote.includes(v.you_wrote)) w.wrote.push(v.you_wrote);
+        for (const d of v.distractors || []) if (d && !w.distractors.includes(d)) w.distractors.push(d);
+        if ((v.ts || "") >= (w.last || "")) {
+          w.last = v.ts;
+          if (v.example) w.example = v.example;
+          if (v.meaning) { w.meaning = v.meaning; w.meaning_zh = v.meaning_zh || w.meaning_zh; }
+        }
+      }
+    }
+    // a misspelling counts every time the user typed it, not once per batch
+    const typos = {};
+    for (const c of S.cards) if (c.pattern === "spelling" || c.pattern === "apostrophes") typos[norm(c.right)] = (typos[norm(c.right)] || 0) + c.examples.length;
+    for (const w of words.values()) if (w.kind === "spelling") w.times = Math.max(w.times, typos[norm(w.word)] || 0);
+    S.words = [...words.values()];
+    S.wordById = words;
+  }
+
+  function mergeProgress() {
+    const srs = {};
+    let stats = { days: {}, rounds: 0 };
+    for (const [id, data] of S.progressDocs) {
+      if (id.startsWith("srs-")) Object.assign(srs, (data && data.cards) || {});
+      else if (id === "stats" && data) stats = { days: Object.assign({}, data.days || {}), rounds: data.rounds || 0 };
+    }
+    for (const [cid, st] of Object.entries(S.srsLocal)) if (!srs[cid] || (st.t || 0) >= (srs[cid].t || 0)) srs[cid] = st;
+    for (const [day, rec] of Object.entries(S.stats.days || {})) if (!stats.days[day] || (rec.a || 0) > (stats.days[day].a || 0)) stats.days[day] = rec;
+    stats.rounds = Math.max(stats.rounds || 0, S.stats.rounds || 0);
+    S.srs = srs;
+    S.stats = stats;
+  }
+
+  // ===================================================================== spaced repetition
+  const stateOf = (c) => S.srs[c.id];
+  const isDue = (c, now = Date.now()) => { const st = stateOf(c); return !!st && (st.d || 0) <= now; };
+  const dueCards = () => S.cards.filter((c) => isDue(c));
+  const freshCards = () => S.cards.filter((c) => !stateOf(c));
+  const dueWords = () => S.words.filter((w) => isDue(w));
+  function wordStatus(w) {
+    const st = stateOf(w);
+    return !st ? ["new", "New"] : st.b >= MASTERED ? ["mastered", "Mastered"] : ["learning", "Learning"];
+  }
+  // `text` with the first case-insensitive match of `word` highlighted
+  function markWord(text, word) {
+    const at = String(text).toLowerCase().indexOf(String(word).toLowerCase());
+    if (!word || at < 0) return h("span", null, text);
+    return h("span", null, text.slice(0, at), h("mark", null, text.slice(at, at + word.length)), text.slice(at + word.length));
+  }
+  function newSeenToday() { const today = dayKey(); return Object.values(S.srs).filter((st) => st.f && dayKey(st.f) === today).length; }
+  const newLeftToday = () => Math.max(0, settings.perDay - newSeenToday());
+  function priority(c) {
+    const days = c.last ? (Date.now() - Date.parse(c.last)) / DAY : 99;
+    return (SEV_WEIGHT[c.severity] || 1) * (1 + Math.log2(1 + (c.times || 1))) + Math.max(0, 3 - days / 7);
+  }
+  function grade(card, correct) {
+    const now = Date.now();
+    const prev = stateOf(card) || { b: 0, n: 0, r: 0, w: 0, f: now };
+    const st = Object.assign({}, prev);
+    st.n = (st.n || 0) + 1;
+    if (correct) { st.r = (st.r || 0) + 1; st.b = Math.min((st.b || 0) + 1, INTERVALS.length - 1); st.d = now + INTERVALS[st.b]; }
+    else { st.w = (st.w || 0) + 1; st.b = 1; st.d = now + INTERVALS[1]; st.l = (st.l || 0) + 1; }
+    st.t = now;
+    if (!st.f) st.f = now;
+    S.srsLocal[card.id] = st;
+    S.srs[card.id] = st;
+    queuePatch("srs-" + card.id.charAt(0), { cards: { [card.id]: st } });
+  }
+  function patternMastery(key) {
+    const cs = S.cards.filter((c) => c.pattern === key);
+    let m = 0, l = 0;
+    for (const c of cs) { const st = stateOf(c); if (st && st.b >= MASTERED) m++; else if (st) l++; }
+    return { total: cs.length, mastered: m, learning: l, fresh: cs.length - m - l };
+  }
+
+  // ===================================================================== database
+  const pendingPatches = new Map();
+  const writing = new Set();
+  function deepMerge(a, b) {
+    const out = Object.assign({}, a);
+    for (const [k, v] of Object.entries(b)) out[k] = v && typeof v === "object" && !Array.isArray(v) && a && typeof a[k] === "object" && a[k] ? deepMerge(a[k], v) : v;
+    return out;
+  }
+  function queuePatch(docId, patch) {
+    if (S.mode === "example") { const local = readLocal("bp-example-progress", {}); local[docId] = deepMerge(local[docId] || {}, patch); writeLocal("bp-example-progress", local); return; }
+    if (!S.db || !S.canWrite) return;
+    pendingPatches.set(docId, deepMerge(pendingPatches.get(docId) || {}, patch));
+    flush(docId);
+  }
+  async function flush(docId) {
+    if (writing.has(docId) || !pendingPatches.has(docId)) return;
+    const patch = pendingPatches.get(docId);
+    pendingPatches.delete(docId);
+    writing.add(docId);
+    try {
+      const ref = S.db.doc("progress/" + docId);
+      if (S.progressDocs.has(docId)) await ref.update(patch);
+      else {
+        const snap = await ref.get();
+        if (snap.exists) await ref.update(patch); else await ref.set(patch);
+      }
+    } catch (e) {
+      if (e && (e.code === "invalid_argument" || e.code === "not_granted" || e.code === "revoked")) {
+        S.canWrite = false;
+        showNotice("Your answers can't be saved here, so progress stays on this screen only.");
+      } else if (e && e.code === "quota_exceeded") {
+        showNotice("The app's storage is full, so new progress isn't being saved.");
+      } else {
+        pendingPatches.set(docId, deepMerge(patch, pendingPatches.get(docId) || {}));
+        setTimeout(() => flush(docId), 4000 + Math.random() * 3000);
+      }
+    } finally {
+      writing.delete(docId);
+      if (pendingPatches.has(docId)) setTimeout(() => flush(docId), 0);
+    }
+  }
+  function saveStats() {
+    const today = dayKey();
+    queuePatch("stats", { days: { [today]: S.stats.days[today] }, rounds: S.stats.rounds });
+  }
+
+  function showNotice(text) { const n = $("#notice"); n.textContent = text; n.hidden = !text; }
+
+  async function connect() {
+    const claude = window.claude;
+    const db = claude && typeof claude.use === "function" ? await claude.use("db").catch(() => null) : null;
+    if (!db) return startExample();
+    S.db = db;
+    S.mode = "live";
+    const user = await claude.use("user").catch(() => null);
+    if (user) {
+      const owner = await user.isOwner();
+      const can = await user.can("data.write");
+      S.canWrite = owner || can === true || can === null;
+    } else S.canWrite = true;
+    claude.use("sample").then((fn) => { S.sample = fn || null; requestRender(); }).catch(() => {});
+    const onErr = (e) => { if (e && e.code !== "unavailable") showNotice("The connection to your lessons was lost. Reload the page to reconnect."); };
+    db.collection("lessons").onSnapshot((snap) => {
+      S.batches = new Map(snap.docs.filter((d) => d.exists).map((d) => [d.id, d.data()]));
+      S.loaded.lessons = true; derive(); mergeProgress(); requestRender();
+    }, onErr);
+    db.collection("catalog").onSnapshot((snap) => {
+      const doc = snap.docs.find((d) => d.id === "patterns");
+      S.baseCatalog = doc ? doc.data() : null; derive(); requestRender();
+    }, onErr);
+    db.collection("progress").onSnapshot((snap) => {
+      S.progressDocs = new Map(snap.docs.filter((d) => d.exists).map((d) => [d.id, d.data()]));
+      S.loaded.progress = true; mergeProgress(); requestRender();
+    }, onErr);
+    if (!S.canWrite) showNotice("You can practise here, but only the owner's answers are saved.");
+  }
+
+  function startExample() {
+    S.mode = "example";
+    S.canWrite = true;
+    S.baseCatalog = EXAMPLE.catalog;
+    S.batches = new Map(EXAMPLE.batches.map((b) => [b.id, b]));
+    S.progressDocs = new Map(Object.entries(readLocal("bp-example-progress", {})));
+    S.loaded.lessons = S.loaded.progress = true;
+    derive(); mergeProgress();
+    showNotice("These are example lessons. Open Blue Pencil from claude.ai to see the lessons made from your own messages.");
+    requestRender();
+  }
+
+  // ===================================================================== routing and rendering
+  const TABS = [["today", "Today"], ["patterns", "Patterns"], ["words", "Words"], ["messages", "Messages"], ["write", "Write"], ["progress", "Progress"]];
+  function route() {
+    const hash = (location.hash || "").replace(/^#/, "");
+    const m = hash.match(/^pattern-([a-z0-9-]+)$/);
+    if (m) { S.view = "pattern"; S.param = m[1]; }
+    else if (hash === "guide" || TABS.some(([k]) => k === hash)) { S.view = hash; S.param = null; }
+    else { S.view = "today"; S.param = null; }
+    render(true);
+  }
+  function go(hash) { if (location.hash === "#" + hash) route(); else location.hash = hash; }
+
+  let renderQueued = false, renderDeferred = false;
+  function requestRender() {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => { renderQueued = false; render(false); });
+  }
+  function render(navigated) {
+    const view = $("#view");
+    const active = document.activeElement;
+    if (!navigated && active && view.contains(active) && /^(TEXTAREA|INPUT|SELECT)$/.test(active.tagName)) { renderDeferred = true; return; }
+    renderDeferred = false;
+    renderTabs();
+    renderBar();
+    const builders = { today: viewToday, patterns: viewPatterns, pattern: viewPattern, words: viewWords, messages: viewMessages, write: viewWrite, progress: viewProgress, guide: viewGuide };
+    const scroll = window.scrollY;
+    view.replaceChildren(S.mode === "loading" ? viewLoading() : (builders[S.view] || viewToday)());
+    if (navigated) { window.scrollTo(0, 0); view.focus({ preventScroll: true }); } else window.scrollTo(0, scroll);
+  }
+  document.addEventListener("focusout", () => { if (renderDeferred) setTimeout(() => { if (renderDeferred) render(false); }, 0); });
+
+  function renderTabs() {
+    const nav = $("#tabs");
+    const current = S.view === "pattern" ? "patterns" : S.view;
+    nav.replaceChildren(...TABS.map(([key, label]) => h("a", { href: "#" + key, "aria-current": key === current ? "page" : null }, icon(key), label)));
+    const guideBtn = $("#guide-btn");
+    if (guideBtn) guideBtn.setAttribute("aria-current", S.view === "guide" ? "page" : "false");
+  }
+  function renderBar() {
+    const meta = $("#bar-meta");
+    const streak = streakDays();
+    const due = dueCards().length + dueWords().length;
+    meta.replaceChildren(...[
+      streak ? h("span", { class: "streak", title: "Days in a row with practice" }, icon("flame"), String(streak)) : null,
+      S.cards.length ? h("span", { class: "num" }, due ? `${due} due` : `${S.cards.length} cards`) : null,
+    ].filter(Boolean));
+  }
+
+  function viewLoading() {
+    return h("div", { class: "stack" }, h("div", { class: "hero" }, h("p", { class: "eyebrow" }, "Blue Pencil"), h("h1", { class: "display" }, "Loading your lessons"), h("div", { class: "row muted" }, h("span", { class: "spinner", "aria-hidden": "true" }), "Opening your lessons…")));
+  }
+
+  function emptyState() {
+    return h("div", { class: "empty" },
+      h("p", { class: "sub" }, "Your first lessons are on their way"),
+      h("p", { class: "muted" }, "Lessons come from the messages you type to Claude Code. After your next chat, Blue Pencil finds the mistakes and turns them into short practice cards here."),
+      S.sample ? h("p", { class: "muted" }, "You can also start now: write a message in the Write tab and check it.") : null,
+      S.sample ? h("div", null, h("a", { class: "btn", href: "#write" }, icon("write"), "Check a message")) : null,
+    );
+  }
+
+  // ---------- Today ----------
+  function greeting() {
+    const hr = new Date().getHours();
+    return hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening";
+  }
+  function streakDays() {
+    const days = S.stats.days || {};
+    let n = 0;
+    let t = Date.now();
+    if (!(days[dayKey(t)] && days[dayKey(t)].a)) t -= DAY;
+    while (days[dayKey(t)] && days[dayKey(t)].a) { n++; t -= DAY; }
+    return n;
+  }
+  function viewToday() {
+    if (!S.cards.length) return h("div", { class: "stack" }, welcomeCard(), h("div", { class: "hero" }, h("p", { class: "eyebrow" }, greeting()), h("h1", { class: "display" }, "Practice while Claude works")), emptyState());
+    const due = dueCards().length;
+    const fresh = Math.min(freshCards().length, newLeftToday());
+    const today = S.stats.days[dayKey()] || { a: 0, c: 0 };
+    const headline = due ? `${plural(due, "card")} ready to review` : fresh ? `${plural(fresh, "new card")} for today` : "You're up to date";
+    const blurb = due || fresh
+      ? `A round is ${settings.round} cards, about two minutes. Every card comes from a mistake in your own messages.`
+      : "Nothing is due. A bonus round brings back the cards you're still learning.";
+    return h("div", { class: "stack" },
+      welcomeCard(),
+      h("section", { class: "hero" },
+        h("p", { class: "eyebrow" }, `${greeting()} · ${fmtDay(Date.now())}`),
+        h("h1", { class: "display" }, headline),
+        h("p", { class: "lede" }, blurb),
+        h("div", { class: "row" },
+          h("button", { class: "btn primary big", type: "button", onclick: () => startRound({}) }, icon("play"), due || fresh ? "Start a round" : "Bonus round"),
+          h("span", { class: "pill" }, h("b", null, String(today.a || 0)), "answered today"),
+          today.a ? h("span", { class: "pill" }, h("b", null, `${Math.round(100 * (today.c || 0) / today.a)}%`), "right") : null,
+        ),
+      ),
+      latestChatSection(),
+      focusSection(),
+      wordOfTheDay(),
+      S.sample ? h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Before you send"), h("a", { href: "#write" }, "Open Write")),
+        h("p", { class: "muted" }, "Paste a message for a colleague or a request to Claude. Blue Pencil checks it, explains each fix, and can add your mistakes to practice."),
+      ) : null,
+    );
+  }
+  function welcomeCard() {
+    if (readLocal("bp-guide-seen", false)) return null;
+    return h("section", { class: "welcome" },
+      h("p", { class: "sub" }, "New to Blue Pencil?"),
+      h("p", null, "Take two minutes to see where your lessons come from, how a round works, and how to use it on your other account."),
+      h("div", { class: "row" },
+        h("a", { class: "btn primary", href: "#guide" }, icon("help"), "How it works"),
+        h("button", { class: "btn quiet", type: "button", onclick: () => { writeLocal("bp-guide-seen", true); render(false); } }, "Hide this"),
+      ),
+    );
+  }
+  function wordOfTheDay() {
+    if (!S.words.length) return null;
+    const pool = S.words.filter((w) => w.kind !== "spelling" && !((stateOf(w) || {}).b >= MASTERED));
+    const list = pool.length ? pool : S.words;
+    const w = list.slice().sort((a, b) => a.id.localeCompare(b.id))[hashStr(dayKey()) % list.length];
+    const due = dueWords().length;
+    return h("section", { class: "stack-sm" },
+      h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Word of the day"), h("a", { href: "#words" }, "All words")),
+      h("div", { class: "wotd" },
+        h("div", { class: "row" }, h("span", { class: "lemma" }, w.word), w.pos ? h("span", { class: "muted small" }, w.pos) : null),
+        h("p", null, w.meaning),
+        settings.zh && w.meaning_zh ? h("p", { class: "zh" }, w.meaning_zh) : null,
+        w.example ? h("p", { class: "muted" }, markWord(w.example, w.word)) : null,
+        w.wrote.length ? h("p", { class: "small muted" }, "You wrote ", h("del", { class: "x" }, w.wrote[0])) : null,
+        h("div", { class: "row" }, h("button", { class: "btn", type: "button", onclick: () => startWordRound({}) }, icon("play"), due ? `Word round (${due} due)` : "Word round")),
+      ),
+    );
+  }
+  function latestChatSection() {
+    const latest = S.messages.find((m) => m.source === "claude-code" || m.source === "example");
+    if (!latest) return null;
+    const sameDay = S.messages.filter((m) => dayKey(m.ts) === dayKey(latest.ts));
+    const cards = new Map();
+    for (const m of sameDay) for (const c of S.findingsByMsg.get(m.id) || []) cards.set(c.id, c);
+    const counts = {};
+    for (const c of cards.values()) counts[c.pattern] = (counts[c.pattern] || 0) + 1;
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const sample = sameDay.find((m) => (m.issues || 0) > 0 && m.fixed);
+    return h("section", { class: "stack-sm" },
+      h("div", { class: "section-head" }, h("h2", { class: "sub" }, `From your chats on ${fmtDay(latest.ts)}`), h("a", { href: "#messages" }, "All messages")),
+      h("p", { class: "muted" }, `${plural(sameDay.length, "message")}, ${plural(cards.size, "thing")} to learn${top.length ? ": " : "."}`, top.map(([k, n], i) => [i ? ", " : "", h("a", { class: "link", href: "#pattern-" + k }, patternTitle(k)), ` (${n})`])),
+      sample ? h("div", { class: "panel stack-sm" }, h("p", { class: "eyebrow" }, "You wrote"), proof(sample.text, sample.fixed, "proof")) : null,
+    );
+  }
+  function focusSection() {
+    const weekAgo = Date.now() - 14 * DAY;
+    const counts = {};
+    for (const c of S.cards) {
+      if (c.severity === "typo" || c.severity === "style") continue;
+      const recent = c.examples.filter((e) => Date.parse(e.ts || 0) >= weekAgo).length;
+      if (recent) counts[c.pattern] = (counts[c.pattern] || 0) + recent;
+    }
+    let ranked = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    if (!ranked.length) {
+      const all = {};
+      for (const c of S.cards) all[c.pattern] = (all[c.pattern] || 0) + c.times;
+      ranked = Object.entries(all).sort((a, b) => b[1] - a[1]);
+    }
+    if (!ranked.length) return null;
+    const key = ranked[0][0];
+    const p = S.patterns[key] || {};
+    const card = S.cards.filter((c) => c.pattern === key).sort((a, b) => (b.times || 0) - (a.times || 0))[0];
+    const ex = card && card.examples[card.examples.length - 1];
+    return h("section", { class: "focus" },
+      h("p", { class: "eyebrow" }, "Your focus this week"),
+      h("h2", { class: "title" }, p.title || key),
+      p.rule ? h("p", { class: "rule" }, p.rule) : null,
+      settings.zh && p.rule_zh ? h("p", { class: "zh" }, p.rule_zh) : null,
+      ex ? h("div", { class: "example-pair" }, h("span", null, "You wrote ", h("span", { class: "w" }, ex.wrong)), h("span", null, "Better: ", h("span", { class: "r" }, ex.right))) : null,
+      h("div", { class: "row" }, h("button", { class: "btn primary", type: "button", onclick: () => startRound({ pattern: key }) }, icon("play"), "Practise this"), h("a", { class: "btn quiet", href: "#pattern-" + key }, "See all examples")),
+    );
+  }
+
+  // ---------- Patterns ----------
+  function patternTitle(key) { return (S.patterns[key] && S.patterns[key].title) || key.replace(/-/g, " "); }
+  function masteryBar(mx) {
+    const pct = (n) => mx.total ? (100 * n / mx.total).toFixed(1) + "%" : "0";
+    return h("div", { class: "mastery", role: "img", "aria-label": `${mx.mastered} of ${mx.total} mastered` }, h("span", { class: "m", style: `width:${pct(mx.mastered)}` }), h("span", { class: "l", style: `width:${pct(mx.learning)}` }));
+  }
+  function viewPatterns() {
+    if (!S.cards.length) return h("div", { class: "stack" }, h("h1", { class: "display" }, "Patterns"), emptyState());
+    const byCat = {};
+    for (const [key] of Object.entries(S.patterns)) {
+      const cs = S.cards.filter((c) => c.pattern === key);
+      if (!cs.length) continue;
+      const cat = (S.patterns[key].category) || "words";
+      (byCat[cat] = byCat[cat] || []).push({ key, cards: cs, times: cs.reduce((n, c) => n + c.times, 0), last: cs.reduce((t, c) => (c.last || "") > t ? c.last : t, "") });
+    }
+    const order = Object.keys(S.categories);
+    const cats = Object.keys(byCat).sort((a, b) => (order.indexOf(a) + 99 * (order.indexOf(a) < 0)) - (order.indexOf(b) + 99 * (order.indexOf(b) < 0)));
+    return h("div", { class: "stack" },
+      h("div", { class: "hero" },
+        h("h1", { class: "display" }, "Patterns"),
+        h("p", { class: "lede" }, "The kinds of mistakes in your writing, most frequent first. Green is mastered, blue is still being learned."),
+      ),
+      cats.map((cat) => h("section", { class: "cat" },
+        h("div", { class: "section-head" }, h("h2", null, (S.categories[cat] || {}).title || cat), settings.zh && (S.categories[cat] || {}).zh ? h("span", { class: "zh" }, S.categories[cat].zh) : null),
+        h("div", null, byCat[cat].sort((a, b) => b.times - a.times).map((row) => {
+          const mx = patternMastery(row.key);
+          return h("button", { class: "pattern-row", type: "button", onclick: () => go("pattern-" + row.key) },
+            h("span", { class: "name" }, patternTitle(row.key)),
+            h("span", { class: "meta" }, `${plural(row.times, "time")} in your messages · last ${fmtShort(row.last)}`),
+            h("span", { class: "bar-wrap" }, masteryBar(mx), h("span", { class: "num" }, `${mx.mastered}/${mx.total}`)),
+          );
+        })),
+      )),
+    );
+  }
+  function viewPattern() {
+    const key = S.param;
+    const p = S.patterns[key];
+    const cs = S.cards.filter((c) => c.pattern === key).sort((a, b) => (b.times - a.times) || String(b.last).localeCompare(String(a.last)));
+    if (!p && !cs.length) return h("div", { class: "stack" }, h("a", { class: "link", href: "#patterns" }, "‹ Patterns"), h("p", null, "This pattern isn't in your lessons."));
+    const mx = patternMastery(key);
+    const cat = S.categories[(p || {}).category] || {};
+    return h("div", { class: "stack" },
+      h("a", { class: "link", href: "#patterns" }, "‹ All patterns"),
+      h("div", { class: "hero" },
+        h("p", { class: "eyebrow" }, cat.title || "Pattern"),
+        h("h1", { class: "display" }, patternTitle(key)),
+        p && p.rule ? h("p", { class: "lede", style: "color:var(--ink)" }, p.rule) : null,
+        settings.zh && p && p.rule_zh ? h("p", { class: "zh" }, p.rule_zh) : null,
+        h("div", { class: "row" },
+          h("button", { class: "btn primary", type: "button", onclick: () => startRound({ pattern: key }), disabled: !cs.length }, icon("play"), "Practise this pattern"),
+          S.sample ? h("button", { class: "btn", type: "button", onclick: (e) => generateRound(key, e.currentTarget) }, icon("sparkles"), "New practice sentences") : null,
+          h("span", { class: "pill" }, h("b", null, `${mx.mastered}/${mx.total}`), "mastered"),
+        ),
+      ),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, `Your mistakes (${cs.length})`)),
+        h("div", { class: "list" }, cs.map((c) => {
+          const ex = c.examples[c.examples.length - 1];
+          const st = stateOf(c);
+          return h("div", { class: "card-row" },
+            h("div", { class: "row small muted" }, h("span", { class: "tag " + c.severity }, SEV_LABEL[c.severity] || c.severity), c.times > 1 ? h("span", null, `${c.times} times`) : null, h("span", null, fmtShort(c.last)), h("span", null, st ? (st.b >= MASTERED ? "Mastered" : `Learning · box ${st.b}`) : "New")),
+            proof(ex.sentence, ex.corrected, "proof"),
+            h("p", { class: "muted small" }, c.explain),
+            settings.zh && c.explain_zh ? h("p", { class: "zh" }, c.explain_zh) : null,
+          );
+        })),
+      ),
+      p && p.examples && p.examples.length ? h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "More examples")),
+        h("div", { class: "list" }, p.examples.map((e) => h("div", { class: "example-pair" }, h("span", { class: "w" }, e.wrong), h("span", { class: "r" }, e.right)))),
+      ) : null,
+    );
+  }
+
+  // ---------- Words ----------
+  function viewWords() {
+    if (!S.words.length) return h("div", { class: "stack" }, h("div", { class: "hero" }, h("h1", { class: "display" }, "Words"), h("p", { class: "lede" }, "Your own vocabulary list appears here: words you mistype, words to know, and words that make your point clearer.")), emptyState());
+    const due = dueWords().length;
+    const kind = WORD_KINDS[S.wordFilter] ? S.wordFilter : "spelling";
+    const list = S.words.filter((w) => w.kind === kind).sort((a, b) => (b.times - a.times) || String(b.last).localeCompare(String(a.last)));
+    const mastered = S.words.filter((w) => (stateOf(w) || {}).b >= MASTERED).length;
+    return h("div", { class: "stack" },
+      h("div", { class: "hero" },
+        h("h1", { class: "display" }, "Words"),
+        h("p", { class: "lede" }, "Your own vocabulary, taken from your messages. Practise them in short word rounds."),
+        h("div", { class: "row" },
+          h("button", { class: "btn primary big", type: "button", onclick: () => startWordRound({}) }, icon("play"), due ? `Word round (${due} due)` : "Word round"),
+          h("span", { class: "pill" }, h("b", null, `${mastered}/${S.words.length}`), "mastered"),
+        ),
+      ),
+      h("div", { class: "seg", role: "group", "aria-label": "Word list" }, Object.entries(WORD_KINDS).map(([k, info]) =>
+        h("button", { type: "button", "aria-pressed": String(k === kind), onclick: () => { S.wordFilter = k; render(false); } }, `${info.title} (${S.words.filter((w) => w.kind === k).length})`))),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, WORD_KINDS[kind].long), h("button", { class: "link", type: "button", onclick: () => startWordRound({ kind }) }, "Practise these")),
+        h("p", { class: "muted" }, WORD_KINDS[kind].blurb),
+        h("div", { class: "list" }, list.map((w) => {
+          const [cls, label] = wordStatus(w);
+          return h("div", { class: "word-row" },
+            h("div", { class: "top" }, h("span", { class: "lemma" }, w.word), w.pos ? h("span", { class: "pos" }, w.pos) : null, h("span", { class: "status " + cls }, label), w.times > 1 ? h("span", { class: "small muted" }, `${w.times} times`) : null),
+            w.meaning ? h("p", { class: "meaning" }, w.meaning) : null,
+            settings.zh && w.meaning_zh ? h("p", { class: "zh" }, w.meaning_zh) : null,
+            w.wrote.length ? h("p", { class: "small muted" }, "You wrote ", w.wrote.slice(0, 3).map((x, i) => [i ? ", " : "", h("del", { class: "x" }, x)])) : null,
+            w.example ? h("p", { class: "ex" }, markWord(w.example, w.word)) : null,
+          );
+        })),
+      ),
+    );
+  }
+
+  // ---------- How it works ----------
+  function viewGuide() {
+    writeLocal("bp-guide-seen", true);
+    return h("div", { class: "stack" },
+      h("div", { class: "hero" },
+        h("p", { class: "eyebrow" }, "Guide"),
+        h("h1", { class: "display" }, "How Blue Pencil works"),
+        h("p", { class: "lede" }, "Blue Pencil turns the mistakes in your own messages into short practice, so you learn the English you actually use at work."),
+      ),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Where your lessons come from")),
+        h("ol", { class: "flow" },
+          h("li", null, h("h3", null, "You chat with Claude Code as usual"), h("p", null, "Every message you type is kept on your PC after each reply. Only your own words, not code, files or Claude's answers.")),
+          h("li", null, h("h3", null, "Claude finds the mistakes"), h("p", null, "When 6 messages are waiting, or after 3 hours, a background job checks your English. It writes a corrected and a natural version of each message, and a short lesson for each mistake. Emails, passwords and tokens are removed first.")),
+          h("li", null, h("h3", null, "New cards appear here"), h("p", null, "The lessons are added to this app, usually a few minutes later, on every device you use.")),
+          h("li", null, h("h3", null, "You practise while Claude works"), h("p", null, "Open Blue Pencil on your phone, iPad or another screen and do a two-minute round. Once an hour, Claude Code also shows a one-line tip from your own mistakes.")),
+        ),
+      ),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "A round")),
+        h("p", null, `A round is ${settings.round} cards, about two minutes. Each card is one mistake from your messages. A card gets harder as you learn it:`),
+        h("div", { class: "guide-grid" },
+          h("div", null, h("b", null, "1. Choose"), h("span", null, "Pick the right words for the gap.")),
+          h("div", null, h("b", null, "2. Tap the mistake"), h("span", null, "Find the wrong word in your sentence.")),
+          h("div", null, h("b", null, "3. Fix it"), h("span", null, "Type the correct sentence. Claude checks answers that don't match exactly.")),
+        ),
+        h("p", null, "After each answer you see your original sentence, the fix and the rule. A card comes back after:"),
+        h("div", { class: "schedule" }, ["10 min", "1 day", "3 days", "7 days", "16 days", "35 days", "90 days"].map((t) => h("span", null, t)), h("span", { class: "muted", style: "background:none;color:var(--muted);font-weight:400" }, "A wrong answer starts it again at 10 min.")),
+        h("p", { class: "muted" }, "A card is mastered once it reaches 16 days. Turn on tap-only practice in Settings if you don't want to type on your phone."),
+      ),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "The tabs")),
+        h("div", { class: "guide-grid" },
+          h("div", null, h("b", null, "Today"), h("span", null, "Start a round, see your latest chat's mistakes, your focus for the week and a word of the day.")),
+          h("div", null, h("b", null, "Patterns"), h("span", null, "Every kind of mistake you make, with the rule and your own examples.")),
+          h("div", null, h("b", null, "Words"), h("span", null, "Words you mistype, words to know, and words that make your point clearer, with word rounds.")),
+          h("div", null, h("b", null, "Messages"), h("span", null, "What you typed, with the fixes marked (red out, blue in) and how a fluent writer would say it.")),
+          h("div", null, h("b", null, "Write"), h("span", null, "Check a message before you send it, copy the natural version, and add its mistakes to your practice.")),
+          h("div", null, h("b", null, "Progress"), h("span", null, "Mistakes per 100 words you write, week by week. This is the number that shows real improvement.")),
+        ),
+      ),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Use it on your other account")),
+        h("p", null, "Both your Claude accounts can use this same app, with the same lessons and the same progress:"),
+        h("ol", { class: "steps-list" },
+          h("li", null, "On the account that owns Blue Pencil, open it on claude.ai and open the Share menu."),
+          h("li", null, "Invite your other account's email address and give it edit access, so its answers can be saved."),
+          h("li", null, "Sign in to claude.ai with the other account and open the invite, or the app's link from the Share menu."),
+        ),
+        h("p", { class: "muted" }, "Checking with Claude (the Write tab and typed answers) uses the account you're signed in with. Your lessons come from work chats, with secrets removed, so make sure your company is fine with them on a personal account."),
+        h("p", { class: "muted" }, "Claude Code chats on either account are captured on this PC. To capture chats on another computer, copy the english-coach folder there and run ", h("code", { class: "inline" }, "python -m coach install-hooks"), "."),
+      ),
+      h("section", { class: "stack-sm" },
+        h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Your data and control")),
+        h("ul", { class: "steps-list" },
+          h("li", null, "Your lessons and progress are stored in this private app. Only people you share it with can open it."),
+          h("li", null, "Raw messages stay on your PC in the english-coach folder."),
+          h("li", null, "Settings such as Chinese hints and round length are kept on each device."),
+          h("li", null, "To stop capturing, run ", h("code", { class: "inline" }, "python -m coach uninstall-hooks"), " in the english-coach folder, or type /blue-pencil in Claude Code and ask."),
+        ),
+      ),
+      h("div", { class: "row" }, h("button", { class: "btn primary big", type: "button", onclick: () => { go("today"); } }, "Start practising", icon("arrow"))),
+    );
+  }
+
+  // ---------- Messages ----------
+  function viewMessages() {
+    if (!S.messages.length) return h("div", { class: "stack" }, h("h1", { class: "display" }, "Messages"), emptyState());
+    const list = S.msgFilter === "mistakes" ? S.messages.filter((m) => (m.issues || 0) > 0) : S.messages;
+    const shown = list.slice(0, S.msgLimit || 40);
+    let lastDay = "";
+    return h("div", { class: "stack" },
+      h("div", { class: "hero" },
+        h("h1", { class: "display" }, "Your messages"),
+        h("p", { class: "lede" }, "What you typed to Claude Code, with the corrections marked: red is struck out, blue is added."),
+        h("div", { class: "seg", role: "group", "aria-label": "Show" },
+          h("button", { type: "button", "aria-pressed": String(S.msgFilter === "mistakes"), onclick: () => { S.msgFilter = "mistakes"; render(false); } }, "With mistakes"),
+          h("button", { type: "button", "aria-pressed": String(S.msgFilter === "all"), onclick: () => { S.msgFilter = "all"; render(false); } }, "All"),
+        ),
+      ),
+      h("div", { class: "list" }, shown.map((m) => {
+        const day = dayKey(m.ts);
+        const header = day !== lastDay ? h("p", { class: "eyebrow", style: "padding-top:10px" }, fmtDay(m.ts)) : null;
+        lastDay = day;
+        const showPolished = !!S.msgShow[m.id];
+        const long = (m.text || "").length > 420;
+        const body = h("div", { class: "body" + (long && !S.msgShow[m.id + ":full"] ? " clamp" : "") }, m.fixed && m.fixed !== m.text ? proof(m.text, m.fixed, "") : m.text);
+        return h("article", { class: "msg" },
+          header,
+          h("div", { class: "head" }, h("span", { class: "tag" }, m.project || "chat"), h("span", null, new Date(m.ts).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })), (m.issues || 0) ? h("span", null, plural(m.issues, "fix", "fixes")) : h("span", null, "No mistakes")),
+          body,
+          long ? h("button", { class: "link", type: "button", onclick: () => { S.msgShow[m.id + ":full"] = !S.msgShow[m.id + ":full"]; render(false); } }, S.msgShow[m.id + ":full"] ? "Show less" : "Show all") : null,
+          m.polished ? h("div", { class: "row" },
+            h("button", { class: "link", type: "button", "aria-expanded": String(showPolished), onclick: () => { S.msgShow[m.id] = !showPolished; render(false); } }, showPolished ? "Hide the natural version" : "How a fluent writer would say it"),
+            S.sample || m.polished ? h("button", { class: "link", type: "button", onclick: () => startRewrite(m) }, "Practise rewriting it") : null,
+          ) : null,
+          showPolished ? h("div", { class: "polished" }, m.polished) : null,
+        );
+      })),
+      list.length > shown.length ? h("button", { class: "btn", type: "button", onclick: () => { S.msgLimit = (S.msgLimit || 40) + 40; render(false); } }, `Show more (${list.length - shown.length} left)`) : null,
+    );
+  }
+
+  // ---------- Write ----------
+  function patternListForPrompt() {
+    return Object.entries(S.patterns).map(([k, p]) => `- ${k}: ${p.title}`).join("\n");
+  }
+  async function checkWriting() {
+    const text = S.write.text.trim();
+    if (!text || !S.sample || S.write.busy) return;
+    S.write.busy = true; S.write.error = ""; S.write.result = null; S.write.saved = false; renderWriteResult();
+    const prompt = [
+      "You are an English writing coach for a software engineer in Singapore/Malaysia (Mandarin and Singlish background) who wants clear, professional English at work.",
+      "Check the text below. Leave code, file names, product names and technical terms exactly as they are. Report only real mistakes a fluent writer would fix, each one once.",
+      "Reply with only a JSON object:",
+      '{"fixed": "the text with only the mistakes fixed, same tone", "polished": "how a fluent, friendly professional would write it", "findings": [{"sentence": "one sentence containing the mistake, with every other mistake in it already fixed", "wrong": "exact words in sentence that are wrong", "right": "what replaces them", "pattern": "a key from the list", "severity": "error|unnatural|style|typo", "explain": "why, at most 25 simple words", "explain_zh": "the same in Simplified Chinese, at most 40 characters", "distractors": ["two other WRONG versions of wrong"]}]}',
+      "Pattern keys:", patternListForPrompt(),
+      "Text:", '"""', text, '"""',
+    ].join("\n");
+    try {
+      const out = await S.sample.json(prompt, { modelTier: "default", cache: false });
+      if (!out || typeof out !== "object" || typeof out.fixed !== "string") throw { code: "invalid_json" };
+      const findings = [];
+      for (const f of Array.isArray(out.findings) ? out.findings : []) {
+        const sentence = squash(f.sentence), wrong = String(f.wrong || "").trim(), right = String(f.right || "").trim();
+        if (!sentence || !wrong || !right || !sentence.includes(wrong) || squash(wrong) === squash(right)) continue;
+        const pattern = S.patterns[f.pattern] ? f.pattern : "word-choice";
+        findings.push({ sentence, wrong, right, pattern, severity: SEV_WEIGHT[f.severity] ? f.severity : "error", explain: String(f.explain || ""), explain_zh: String(f.explain_zh || ""), distractors: (Array.isArray(f.distractors) ? f.distractors : []).map(String).filter((d) => d && squash(d) !== squash(wrong) && squash(d) !== squash(right)).slice(0, 3) });
+      }
+      S.write.result = { text, fixed: String(out.fixed), polished: String(out.polished || ""), findings };
+    } catch (e) {
+      S.write.error = sampleErrorText(e);
+    } finally {
+      S.write.busy = false; renderWriteResult();
+    }
+  }
+  function sampleErrorText(e) {
+    const code = e && e.code;
+    if (code === "not_granted" || code === "sampling_disabled") return "Checking needs your permission to use Claude from this page. Allow it when asked, or turn it on in the page's permissions.";
+    if (code === "rate_limited") return "Claude is busy or you've reached your usage limit. Try again in a little while.";
+    if (code === "session_expired") return "Your claude.ai session expired. Sign in again, then try once more.";
+    if (code === "invalid_json") return "The answer came back in a shape I couldn't read. Try again.";
+    if (code === "cancelled") return "";
+    return "Checking didn't finish. Try again.";
+  }
+  async function saveWritingToPractice() {
+    const r = S.write.result;
+    if (!r || !r.findings.length || !S.db || !S.canWrite || S.write.saved) return;
+    const now = new Date();
+    const msgId = "w" + now.getTime().toString(36);
+    const findings = [];
+    for (const f of r.findings) {
+      findings.push(Object.assign({ card: await cardId(f.pattern, f.wrong, f.right), message_id: msgId, ts: now.toISOString(), corrected: f.sentence.replace(f.wrong, f.right) }, f));
+    }
+    const batch = {
+      id: "app-" + now.getTime().toString(36), v: 1, created: now.toISOString(), source: "app", project: "Blue Pencil",
+      messages: [{ id: msgId, ts: now.toISOString(), project: "Write", text: r.text, fixed: r.fixed, polished: r.polished, words: r.text.split(/\s+/).filter(Boolean).length, issues: findings.filter((f) => f.severity !== "style").length }],
+      findings, patterns: {},
+    };
+    try {
+      await S.db.doc("lessons/" + batch.id).set(batch);
+      S.write.saved = true;
+    } catch (e) {
+      S.write.error = e && e.code === "quota_exceeded" ? "The app's storage is full, so this couldn't be saved." : "Saving didn't work. Try again.";
+    }
+    renderWriteResult();
+  }
+  function viewWrite() {
+    const area = h("textarea", { class: "field", id: "write-text", placeholder: "Type or paste what you're about to send. For example: a reply to a colleague, a Jira comment, or a request to Claude.", "aria-label": "Your message", value: S.write.text, oninput: (e) => { S.write.text = e.target.value; const b = $("#check-btn"); if (b) b.disabled = !S.write.text.trim() || S.write.busy; } });
+    return h("div", { class: "stack" },
+      h("div", { class: "hero" },
+        h("h1", { class: "display" }, "Check before you send"),
+        h("p", { class: "lede" }, "Blue Pencil marks each mistake, explains it, and shows a natural version you can copy."),
+      ),
+      S.sample ? h("div", { class: "stack-sm" },
+        area,
+        h("div", { class: "row" },
+          h("button", { class: "btn primary", id: "check-btn", type: "button", disabled: !S.write.text.trim() || S.write.busy, onclick: checkWriting }, icon("sparkles"), "Check my English"),
+          h("span", { class: "muted small" }, "Uses your Claude account."),
+        ),
+      ) : h("div", { class: "empty" }, h("p", { class: "sub" }, "Checking works inside claude.ai"), h("p", { class: "muted" }, "Open Blue Pencil from claude.ai and allow it to use Claude when asked. Your practice cards work without it.")),
+      h("div", { id: "write-result" }, writeResultContent()),
+    );
+  }
+  function renderWriteResult() { const el = $("#write-result"); if (el) el.replaceChildren(writeResultContent()); const b = $("#check-btn"); if (b) b.disabled = !S.write.text.trim() || S.write.busy; }
+  function writeResultContent() {
+    const w = S.write;
+    if (w.busy) return h("div", { class: "row muted", role: "status" }, h("span", { class: "spinner", "aria-hidden": "true" }), "Checking your English…");
+    if (w.error) return h("p", { class: "notice", role: "alert", style: "margin:0" }, w.error);
+    const r = w.result;
+    if (!r) return h("span");
+    const copyBtn = h("button", { class: "btn", type: "button", onclick: async (e) => {
+      const btn = e.currentTarget;
+      try { await navigator.clipboard.writeText(r.polished); btn.lastChild.textContent = "Copied"; }
+      catch (err) { const sel = getSelection(); const range = document.createRange(); range.selectNodeContents($("#polished-text")); sel.removeAllRanges(); sel.addRange(range); btn.lastChild.textContent = "Selected: press Ctrl+C"; }
+    } }, icon("copy"), h("span", null, "Copy natural version"));
+    return h("div", { class: "stack" },
+      h("section", { class: "stack-sm" }, h("div", { class: "section-head" }, h("h2", { class: "sub" }, r.findings.length ? `${plural(r.findings.length, "thing")} to fix` : "No mistakes found")), h("div", { class: "panel" }, proof(r.text, r.fixed, "proof"))),
+      r.findings.length ? h("section", { class: "stack-sm" }, h("div", null, r.findings.map((f) => h("div", { class: "finding" },
+        h("div", { class: "row small" }, h("span", { class: "tag " + f.severity }, SEV_LABEL[f.severity]), h("span", { class: "muted" }, patternTitle(f.pattern))),
+        h("div", { class: "proof" }, proof(f.sentence, f.sentence.replace(f.wrong, f.right), "")),
+        h("p", { class: "muted small" }, f.explain), settings.zh && f.explain_zh ? h("p", { class: "zh" }, f.explain_zh) : null,
+      )))) : null,
+      r.polished ? h("section", { class: "stack-sm" }, h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Natural version")), h("div", { class: "polished msg" }, h("div", { class: "polished", id: "polished-text" }, r.polished)), h("div", { class: "row" }, copyBtn)) : null,
+      r.findings.length && S.db && S.canWrite ? h("div", { class: "row" }, w.saved
+        ? h("span", { class: "pill" }, icon("check"), "Added to your practice")
+        : h("button", { class: "btn primary", type: "button", onclick: saveWritingToPractice }, icon("play"), "Add these to my practice")) : null,
+    );
+  }
+
+  // ---------- Progress ----------
+  // Draw charts at the width they are shown, so their 12px labels stay 12px on a phone.
+  function chartWidth() { return Math.round(Math.max(300, Math.min(720, ($("#view").clientWidth || 640) - 32))); }
+  function weekStart(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); }
+  function viewProgress() {
+    const days = S.stats.days || {};
+    const totalA = Object.values(days).reduce((n, d) => n + (d.a || 0), 0);
+    const last7 = [...Array(7)].map((_, i) => days[dayKey(Date.now() - i * DAY)] || {});
+    const a7 = last7.reduce((n, d) => n + (d.a || 0), 0), c7 = last7.reduce((n, d) => n + (d.c || 0), 0);
+    const mastered = S.cards.filter((c) => (stateOf(c) || {}).b >= MASTERED).length;
+    return h("div", { class: "stack" },
+      h("div", { class: "hero" }, h("h1", { class: "display" }, "Progress"), h("p", { class: "lede" }, "Practice is only half of it. The real test is fewer mistakes in the messages you write.")),
+      h("div", { class: "kpis" },
+        h("div", { class: "kpi" }, h("b", null, String(streakDays())), h("span", null, "day streak")),
+        h("div", { class: "kpi" }, h("b", null, a7 ? `${Math.round(100 * c7 / a7)}%` : "–"), h("span", null, "right, last 7 days")),
+        h("div", { class: "kpi" }, h("b", null, `${mastered}/${S.cards.length}`), h("span", null, "cards mastered")),
+        S.words.length ? h("div", { class: "kpi" }, h("b", null, `${S.words.filter((w) => (stateOf(w) || {}).b >= MASTERED).length}/${S.words.length}`), h("span", null, "words mastered")) : null,
+        h("div", { class: "kpi" }, h("b", null, String(totalA)), h("span", null, "answers in total")),
+      ),
+      writingChart(),
+      practiceChart(),
+      categorySection(),
+      repeatTable(),
+    );
+  }
+  function writingChart() {
+    const weeks = new Map();
+    for (const m of S.messages) {
+      if (m.source !== "claude-code" || !m.words) continue;
+      const w = weekStart(m.ts);
+      const rec = weeks.get(w) || { words: 0, issues: 0, n: 0 };
+      rec.words += m.words; rec.issues += m.issues || 0; rec.n++;
+      weeks.set(w, rec);
+    }
+    const pts = [...weeks.entries()].sort((a, b) => a[0] - b[0]).slice(-12).filter(([, r]) => r.words >= 40).map(([w, r]) => ({ w, v: 100 * r.issues / r.words, n: r.n }));
+    const head = h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Mistakes per 100 words you write"), h("span", { class: "muted small" }, "by week"));
+    if (pts.length < 2) return h("section", { class: "stack-sm" }, head, h("p", { class: "muted" }, "This chart appears after two weeks of messages. Lower is better."));
+    const W = chartWidth(), H = 220, L = 34, R = 16, T = 14, B = 30;
+    const max = Math.max(4, Math.ceil(Math.max(...pts.map((p) => p.v)) / 2) * 2);
+    const x = (i) => L + (pts.length === 1 ? 0 : i * (W - L - R) / (pts.length - 1));
+    const y = (v) => T + (H - T - B) * (1 - v / max);
+    const ticks = [0, max / 2, max];
+    const line = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+    const area = `${line} L${x(pts.length - 1).toFixed(1)},${y(0)} L${x(0).toFixed(1)},${y(0)} Z`;
+    const lastV = pts[pts.length - 1].v;
+    const avg = pts.slice(0, -1).reduce((n, p) => n + p.v, 0) / (pts.length - 1);
+    const verdict = lastV < avg * 0.9 ? "fewer than your average. Keep going." : lastV > avg * 1.1 ? "more than your average. Your focus pattern is the quickest way down." : "about your average.";
+    return h("section", { class: "stack-sm" },
+      head,
+      h("p", { class: "muted small" }, `Latest week: ${lastV.toFixed(1)} per 100 words, ${verdict} Lower is better.`),
+      s("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Mistakes per 100 words, weekly: ${pts.map((p) => p.v.toFixed(1)).join(", ")}` },
+        ticks.map((t) => [s("line", { class: "grid", x1: L, x2: W - R, y1: y(t), y2: y(t) }), s("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end" }, String(t))]),
+        s("path", { class: "area", d: area }),
+        s("path", { class: "line", d: line }),
+        pts.map((p, i) => s("circle", { class: i === pts.length - 1 ? "end" : "dot", cx: x(i), cy: y(p.v), r: i === pts.length - 1 ? 5.5 : 4 }, s("title", null, `${fmtShort(p.w)}: ${p.v.toFixed(1)} per 100 words (${p.n} messages)`))),
+        pts.map((p, i) => (pts.length <= 6 || i % 2 === (pts.length - 1) % 2) ? s("text", { x: x(i), y: H - 8, "text-anchor": "middle" }, fmtShort(p.w)) : null),
+      ),
+    );
+  }
+  function practiceChart() {
+    const days = S.stats.days || {};
+    const n = 28;
+    const data = [...Array(n)].map((_, i) => { const t = Date.now() - (n - 1 - i) * DAY; const d = days[dayKey(t)] || {}; return { t, a: d.a || 0, c: d.c || 0 }; });
+    const head = h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Practice, last 4 weeks"), h("span", { class: "legend" }, h("span", null, h("i", { style: "background:var(--pencil)" }), "right"), h("span", null, h("i", { style: "background:var(--pencil-line)" }), "answered")));
+    if (!data.some((d) => d.a)) return h("section", { class: "stack-sm" }, head, h("p", { class: "muted" }, "Your practice shows up here, one bar per day."));
+    const W = chartWidth(), H = 170, L = 30, R = 8, T = 10, B = 26;
+    const max = Math.max(10, Math.ceil(Math.max(...data.map((d) => d.a)) / 10) * 10);
+    const bw = (W - L - R) / n;
+    const y = (v) => T + (H - T - B) * (1 - v / max);
+    return h("section", { class: "stack-sm" }, head,
+      s("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Answers per day for the last 28 days" },
+        [0, max].map((t) => [s("line", { class: "grid", x1: L, x2: W - R, y1: y(t), y2: y(t) }), s("text", { x: L - 6, y: y(t) + 4, "text-anchor": "end" }, String(t))]),
+        data.map((d, i) => d.a ? [
+          s("rect", { class: "bar-a", x: L + i * bw + 2, y: y(d.a), width: Math.max(2, bw - 4), height: y(0) - y(d.a), rx: 3 }, s("title", null, `${fmtShort(d.t)}: ${d.c} of ${d.a} right`)),
+          s("rect", { class: "bar-c", x: L + i * bw + 2, y: y(d.c), width: Math.max(2, bw - 4), height: y(0) - y(d.c), rx: 3 }),
+        ] : null),
+        [0, 7, 14, 21, 27].map((i) => s("text", { x: L + i * bw + bw / 2, y: H - 6, "text-anchor": "middle" }, fmtShort(data[i].t))),
+      ),
+    );
+  }
+  function categorySection() {
+    const rows = Object.entries(S.categories).map(([key, cat]) => {
+      const cs = S.cards.filter((c) => ((S.patterns[c.pattern] || {}).category || "words") === key);
+      let m = 0, l = 0;
+      for (const c of cs) { const st = stateOf(c); if (st && st.b >= MASTERED) m++; else if (st) l++; }
+      return { key, cat, total: cs.length, m, l };
+    }).filter((r) => r.total);
+    if (!rows.length) return null;
+    return h("section", { class: "stack-sm" },
+      h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Mastery by area"), h("span", { class: "legend" }, h("span", null, h("i", { style: "background:var(--ok)" }), "mastered"), h("span", null, h("i", { style: "background:var(--pencil-line)" }), "learning"))),
+      h("div", { class: "stack-sm" }, rows.map((r) => h("div", { class: "catbar" },
+        h("span", null, r.cat.title),
+        h("span", { class: "track", role: "img", "aria-label": `${r.m} mastered, ${r.l} learning, of ${r.total}` }, h("span", { class: "m", style: `width:${100 * r.m / r.total}%` }), h("span", { class: "l", style: `width:${100 * r.l / r.total}%` })),
+        h("span", { class: "num muted" }, `${r.m}/${r.total}`),
+      ))),
+    );
+  }
+  function repeatTable() {
+    const rows = S.cards.filter((c) => c.times > 1 && c.severity !== "style").sort((a, b) => b.times - a.times).slice(0, 10);
+    if (!rows.length) return null;
+    return h("section", { class: "stack-sm" },
+      h("div", { class: "section-head" }, h("h2", { class: "sub" }, "Mistakes you repeat")),
+      h("div", { class: "table-wrap" }, h("table", { class: "plain" },
+        h("thead", null, h("tr", null, h("th", null, "You wrote"), h("th", null, "Better"), h("th", null, "Times"), h("th", null, "Status"))),
+        h("tbody", null, rows.map((c) => { const st = stateOf(c); return h("tr", null,
+          h("td", null, h("del", { class: "x" }, c.wrong)), h("td", null, h("ins", { class: "x" }, c.right)), h("td", { class: "num" }, String(c.times)),
+          h("td", { class: "muted" }, st ? (st.b >= MASTERED ? "Mastered" : "Learning") : "New"),
+        ); })),
+      )),
+    );
+  }
+
+  // ===================================================================== practice
+  let R = null; // the round being played
+
+  function exampleOf(card) { return card.examples[card.examples.length - 1 - (hashStr(card.id + dayKey()) % Math.min(card.examples.length, 3))] || card.examples[0]; }
+  function optionsFor(card, ex) {
+    const opts = [];
+    for (const o of [ex.right, ex.wrong, ...card.distractors]) { const v = squash(o); if (v && !opts.some((x) => x === v)) opts.push(v); }
+    return opts.slice(0, 4);
+  }
+  function spotTargets(ex) {
+    const at = ex.sentence.indexOf(ex.wrong);
+    if (at < 0) return null;
+    const words = [];
+    const re = /\S+/g; let m;
+    while ((m = re.exec(ex.sentence))) words.push({ text: m[0], start: m.index, end: m.index + m[0].length });
+    const end = at + ex.wrong.length;
+    const targets = words.map((w, i) => (w.start < end && w.end > at ? i : -1)).filter((i) => i >= 0);
+    if (!targets.length || targets.length > 4 || words.length > 40) return null;
+    return { words, targets };
+  }
+  function kindFor(card, ex) {
+    const st = stateOf(card);
+    const box = st ? st.b || 0 : 0;
+    const canChoose = ex.sentence.includes(ex.wrong) && optionsFor(card, ex).length >= 2;
+    const canSpot = !!spotTargets(ex);
+    if (box <= 1) return canChoose ? "choose" : canSpot ? "spot" : "fix";
+    if (box === 2) return canSpot ? "spot" : canChoose ? "choose" : "fix";
+    if (settings.quick) return (box % 2 && canChoose) ? "choose" : canSpot ? "spot" : canChoose ? "choose" : "fix";
+    return "fix";
+  }
+  function interleave(items) {
+    const out = [];
+    const rest = items.slice();
+    while (rest.length) {
+      const prev = out[out.length - 1];
+      const i = rest.findIndex((it) => !prev || it.card.pattern !== prev.card.pattern);
+      out.push(rest.splice(i < 0 ? 0 : i, 1)[0]);
+    }
+    return out;
+  }
+  function buildRound(opts) {
+    const size = settings.round;
+    const now = Date.now();
+    const pool = S.cards.filter((c) => !opts.pattern || c.pattern === opts.pattern);
+    const due = pool.filter((c) => isDue(c, now)).sort((a, b) => (stateOf(a).d || 0) - (stateOf(b).d || 0));
+    const freshAll = pool.filter((c) => !stateOf(c)).sort((a, b) => priority(b) - priority(a));
+    const newCap = opts.pattern ? size : Math.min(newLeftToday(), Math.ceil(size / 2));
+    const fresh = [];
+    let typos = 0;
+    for (const c of freshAll) {
+      if (fresh.length >= newCap) break;
+      if (c.severity === "typo" && typos >= 1) continue;
+      if (c.severity === "typo") typos++;
+      fresh.push(c);
+    }
+    let chosen = due.slice(0, size - Math.min(fresh.length, Math.max(2, size - due.length)));
+    chosen = chosen.concat(fresh.slice(0, size - chosen.length));
+    if (chosen.length < size) {
+      const extra = pool.filter((c) => stateOf(c) && !chosen.includes(c)).sort((a, b) => ((stateOf(a).b || 0) - (stateOf(b).b || 0)) || ((stateOf(a).d || 0) - (stateOf(b).d || 0)));
+      chosen = chosen.concat(extra.slice(0, size - chosen.length));
+    }
+    if (chosen.length < size) chosen = chosen.concat(freshAll.filter((c) => !chosen.includes(c)).slice(0, size - chosen.length));
+    const items = interleave(chosen.map((card) => { const ex = exampleOf(card); return { card, ex, kind: kindFor(card, ex) }; }));
+    const seenPatterns = new Set(S.cards.filter((c) => stateOf(c)).map((c) => c.pattern));
+    const out = [];
+    const intro = new Set();
+    for (const it of items) {
+      // at most two short lessons per round; every answer's feedback repeats the rule anyway
+      if (intro.size < 2 && !seenPatterns.has(it.card.pattern) && !intro.has(it.card.pattern) && S.patterns[it.card.pattern] && S.patterns[it.card.pattern].rule) {
+        intro.add(it.card.pattern);
+        out.push({ kind: "learn", card: it.card, ex: it.ex });
+      }
+      out.push(it);
+    }
+    return out;
+  }
+
+  function startRound(opts) {
+    if (!S.cards.length) return;
+    const items = buildRound(opts || {});
+    if (!items.length) return;
+    openRound(items, opts && opts.pattern ? `Practice: ${patternTitle(opts.pattern)}` : "Round");
+  }
+
+  // ---------- word rounds ----------
+  function gapOf(w) {
+    if (!w.example || !w.word) return null;
+    const at = w.example.toLowerCase().indexOf(w.word.toLowerCase());
+    return at < 0 ? null : { before: w.example.slice(0, at), after: w.example.slice(at + w.word.length) };
+  }
+  function wordOptions(w) {
+    const opts = [];
+    const pool = w.kind === "spelling" ? [w.word, ...w.wrote, ...w.distractors] : [w.word, ...w.distractors, ...w.wrote];
+    for (const o of pool) { const v = squash(o); if (v && !opts.some((x) => norm(x) === norm(v))) opts.push(v); }
+    return opts.slice(0, 4);
+  }
+  function wordExercise(w) {
+    const st = stateOf(w);
+    const box = st ? st.b || 0 : 0;
+    const canChoose = wordOptions(w).length >= 2;
+    if (w.kind === "spelling") return box >= 2 && !settings.quick ? "w-type" : canChoose ? "w-choose" : "w-type";
+    if (!canChoose) return "w-meaning";
+    if (w.kind === "know") return box <= 1 || !gapOf(w) ? "w-meaning" : "w-choose";
+    return gapOf(w) && box !== 2 ? "w-choose" : "w-meaning";
+  }
+  function buildWordRound(opts) {
+    const size = settings.round;
+    const now = Date.now();
+    const pool = S.words.filter((w) => !opts.kind || w.kind === opts.kind);
+    const due = pool.filter((w) => isDue(w, now)).sort((a, b) => (stateOf(a).d || 0) - (stateOf(b).d || 0));
+    const fresh = pool.filter((w) => !stateOf(w)).sort((a, b) => (b.times - a.times) || String(b.last).localeCompare(String(a.last)));
+    let chosen = due.slice(0, size - Math.min(fresh.length, Math.ceil(size / 2)));
+    chosen = chosen.concat(fresh.slice(0, size - chosen.length));
+    if (chosen.length < size) {
+      const extra = pool.filter((w) => stateOf(w) && !chosen.includes(w)).sort((a, b) => ((stateOf(a).b || 0) - (stateOf(b).b || 0)) || ((stateOf(a).d || 0) - (stateOf(b).d || 0)));
+      chosen = chosen.concat(extra.slice(0, size - chosen.length));
+    }
+    return shuffled(chosen, dayKey() + now).map((w) => ({ kind: wordExercise(w), card: w, word: w }));
+  }
+  function startWordRound(opts) {
+    if (!S.words.length) return;
+    const items = buildWordRound(opts || {});
+    if (items.length) openRound(items, opts && opts.kind ? WORD_KINDS[opts.kind].long : "Word round");
+  }
+  function wordFeedback(ok, w, extra) {
+    return h("div", { class: "feedback " + (ok ? "good" : "bad"), role: "status", "aria-live": "polite" },
+      h("div", { class: "verdict" }, icon(ok ? "check" : "cross"), ok ? "Right" : "Not quite"),
+      extra || null,
+      h("div", { class: "wfb" },
+        h("div", { class: "row" }, h("span", { class: "big-word" }, w.word), w.pos ? h("span", { class: "muted" }, w.pos) : null),
+        w.meaning ? h("p", null, w.meaning) : null,
+        settings.zh && w.meaning_zh ? h("p", { class: "zh" }, w.meaning_zh) : null,
+        w.example ? h("p", { class: "muted" }, markWord(w.example, w.word)) : null,
+        w.wrote.length ? h("p", { class: "small muted" }, "You wrote ", h("del", { class: "x" }, w.wrote[0]), w.times > 1 ? ` · ${w.times} times` : "") : null,
+      ),
+    );
+  }
+  // append() would turn a skipped (null) part into the text "null"
+  function put(el, ...kids) { el.append(...kids.filter((k) => k != null && k !== false)); }
+  function optionButtons(options, onPick) {
+    return options.map((o, i) => h("button", { class: "option", type: "button", "data-opt": o, onclick: () => onPick(o) }, h("span", { class: "key" }, String(i + 1)), o));
+  }
+  function lockOptions(buttons, right, chosen) {
+    for (const b of buttons) {
+      b.disabled = true;
+      if (norm(b.dataset.opt) === norm(right)) b.classList.add("right");
+      else if (b.dataset.opt === chosen) b.classList.add("wrong");
+    }
+  }
+  function renderWordChoose(it, body, inner) {
+    const w = it.word;
+    const gap = gapOf(w);
+    const options = shuffled(wordOptions(w), w.id + R.i + R.start);
+    const feedback = h("div");
+    const sentence = gap ? h("p", { class: "p-sentence" }, gap.before, h("span", { class: "blank" }, "____"), gap.after) : null;
+    const buttons = optionButtons(options, pick);
+    put(body,
+      kindLabel(w.kind === "spelling" ? "Spell it" : w.kind === "clearer" ? "Say it clearer" : "Choose the word"),
+      h("p", { class: "p-prompt" }, w.kind === "spelling" ? "Which spelling is right?" : "Which word fits?"),
+      w.kind === "clearer" && w.wrote[0] ? h("p", { class: "hint" }, `Instead of “${w.wrote[0]}”`) : null,
+      sentence,
+      w.meaning && (w.kind === "spelling" || !gap) ? h("p", { class: "hint" }, `Meaning: ${w.meaning}`) : null,
+      h("div", { class: "options" }, buttons),
+      feedback,
+    );
+    inner.append(h("span", { class: "muted small" }, coarse ? "Tap an answer" : "Press 1 to 4, or click"));
+    function pick(o) {
+      if (R.state) return;
+      const ok = norm(o) === norm(w.word);
+      answer(it, ok);
+      lockOptions(buttons, w.word, o);
+      if (sentence) sentence.replaceChildren(gap.before, h("mark", null, w.word), gap.after);
+      feedback.replaceChildren(wordFeedback(ok, w, ok ? null : h("p", null, "You chose ", h("del", { class: "x" }, o), ".")));
+      nextButton(inner);
+    }
+    it.onKey = (key) => { const n = Number(key); if (n >= 1 && n <= buttons.length && !R.state) pick(buttons[n - 1].dataset.opt); };
+  }
+  function renderWordMeaning(it, body, inner) {
+    const w = it.word;
+    const others = shuffled(S.words.filter((x) => x.id !== w.id && x.meaning && norm(x.meaning) !== norm(w.meaning)), w.id + dayKey())
+      .sort((a, b) => (a.kind === w.kind ? 0 : 1) - (b.kind === w.kind ? 0 : 1)).slice(0, 3).map((x) => x.meaning);
+    const options = shuffled([w.meaning, ...others], w.id + R.i + R.start);
+    const feedback = h("div");
+    const buttons = optionButtons(options, pick);
+    put(body,
+      kindLabel("What does it mean?"),
+      h("p", { class: "big-word" }, w.word),
+      w.example ? h("p", { class: "hint" }, markWord(w.example, w.word)) : null,
+      h("div", { class: "options" }, buttons),
+      feedback,
+    );
+    inner.append(h("span", { class: "muted small" }, coarse ? "Tap an answer" : "Press 1 to 4, or click"));
+    function pick(o) {
+      if (R.state) return;
+      const ok = o === w.meaning;
+      answer(it, ok);
+      lockOptions(buttons, w.meaning, o);
+      feedback.replaceChildren(wordFeedback(ok, w));
+      nextButton(inner);
+    }
+    it.onKey = (key) => { const n = Number(key); if (n >= 1 && n <= buttons.length && !R.state) pick(buttons[n - 1].dataset.opt); };
+  }
+  function renderWordType(it, body, inner) {
+    const w = it.word;
+    const gap = gapOf(w);
+    const input = h("input", { class: "answer-line", type: "text", id: "word-answer", autocomplete: "off", autocapitalize: "none", spellcheck: "false", "aria-label": "Type the word", "data-autofocus": "" });
+    const feedback = h("div");
+    put(body,
+      kindLabel("Type it"),
+      h("p", { class: "p-prompt" }, gap ? "Type the missing word." : "Type the word."),
+      gap ? h("p", { class: "p-sentence" }, gap.before, h("span", { class: "blank" }, "____"), gap.after) : null,
+      h("p", { class: "hint" }, `${w.meaning ? w.meaning + " · " : ""}starts with “${w.word.charAt(0)}”, ${w.word.length} letters`),
+      input,
+      feedback,
+    );
+    const check = h("button", { class: "btn primary big", type: "button", onclick: () => submit(false) }, "Check");
+    inner.append(h("button", { class: "btn", type: "button", onclick: () => submit(true) }, "Show me"), check);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submit(false); } });
+    function submit(giveUp) {
+      if (R.state) return;
+      const typed = input.value.trim();
+      if (!giveUp && !typed) return;
+      const ok = !giveUp && norm(typed) === norm(w.word);
+      answer(it, ok);
+      input.disabled = true;
+      if (!ok && typed) input.value = typed;
+      feedback.replaceChildren(wordFeedback(ok, w, !ok && typed ? h("p", null, "You typed ", h("del", { class: "x" }, typed), ".") : null));
+      nextButton(inner);
+    }
+  }
+
+  function openRound(items, label) {
+    R = { items, i: 0, label, type: items[0] && items[0].word ? "words" : "cards", answered: 0, correct: 0, start: Date.now(), state: null, results: [] };
+    const panel = $("#practice");
+    panel.hidden = false;
+    document.body.style.overflow = "hidden";
+    renderItem();
+  }
+  function closeRound(save) {
+    if (R && save !== false) recordRound();
+    R = null;
+    $("#practice").hidden = true;
+    document.body.style.overflow = "";
+    render(false);
+  }
+  function recordRound() {
+    if (!R || !R.answered || R.recorded) return;
+    R.recorded = true;
+    const today = dayKey();
+    const rec = Object.assign({ a: 0, c: 0, s: 0 }, S.stats.days[today]);
+    rec.a += R.answered; rec.c += R.correct; rec.s += Math.round((Date.now() - R.start) / 1000);
+    S.stats.days[today] = rec;
+    S.stats.rounds = (S.stats.rounds || 0) + 1;
+    saveStats();
+  }
+
+  function renderItem() {
+    const panel = $("#practice");
+    const it = R.items[R.i];
+    const top = h("div", { class: "p-top" },
+      h("button", { class: "icon-btn", type: "button", "aria-label": "End round", onclick: () => closeRound(true) }, icon("x")),
+      h("div", { class: "p-progress", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(R.items.length), "aria-valuenow": String(R.i) }, h("span", { style: `width:${100 * R.i / R.items.length}%` })),
+      h("span", { class: "p-count" }, it ? `${R.i + 1} / ${R.items.length}` : "Done"),
+    );
+    const body = h("div", { class: "p-body" });
+    const foot = h("div", { class: "p-foot" });
+    const inner = h("div", { class: "inner" });
+    foot.append(inner);
+    if (!it) renderDone(body, inner);
+    else ({ learn: renderLearn, choose: renderChoose, spot: renderSpot, fix: renderFix, gen: renderChoose, rewrite: renderRewrite, "w-choose": renderWordChoose, "w-meaning": renderWordMeaning, "w-type": renderWordType })[it.kind](it, body, inner);
+    panel.replaceChildren(top, h("div", { class: "p-scroll" }, body), foot);
+    const focusEl = panel.querySelector("[data-autofocus]");
+    if (focusEl) focusEl.focus({ preventScroll: true });
+    panel.querySelector(".p-scroll").scrollTop = 0;
+  }
+  function next() { R.i++; R.state = null; renderItem(); }
+  function nextButton(inner, label) {
+    const btn = h("button", { class: "btn primary big", type: "button", "data-autofocus": "", onclick: next }, label || (R.i + 1 < R.items.length ? "Next" : "Finish"), icon("arrow"));
+    inner.replaceChildren(btn);
+    btn.focus({ preventScroll: true });
+  }
+  function kindLabel(text) { return h("span", { class: "p-kind" }, text); }
+
+  function feedbackBox(ok, it, extra) {
+    const c = it.card;
+    const p = S.patterns[c.pattern] || {};
+    return h("div", { class: "feedback " + (ok ? "good" : "bad"), role: "status", "aria-live": "polite" },
+      h("div", { class: "verdict" }, icon(ok ? "check" : "cross"), ok ? "Right" : "Not quite"),
+      extra || null,
+      h("div", { class: "proof" }, proof(it.ex.sentence, it.ex.corrected, "")),
+      h("p", null, c.explain || p.rule || ""),
+      settings.zh && (c.explain_zh || p.rule_zh) ? h("p", { class: "zh" }, c.explain_zh || p.rule_zh) : null,
+      h("p", { class: "muted small" }, `${p.title || c.pattern}${c.times > 1 ? ` · you wrote this ${c.times} times` : ""}${c.last && c.source !== "generated" ? ` · ${fmtShort(c.last)}` : ""}`),
+    );
+  }
+  function answer(it, ok) {
+    if (R.state) return;
+    R.state = { ok };
+    R.answered++;
+    if (ok) R.correct++;
+    R.results.push({ card: it.card, ok });
+    if (it.card.source !== "generated") grade(it.card, ok);
+  }
+
+  function renderLearn(it, body, inner) {
+    const p = S.patterns[it.card.pattern] || {};
+    const examples = S.cards.filter((c) => c.pattern === it.card.pattern).slice(0, 3).map((c) => c.examples[c.examples.length - 1]);
+    body.append(
+      kindLabel("New pattern"),
+      h("h2", { class: "p-prompt" }, p.title || it.card.pattern),
+      h("div", { class: "lesson" },
+        h("p", { class: "rule" }, p.rule || ""),
+        settings.zh && p.rule_zh ? h("p", { class: "zh" }, p.rule_zh) : null,
+        h("p", { class: "eyebrow" }, "From your messages"),
+        h("div", { class: "list" }, examples.map((ex) => h("div", { class: "proof" }, proof(ex.sentence, ex.corrected, "")))),
+      ),
+    );
+    inner.append(h("button", { class: "btn primary big", type: "button", "data-autofocus": "", onclick: next }, "Got it", icon("arrow")));
+  }
+
+  function renderChoose(it, body, inner) {
+    const ex = it.ex;
+    const at = ex.sentence.indexOf(ex.wrong);
+    const before = ex.sentence.slice(0, at), after = ex.sentence.slice(at + ex.wrong.length);
+    const opts = shuffled(optionsFor(it.card, ex), it.card.id + R.i + R.start);
+    const sentence = h("p", { class: "p-sentence" }, before, h("span", { class: "blank" }, "____"), after);
+    const feedback = h("div");
+    const buttons = opts.map((o, i) => h("button", { class: "option", type: "button", "data-opt": o, onclick: () => pick(o) }, h("span", { class: "key" }, String(i + 1)), o));
+    body.append(kindLabel(it.kind === "gen" ? "New sentence" : "Choose the right words"), sentence, h("div", { class: "options" }, buttons), feedback);
+    inner.append(h("span", { class: "muted small" }, coarse ? "Tap an answer" : "Press 1 to 4, or click"));
+    function pick(o) {
+      if (R.state) return;
+      const ok = o === squash(ex.right);
+      answer(it, ok);
+      for (const b of buttons) {
+        b.disabled = true;
+        if (b.dataset.opt === squash(ex.right)) b.classList.add("right");
+        else if (b.dataset.opt === o) b.classList.add("wrong");
+      }
+      sentence.replaceChildren(before, h(ok ? "ins" : "ins", { class: "x" }, ex.right), after);
+      feedback.replaceChildren(feedbackBox(ok, it, ok ? null : h("p", null, "You chose ", h("del", { class: "x" }, o), ". The right words are ", h("ins", { class: "x" }, ex.right), ".")));
+      nextButton(inner);
+    }
+    it.onKey = (key) => { const n = Number(key); if (n >= 1 && n <= buttons.length && !R.state) pick(buttons[n - 1].dataset.opt); };
+  }
+
+  function renderSpot(it, body, inner) {
+    const spot = spotTargets(it.ex);
+    const feedback = h("div");
+    const buttons = spot.words.map((w, i) => h("button", { class: "word", type: "button", onclick: () => tap(i) }, w.text));
+    body.append(kindLabel("Find the mistake"), h("p", { class: "p-prompt" }, "Tap the word that's wrong."), h("div", { class: "words" }, buttons), feedback);
+    inner.append(h("button", { class: "btn", type: "button", onclick: () => tap(-1) }, "I don't see it"));
+    function tap(i) {
+      if (R.state) return;
+      const ok = spot.targets.includes(i);
+      answer(it, ok);
+      buttons.forEach((b, k) => { b.disabled = true; if (spot.targets.includes(k)) b.classList.add("target"); else if (k === i) b.classList.add("missed"); });
+      feedback.replaceChildren(feedbackBox(ok, it));
+      nextButton(inner);
+    }
+  }
+
+  function renderFix(it, body, inner) {
+    const ex = it.ex;
+    const area = h("textarea", { class: "answer", id: "fix-answer", "aria-label": "Your corrected sentence", value: ex.sentence, spellcheck: "false", "data-autofocus": "" });
+    const feedback = h("div");
+    body.append(kindLabel("Fix it"), h("p", { class: "p-prompt" }, "This sentence has one mistake. Correct it."), h("p", { class: "quote" }, ex.sentence), area, feedback);
+    const check = h("button", { class: "btn primary big", type: "button", onclick: () => submit() }, "Check");
+    const giveUp = h("button", { class: "btn", type: "button", onclick: () => finish(false, null) }, "Show me");
+    inner.append(giveUp, check);
+    area.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } });
+    async function submit() {
+      if (R.state || check.disabled) return;
+      const mine = area.value;
+      if (answerKey(mine) === answerKey(ex.corrected)) return finish(true, null);
+      if (answerKey(mine) === answerKey(ex.sentence)) return finish(false, h("p", null, "Nothing was changed. The mistake is still there."));
+      if (S.sample) {
+        check.disabled = true; giveUp.disabled = true;
+        feedback.replaceChildren(h("div", { class: "row muted", role: "status" }, h("span", { class: "spinner", "aria-hidden": "true" }), "Checking your answer…"));
+        try {
+          const p = S.patterns[it.card.pattern] || {};
+          const out = await S.sample.json([
+            "An English learner was given a sentence with one mistake and asked to correct it.",
+            `Sentence: "${ex.sentence}"`, `The mistake: "${ex.wrong}" should be "${ex.right}" (${p.title || it.card.pattern}).`, `Learner's answer: "${mine}"`,
+            "Is the answer correct, natural English that fixes this mistake without adding a new one? Small punctuation or capital-letter differences are fine; other good fixes are fine too.",
+            'Reply with only JSON: {"ok": true or false, "note": "one short sentence to the learner"}',
+          ].join("\n"), { modelTier: "quick" });
+          finish(!!(out && out.ok), out && out.note ? h("p", null, String(out.note)) : null, mine);
+        } catch (e) {
+          if (e && e.code === "cancelled") return;
+          selfGrade(mine);
+        }
+      } else selfGrade(mine);
+    }
+    function selfGrade(mine) {
+      check.disabled = true; giveUp.disabled = true;
+      feedback.replaceChildren(h("div", { class: "feedback" }, h("p", { class: "eyebrow" }, "Compare"), h("p", null, "Yours: ", proof(ex.sentence, mine, "")), h("p", null, "Expected: ", proof(ex.sentence, ex.corrected, ""))));
+      inner.replaceChildren(
+        h("button", { class: "btn", type: "button", onclick: () => finish(false, null, mine) }, "I missed it"),
+        h("button", { class: "btn primary big", type: "button", "data-autofocus": "", onclick: () => finish(true, null, mine) }, "Mine is right"),
+      );
+    }
+    function finish(ok, note, mine) {
+      if (R.state) return;
+      answer(it, ok);
+      area.disabled = true;
+      const extra = [note, mine != null && !ok ? h("p", null, "You wrote: ", proof(ex.sentence, mine, "")) : null].filter(Boolean);
+      feedback.replaceChildren(feedbackBox(ok, it, extra.length ? h("div", { class: "stack-sm" }, extra) : null));
+      nextButton(inner);
+    }
+  }
+
+  function startRewrite(m) {
+    const card = { id: "rw-" + m.id, pattern: "clear-feedback", source: "generated", examples: [], explain: "" };
+    openRound([{ kind: "rewrite", card, msg: m, ex: { sentence: m.text, corrected: m.polished } }], "Rewrite");
+  }
+  function renderRewrite(it, body, inner) {
+    const m = it.msg;
+    const area = h("textarea", { class: "answer", "aria-label": "Your rewrite", value: m.text, "data-autofocus": "", style: "min-height:160px" });
+    const feedback = h("div");
+    body.append(kindLabel("Rewrite"), h("p", { class: "p-prompt" }, "Rewrite your message the way you'd send it to a colleague."), h("p", { class: "quote" }, m.text), area, feedback);
+    const btn = h("button", { class: "btn primary big", type: "button", onclick: () => submit() }, S.sample ? "Get feedback" : "Compare");
+    inner.append(btn);
+    async function submit() {
+      if (R.state) return;
+      const mine = area.value.trim();
+      if (!mine) return;
+      btn.disabled = true;
+      R.state = { ok: true };
+      R.answered++; R.correct++;
+      if (!S.sample) { show(null); return; }
+      feedback.replaceChildren(h("div", { class: "row muted", role: "status" }, h("span", { class: "spinner", "aria-hidden": "true" }), "Reading your rewrite…"));
+      try {
+        const out = await S.sample.json([
+          "You coach an English learner (software engineer, Mandarin and Singlish background) on workplace writing.",
+          `Their original message: """${m.text}"""`, `Their rewrite: """${mine}"""`, `A good version for reference: """${m.polished}"""`,
+          "Judge the rewrite. Leave code and technical terms alone. Be encouraging and specific.",
+          'Reply with only JSON: {"score": 1 to 5, "good": "one sentence on what improved", "fixes": [{"wrong": "words in the rewrite", "right": "better words", "why": "at most 15 words"}], "better": "their rewrite with the remaining fixes applied"}',
+        ].join("\n"), { modelTier: "default", cache: false });
+        show(out);
+      } catch (e) { show(null, sampleErrorText(e)); }
+    }
+    function show(out, err) {
+      area.disabled = true;
+      const fixes = out && Array.isArray(out.fixes) ? out.fixes.slice(0, 6) : [];
+      feedback.replaceChildren(h("div", { class: "feedback good" },
+        out ? h("div", { class: "verdict" }, icon("check"), `${Math.max(1, Math.min(5, Number(out.score) || 3))} / 5`) : h("div", { class: "verdict" }, "Compare"),
+        err ? h("p", { class: "muted" }, err) : null,
+        out && out.good ? h("p", null, String(out.good)) : null,
+        fixes.length ? h("div", { class: "list" }, fixes.map((f) => h("div", null, h("del", { class: "x" }, String(f.wrong || "")), " ", h("ins", { class: "x" }, String(f.right || "")), h("p", { class: "muted small" }, String(f.why || ""))))) : null,
+        h("p", { class: "eyebrow" }, out && out.better ? "Your version, polished" : "A natural version"),
+        h("div", { class: "polished" }, String((out && out.better) || m.polished)),
+      ));
+      nextButton(inner, "Finish");
+    }
+  }
+
+  async function generateRound(key, btn) {
+    if (!S.sample) return;
+    const p = S.patterns[key] || {};
+    const mine = S.cards.filter((c) => c.pattern === key).slice(0, 6).map((c) => `"${c.wrong}" → "${c.right}"`).join("; ");
+    const old = btn.textContent;
+    btn.disabled = true; btn.lastChild.textContent = "Writing sentences…";
+    try {
+      const out = await S.sample.json([
+        `Write 6 new practice sentences for an English learner (software engineer, workplace and coding topics) on this pattern: "${p.title || key}". Rule: ${p.rule || ""}`,
+        `Their own past mistakes on it: ${mine || "none yet"}.`,
+        "Each sentence: natural workplace English, at most 20 words, containing exactly ONE mistake of this pattern and no other mistake.",
+        'Reply with only a JSON array of {"sentence": "...", "wrong": "exact words in the sentence that are wrong", "right": "the fix", "explain": "at most 20 simple words", "explain_zh": "Simplified Chinese, at most 30 characters", "distractors": ["two other wrong versions"]}',
+      ].join("\n"), { modelTier: "default", cache: false });
+      const items = (Array.isArray(out) ? out : []).filter((x) => x && x.sentence && x.wrong && x.right && String(x.sentence).includes(x.wrong)).slice(0, 6).map((x, i) => {
+        const card = { id: `gen-${key}-${i}-${Date.now()}`, pattern: key, severity: "error", source: "generated", wrong: x.wrong, right: x.right, explain: String(x.explain || ""), explain_zh: String(x.explain_zh || ""), distractors: (x.distractors || []).map(String), examples: [], times: 0 };
+        const ex = { sentence: String(x.sentence), wrong: String(x.wrong), right: String(x.right), corrected: String(x.sentence).replace(x.wrong, x.right) };
+        card.examples.push(ex);
+        return { card, ex, kind: "gen" };
+      });
+      if (items.length) openRound(items, `New sentences: ${p.title || key}`);
+      else btn.lastChild.textContent = "No sentences came back. Try again";
+    } catch (e) {
+      btn.lastChild.textContent = sampleErrorText(e) ? "Couldn't write sentences. Try again" : old;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function renderDone(body, inner) {
+    recordRound();
+    const pct = R.answered ? Math.round(100 * R.correct / R.answered) : 0;
+    const missed = R.results.filter((r) => !r.ok).map((r) => r.card);
+    const words = R.type === "words";
+    const due = words ? dueWords().length : dueCards().length;
+    put(body,
+      kindLabel(R.label || "Round"),
+      h("div", { class: "done-score" }, `${R.correct}/${R.answered}`),
+      h("p", { class: "lede" }, pct === 100 ? "Every one right. These come back in a few days." : pct >= 70 ? "Good round. The ones you missed come back in 10 minutes." : "Tough round. The ones you missed come back in 10 minutes, and that repetition is what makes them stick."),
+      missed.length ? h("section", { class: "stack-sm" }, h("p", { class: "eyebrow" }, "Look at these again"), h("div", { class: "list" }, missed.map((c) => c.isWord
+        ? h("div", null, h("b", null, c.word), c.meaning ? ` · ${c.meaning}` : "")
+        : c.examples && c.examples.length ? h("div", { class: "proof" }, proof(c.examples[c.examples.length - 1].sentence, c.examples[c.examples.length - 1].corrected, "")) : null))) : null,
+    );
+    const again = () => { closeRound(false); if (words) startWordRound({}); else startRound({}); };
+    put(inner,
+      h("button", { class: "btn", type: "button", onclick: () => closeRound(false) }, "Done"),
+      (words ? S.words.length : S.cards.length) ? h("button", { class: "btn primary big", type: "button", "data-autofocus": "", onclick: again }, due ? `Another round (${due} due)` : "Another round") : null,
+    );
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!R) { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); return; }
+    if (e.key === "Escape") { e.preventDefault(); closeRound(true); return; }
+    const it = R.items[R.i];
+    const typing = /^(TEXTAREA|INPUT)$/.test((document.activeElement || {}).tagName || "");
+    if (it && it.onKey && !typing && /^[1-4]$/.test(e.key)) { e.preventDefault(); it.onKey(e.key); }
+  });
+
+  // ===================================================================== settings sheet
+  function openSheet() {
+    const sheet = $("#sheet");
+    const toggle = (id, label, hint, key) => h("div", { class: "setting" },
+      h("label", { for: id }, h("span", null, label), hint ? h("small", null, hint) : null),
+      h("input", { class: "switch", type: "checkbox", id, checked: !!settings[key], onchange: (e) => { settings[key] = e.target.checked; saveSettings(); render(false); } }));
+    const choice = (id, label, hint, key, values) => h("div", { class: "setting" },
+      h("label", { for: id }, h("span", null, label), hint ? h("small", null, hint) : null),
+      h("select", { class: "pick", id, onchange: (e) => { settings[key] = Number(e.target.value); saveSettings(); render(false); } }, values.map((v) => h("option", { value: String(v), selected: settings[key] === v }, String(v)))));
+    sheet.replaceChildren(h("div", { class: "sheet-card" },
+      h("div", { class: "spread" }, h("h2", { class: "title" }, "Settings"), h("button", { class: "icon-btn", type: "button", "aria-label": "Close settings", onclick: closeSheet }, icon("x"))),
+      h("div", null,
+        toggle("set-zh", "Chinese hints · 中文提示", "Show a short Simplified Chinese explanation under each rule.", "zh"),
+        toggle("set-quick", "Tap-only practice", "No typing in rounds: good on a phone.", "quick"),
+        choice("set-round", "Cards per round", null, "round", [5, 8, 12, 16]),
+        choice("set-new", "New cards per day", "Reviews are never limited.", "perDay", [6, 12, 20, 30]),
+      ),
+      h("p", { class: "muted small" }, "These settings are kept on this device. Your answers and progress are saved with your lessons, so they follow you to your phone and iPad."),
+    ));
+    sheet.hidden = false;
+    sheet.onclick = (e) => { if (e.target === sheet) closeSheet(); };
+    const first = sheet.querySelector("input, select, button");
+    if (first) first.focus();
+  }
+  function closeSheet() { $("#sheet").hidden = true; $("#settings-btn").focus(); }
+  $("#settings-btn").addEventListener("click", openSheet);
+
+  // ===================================================================== start
+  window.addEventListener("hashchange", route);
+  let resizeTimer = 0, lastWidth = window.innerWidth;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (Math.abs(window.innerWidth - lastWidth) > 40) { lastWidth = window.innerWidth; requestRender(); } }, 250);
+  });
+  route();
+  connect().catch(() => startExample());
+})();
+</script>

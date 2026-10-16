@@ -1,0 +1,378 @@
+{
+ "categories": {
+  "verbs": {
+   "title": "Verbs",
+   "zh": "动词"
+  },
+  "structure": {
+   "title": "Sentence structure",
+   "zh": "句子结构"
+  },
+  "nouns": {
+   "title": "Nouns & articles",
+   "zh": "名词与冠词"
+  },
+  "words": {
+   "title": "Word choice",
+   "zh": "用词"
+  },
+  "mechanics": {
+   "title": "Spelling & punctuation",
+   "zh": "拼写与标点"
+  },
+  "tone": {
+   "title": "Tone & clarity",
+   "zh": "语气与清晰度"
+  }
+ },
+ "patterns": {
+  "passive-voice": {
+   "category": "verbs",
+   "title": "be + past participle",
+   "rule": "When something is done to a thing, use be / been + the -ed form of the verb: should be allowed, has been removed, will be restricted.",
+   "rule_zh": "被动语态：be / been + 过去分词，例如 should be allowed、has been removed。",
+   "examples": [
+    {
+     "wrong": "The file should deleted.",
+     "right": "The file should be deleted."
+    },
+    {
+     "wrong": "All the tests been run.",
+     "right": "All the tests have been run."
+    }
+   ]
+  },
+  "perfect-tense": {
+   "category": "verbs",
+   "title": "have + past participle",
+   "rule": "After has / have / had, use the past participle: I have started, it has changed, we have fixed it.",
+   "rule_zh": "has / have / had 后面接过去分词：have started、has changed。",
+   "examples": [
+    {
+     "wrong": "I have finish the review.",
+     "right": "I have finished the review."
+    },
+    {
+     "wrong": "The build has fail twice today.",
+     "right": "The build has failed twice today."
+    }
+   ]
+  },
+  "past-tense": {
+   "category": "verbs",
+   "title": "Past actions take the past tense",
+   "rule": "For something that already happened, use the past form: I changed it just now, I committed the wrong files yesterday.",
+   "rule_zh": "已经发生的事用过去式：I changed、I committed。",
+   "examples": [
+    {
+     "wrong": "Yesterday I fix the login bug.",
+     "right": "Yesterday I fixed the login bug."
+    },
+    {
+     "wrong": "We deploy it last week.",
+     "right": "We deployed it last week."
+    }
+   ]
+  },
+  "missing-be": {
+   "category": "verbs",
+   "title": "Don't drop am / is / are",
+   "rule": "An English sentence needs a verb. Before an adjective, a place or a noun phrase, add am / is / are: I'm not satisfied, the venue is hard to see, this is not good.",
+   "rule_zh": "形容词、名词前要有 am / is / are（中文常省略“是”，英文不能省）。",
+   "examples": [
+    {
+     "wrong": "The server down now.",
+     "right": "The server is down now."
+    },
+    {
+     "wrong": "I not sure about this.",
+     "right": "I'm not sure about this."
+    }
+   ]
+  },
+  "do-support": {
+   "category": "verbs",
+   "title": "do / does / did for negatives and questions",
+   "rule": "Make negatives with don't / doesn't / didn't + verb (they don't need it), and questions with do / does / did before the subject (why did you say that?).",
+   "rule_zh": "否定句和疑问句要用 do / does / did：They don't need…、Why did you say…?",
+   "examples": [
+    {
+     "wrong": "Why the test fails?",
+     "right": "Why does the test fail?"
+    },
+    {
+     "wrong": "We no need this field.",
+     "right": "We don't need this field."
+    }
+   ]
+  },
+  "subject-verb": {
+   "category": "verbs",
+   "title": "he / she / it / this takes -s",
+   "rule": "With one thing (he, she, it, this, the flow, the agent), the verb takes -s and be becomes is: this agent has, the flow is, it works.",
+   "rule_zh": "第三人称单数：动词加 -s，be 用 is：this agent has、the flow is。",
+   "examples": [
+    {
+     "wrong": "The list contain three items.",
+     "right": "The list contains three items."
+    },
+    {
+     "wrong": "These files is old.",
+     "right": "These files are old."
+    }
+   ]
+  },
+  "verb-patterns": {
+   "category": "verbs",
+   "title": "want to do, help someone do",
+   "rule": "Some verbs need 'to' before the next verb (want to change, need to check), others take the verb directly (let users see, help me fix).",
+   "rule_zh": "动词搭配：want / need 后加 to + 动词；let / help 后直接接动词。",
+   "examples": [
+    {
+     "wrong": "Please help me to fixing it.",
+     "right": "Please help me fix it."
+    },
+    {
+     "wrong": "I want try the new version.",
+     "right": "I want to try the new version."
+    }
+   ]
+  },
+  "question-order": {
+   "category": "structure",
+   "title": "Question word order",
+   "rule": "In a direct question, put the helper verb before the subject: Is the result the same? Inside a longer sentence, use whether / if and normal order: Check whether the result is the same.",
+   "rule_zh": "直接疑问句助动词放主语前；句中的问题用 whether / if + 陈述语序。",
+   "examples": [
+    {
+     "wrong": "Can you tell me where is the config?",
+     "right": "Can you tell me where the config is?"
+    },
+    {
+     "wrong": "How the cache works?",
+     "right": "How does the cache work?"
+    }
+   ]
+  },
+  "missing-subject": {
+   "category": "structure",
+   "title": "Say who or what",
+   "rule": "English sentences usually need a subject and often an object. Add it, this, I or you even when the meaning seems clear: It should be allowed. Don't run it for me.",
+   "rule_zh": "英文一般不能省略主语或宾语（it、this、I、you）。",
+   "examples": [
+    {
+     "wrong": "Is not working after the update.",
+     "right": "It isn't working after the update."
+    },
+    {
+     "wrong": "Should check the logs first.",
+     "right": "We should check the logs first."
+    }
+   ]
+  },
+  "run-on": {
+   "category": "structure",
+   "title": "One idea per sentence",
+   "rule": "When you have two complete thoughts, end the first sentence with a full stop, or join them with and / but / so / because.",
+   "rule_zh": "两个完整的意思要用句号分开，或用 and / but / so / because 连接。",
+   "examples": [
+    {
+     "wrong": "The page loads slowly the images are too big.",
+     "right": "The page loads slowly. The images are too big."
+    }
+   ]
+  },
+  "plural-nouns": {
+   "category": "nouns",
+   "title": "Plurals",
+   "rule": "Use -s for more than one: all features, these tables, five templates. Some nouns never take -s: information, feedback, equipment, code.",
+   "rule_zh": "可数名词复数加 -s；information、feedback、equipment、code 不可数。",
+   "examples": [
+    {
+     "wrong": "We have three new feature.",
+     "right": "We have three new features."
+    },
+    {
+     "wrong": "Send me the informations.",
+     "right": "Send me the information."
+    }
+   ]
+  },
+  "articles": {
+   "category": "nouns",
+   "title": "a / an / the",
+   "rule": "Use a / an for one thing you haven't mentioned yet (a commit message), the for a specific thing you both know (the staged changes). Use an before a vowel sound (an issue).",
+   "rule_zh": "a / an 表示“一个”，the 表示特指；元音音素前用 an。",
+   "examples": [
+    {
+     "wrong": "Please write unit test for this.",
+     "right": "Please write a unit test for this."
+    },
+    {
+     "wrong": "It takes a hour.",
+     "right": "It takes an hour."
+    }
+   ]
+  },
+  "word-form": {
+   "category": "words",
+   "title": "Noun, verb or adjective?",
+   "rule": "Many words change form by job: restrict (verb), restriction (noun), restricted (adjective); respond (verb), response (noun); specific (adjective), specifically (adverb).",
+   "rule_zh": "注意词性：restrict / restriction / restricted，respond / response。",
+   "examples": [
+    {
+     "wrong": "Thanks for the quick respond.",
+     "right": "Thanks for the quick response."
+    },
+    {
+     "wrong": "What is the different between them?",
+     "right": "What is the difference between them?"
+    }
+   ]
+  },
+  "word-choice": {
+   "category": "words",
+   "title": "The word English uses",
+   "rule": "Some words are close in meaning but not what English speakers say: 'have' (not 'got') for owning, 'looks hard' (not 'looks like hard'), 'by mistake' (not 'wrongly').",
+   "rule_zh": "选词：意思接近，但英文习惯用另一个词。",
+   "examples": [
+    {
+     "wrong": "Can you borrow me your charger?",
+     "right": "Can you lend me your charger?"
+    },
+    {
+     "wrong": "I will revert to you tomorrow.",
+     "right": "I will get back to you tomorrow."
+    }
+   ]
+  },
+  "prepositions": {
+   "category": "words",
+   "title": "in / on / at / to / for",
+   "rule": "Prepositions follow fixed pairs: a table of agents, in the table, refer to the docs, the same as, focus on.",
+   "rule_zh": "介词有固定搭配：a table of、refer to、the same as。",
+   "examples": [
+    {
+     "wrong": "We discussed about the plan.",
+     "right": "We discussed the plan."
+    },
+    {
+     "wrong": "She is good in testing.",
+     "right": "She is good at testing."
+    }
+   ]
+  },
+  "no-need": {
+   "category": "words",
+   "title": "'No need' in a full sentence",
+   "rule": "'No need' alone is fine as a short reply. Inside a sentence say 'there's no need to…', 'you don't need to…' or 'it doesn't need…'.",
+   "rule_zh": "句子里用 there's no need to… 或 you don't need to…。",
+   "examples": [
+    {
+     "wrong": "No need restart the server.",
+     "right": "There's no need to restart the server."
+    }
+   ]
+  },
+  "spelling": {
+   "category": "mechanics",
+   "title": "Spelling",
+   "rule": "Slow down on words you type often. Your common slips: explan → explain, statisfied → satisfied, enought → enough, espacially → especially.",
+   "rule_zh": "常打错的单词，打字时放慢一点。",
+   "examples": [
+    {
+     "wrong": "I recieved the email.",
+     "right": "I received the email."
+    },
+    {
+     "wrong": "The the test passed.",
+     "right": "The test passed."
+    }
+   ]
+  },
+  "apostrophes": {
+   "category": "mechanics",
+   "title": "don't, I'm, it's",
+   "rule": "Short forms need an apostrophe: don't, can't, I'm, it's, doesn't. Without it, 'dont' and 'im' look careless in work writing.",
+   "rule_zh": "缩写要加撇号：don't、I'm、it's。",
+   "examples": [
+    {
+     "wrong": "Its not working.",
+     "right": "It's not working."
+    },
+    {
+     "wrong": "I cant see the logs.",
+     "right": "I can't see the logs."
+    }
+   ]
+  },
+  "capitals": {
+   "category": "mechanics",
+   "title": "Capital letters",
+   "rule": "Write I as a capital, start each sentence with a capital, and write names as their owners do: WhatsApp, GitHub, ClickHouse.",
+   "rule_zh": "I 大写，句首大写，专有名词按官方写法（WhatsApp）。",
+   "examples": [
+    {
+     "wrong": "i will check it.",
+     "right": "I will check it."
+    },
+    {
+     "wrong": "We use github actions.",
+     "right": "We use GitHub Actions."
+    }
+   ]
+  },
+  "singlish-particles": {
+   "category": "tone",
+   "title": "Leave out eh, ba, lah, meh, ah",
+   "rule": "Particles like eh, ba, lah, meh and ah are friendly with friends but sound unprofessional at work. Use please, let's, or a question tag like 'right?' instead.",
+   "rule_zh": "工作写作中避免 eh、ba、lah、meh、ah 等语气词。",
+   "examples": [
+    {
+     "wrong": "Can lah, I'll do it.",
+     "right": "Sure, I'll do it."
+    },
+    {
+     "wrong": "This one correct meh?",
+     "right": "Is this one correct?"
+    }
+   ]
+  },
+  "polite-requests": {
+   "category": "tone",
+   "title": "Polite requests",
+   "rule": "With people, soften a request: Could you…, Can you help me…, Please…. A bare command is fine for a tool but can sound rude to a colleague.",
+   "rule_zh": "对同事提请求用 Could you… / Please…，语气更礼貌。",
+   "examples": [
+    {
+     "wrong": "Send me the report.",
+     "right": "Could you send me the report?"
+    }
+   ]
+  },
+  "clear-feedback": {
+   "category": "tone",
+   "title": "Say what's wrong and why",
+   "rule": "When something is wrong, say what you expected, what you got, and why it matters. 'This is not correct' alone makes the reader guess.",
+   "rule_zh": "指出问题时说明：期望什么、实际是什么、为什么重要。",
+   "examples": [
+    {
+     "wrong": "This is not correct.",
+     "right": "This is wrong: the total should include tax, but it doesn't."
+    }
+   ]
+  },
+  "word-order": {
+   "category": "structure",
+   "title": "Natural word order",
+   "rule": "Put words in the order English uses. A verb like 'explain' takes its object directly, and 'in detail' comes after the object: explain the changes in detail.",
+   "rule_zh": "英语语序固定：explain 直接接宾语，in detail 放后面。",
+   "examples": [
+    {
+     "wrong": "I only can come on Friday.",
+     "right": "I can only come on Friday."
+    }
+   ]
+  }
+ }
+}

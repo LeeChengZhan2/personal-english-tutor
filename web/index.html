@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Practise English from the mistakes in your own Claude Code messages." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Personal English Tutor</title>
+    <script>
+      // Apply the saved theme before the first paint, so dark mode never flashes white.
+      ;(function () {
+        var theme = 'system'
+        try {
+          theme = localStorage.getItem('tutor-theme') || 'system'
+        } catch (e) {}
+        // ?theme=light|dark previews a theme without saving it (used for screenshots)
+        var forced = new URLSearchParams(location.search).get('theme')
+        if (forced === 'light' || forced === 'dark') theme = forced
+        var dark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        var root = document.documentElement
+        root.classList.toggle('dark', dark)
+        root.style.colorScheme = dark ? 'dark' : 'light'
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

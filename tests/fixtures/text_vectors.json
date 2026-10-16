@@ -1,0 +1,98 @@
+[
+ {
+  "input": "  Hello   world. ",
+  "squash": "Hello world.",
+  "norm": "hello world",
+  "answer_key": "Hello world"
+ },
+ {
+  "input": "Don’t do that!",
+  "squash": "Don’t do that!",
+  "norm": "don't do that",
+  "answer_key": "Don't do that"
+ },
+ {
+  "input": "“Quoted” text?!",
+  "squash": "“Quoted” text?!",
+  "norm": "\"quoted\" text",
+  "answer_key": "\"Quoted\" text"
+ },
+ {
+  "input": "...leading dots",
+  "squash": "...leading dots",
+  "norm": "leading dots",
+  "answer_key": "...leading dots"
+ },
+ {
+  "input": "Ends with comma,",
+  "squash": "Ends with comma,",
+  "norm": "ends with comma",
+  "answer_key": "Ends with comma,"
+ },
+ {
+  "input": "Tab\tand\nnewline",
+  "squash": "Tab and newline",
+  "norm": "tab and newline",
+  "answer_key": "Tab and newline"
+ },
+ {
+  "input": "",
+  "squash": "",
+  "norm": "",
+  "answer_key": ""
+ },
+ {
+  "input": "I'm OK.",
+  "squash": "I'm OK.",
+  "norm": "i'm ok",
+  "answer_key": "I'm OK"
+ },
+ {
+  "input": "中文 测试。",
+  "squash": "中文 测试。",
+  "norm": "中文 测试。",
+  "answer_key": "中文 测试。"
+ },
+ {
+  "input": "Why does my table have one row?",
+  "squash": "Why does my table have one row?",
+  "norm": "why does my table have one row",
+  "answer_key": "Why does my table have one row"
+ },
+ {
+  "input": "  ‘single’ quotes ; ",
+  "squash": "‘single’ quotes ;",
+  "norm": "'single' quotes",
+  "answer_key": "'single' quotes ;"
+ },
+ {
+  "input": "Should be allowed!!!",
+  "squash": "Should be allowed!!!",
+  "norm": "should be allowed",
+  "answer_key": "Should be allowed"
+ },
+ {
+  "input": "CBM_Point_Types has one row",
+  "squash": "CBM_Point_Types has one row",
+  "norm": "cbm_point_types has one row",
+  "answer_key": "CBM_Point_Types has one row"
+ },
+ {
+  "input": "e.g. this.",
+  "squash": "e.g. this.",
+  "norm": "e.g. this",
+  "answer_key": "e.g. this"
+ },
+ {
+  "input": "?!",
+  "squash": "?!",
+  "norm": "",
+  "answer_key": ""
+ },
+ {
+  "input": "Mixed  CASE  Answer",
+  "squash": "Mixed CASE Answer",
+  "norm": "mixed case answer",
+  "answer_key": "Mixed CASE Answer"
+ }
+]

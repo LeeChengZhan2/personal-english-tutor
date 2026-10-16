@@ -1,0 +1,3540 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Personal English Tutor",
+  "version": "0.2.0"
+ },
+ "paths": {
+  "/api/health": {
+   "get": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "Health",
+    "operationId": "health",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Health"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/bootstrap": {
+   "get": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "Bootstrap",
+    "operationId": "bootstrap",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Bootstrap"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/status": {
+   "get": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "Status",
+    "operationId": "status",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Status"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/settings": {
+   "get": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "Get Settings",
+    "operationId": "get_settings",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PracticeSettings"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "Put Settings",
+    "operationId": "put_settings",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SettingsUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PracticeSettings"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/home": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Home",
+    "operationId": "home",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Home"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/patterns": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Patterns",
+    "operationId": "patterns",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PatternList"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/patterns/{key}": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Pattern",
+    "operationId": "pattern",
+    "parameters": [
+     {
+      "name": "key",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Key"
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "page_size",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 5,
+       "default": 20,
+       "title": "Page Size"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PatternDetail"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/words": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Words",
+    "operationId": "words",
+    "parameters": [
+     {
+      "name": "kind",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "enum": [
+        "spelling",
+        "know",
+        "clearer"
+       ],
+       "type": "string",
+       "default": "spelling",
+       "title": "Kind"
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "page_size",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 6,
+       "default": 24,
+       "title": "Page Size"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/WordList"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/messages": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Messages",
+    "operationId": "messages",
+    "parameters": [
+     {
+      "name": "filter",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "enum": [
+        "mistakes",
+        "all"
+       ],
+       "type": "string",
+       "default": "mistakes",
+       "title": "Filter"
+      }
+     },
+     {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Cursor"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 5,
+       "default": 30,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessagePage"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/messages/{message_id}": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Message",
+    "operationId": "message",
+    "parameters": [
+     {
+      "name": "message_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Message Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageRow"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/progress": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Progress",
+    "operationId": "progress",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Progress"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/accounts": {
+   "get": {
+    "tags": [
+     "accounts"
+    ],
+    "summary": "List Accounts",
+    "operationId": "list_accounts",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AccountsOut"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "accounts"
+    ],
+    "summary": "Add Account",
+    "operationId": "add_account",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AccountIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AccountOut"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/accounts/{account_id}": {
+   "put": {
+    "tags": [
+     "accounts"
+    ],
+    "summary": "Edit Account",
+    "operationId": "edit_account",
+    "parameters": [
+     {
+      "name": "account_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Account Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AccountUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AccountOut"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "accounts"
+    ],
+    "summary": "Remove Account",
+    "operationId": "remove_account",
+    "parameters": [
+     {
+      "name": "account_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Account Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/accounts/{account_id}/check": {
+   "post": {
+    "tags": [
+     "accounts"
+    ],
+    "summary": "Check Account",
+    "operationId": "check_account",
+    "parameters": [
+     {
+      "name": "account_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Account Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CheckOut"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/update": {
+   "get": {
+    "tags": [
+     "update"
+    ],
+    "summary": "Update Status",
+    "operationId": "update_status",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UpdateStatus"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "409": {
+      "description": "Conflict",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "update"
+    ],
+    "summary": "Start Update",
+    "operationId": "start_update",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UpdateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UpdateStatus"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "409": {
+      "description": "Conflict",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/update/preview": {
+   "get": {
+    "tags": [
+     "update"
+    ],
+    "summary": "Update Preview",
+    "operationId": "update_preview",
+    "parameters": [
+     {
+      "name": "account_ids",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Account Ids"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UpdatePreview"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "409": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Conflict"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/update/stop": {
+   "post": {
+    "tags": [
+     "update"
+    ],
+    "summary": "Stop Update",
+    "operationId": "stop_update",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UpdateStatus"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "409": {
+      "description": "Conflict",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "AccountIn": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "maxLength": 40,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "method": {
+      "type": "string",
+      "enum": [
+       "claude-code",
+       "api-key"
+      ],
+      "title": "Method",
+      "default": "claude-code"
+     },
+     "folder": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Folder",
+      "default": ""
+     },
+     "api_key": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Api Key",
+      "default": ""
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "AccountIn"
+   },
+   "AccountInfo": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "method": {
+      "type": "string",
+      "enum": [
+       "claude-code",
+       "api-key"
+      ],
+      "title": "Method"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "ready": {
+      "type": "boolean",
+      "title": "Ready"
+     },
+     "limited_until": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Limited Until"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "method",
+     "email",
+     "ready"
+    ],
+    "title": "AccountInfo"
+   },
+   "AccountOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "method": {
+      "type": "string",
+      "enum": [
+       "claude-code",
+       "api-key"
+      ],
+      "title": "Method"
+     },
+     "folder": {
+      "type": "string",
+      "title": "Folder"
+     },
+     "folder_path": {
+      "type": "string",
+      "title": "Folder Path"
+     },
+     "default_folder": {
+      "type": "boolean",
+      "title": "Default Folder"
+     },
+     "api_key_hint": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Api Key Hint"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "signed_in": {
+      "type": "boolean",
+      "title": "Signed In"
+     },
+     "ready": {
+      "type": "boolean",
+      "title": "Ready"
+     },
+     "conversation_files": {
+      "type": "integer",
+      "title": "Conversation Files"
+     },
+     "limited_until": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Limited Until"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "method",
+     "folder",
+     "folder_path",
+     "default_folder",
+     "api_key_hint",
+     "email",
+     "signed_in",
+     "ready",
+     "conversation_files"
+    ],
+    "title": "AccountOut"
+   },
+   "AccountUpdate": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 40,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "method": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "claude-code",
+         "api-key"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Method"
+     },
+     "folder": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 400
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Folder"
+     },
+     "api_key": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 400
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Api Key"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "AccountUpdate"
+   },
+   "AccountsOut": {
+    "properties": {
+     "accounts": {
+      "items": {
+       "$ref": "#/components/schemas/AccountOut"
+      },
+      "type": "array",
+      "title": "Accounts"
+     },
+     "default_folder": {
+      "type": "string",
+      "title": "Default Folder"
+     },
+     "claude_installed": {
+      "type": "boolean",
+      "title": "Claude Installed"
+     }
+    },
+    "type": "object",
+    "required": [
+     "accounts",
+     "default_folder",
+     "claude_installed"
+    ],
+    "title": "AccountsOut"
+   },
+   "AiInfo": {
+    "properties": {
+     "available": {
+      "type": "boolean",
+      "title": "Available"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     },
+     "accounts": {
+      "items": {
+       "$ref": "#/components/schemas/AccountInfo"
+      },
+      "type": "array",
+      "title": "Accounts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "available",
+     "reason",
+     "accounts"
+    ],
+    "title": "AiInfo"
+   },
+   "ApiError": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "details": {
+      "anyOf": [
+       {
+        "items": {
+         "additionalProperties": true,
+         "type": "object"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Details"
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "message"
+    ],
+    "title": "ApiError"
+   },
+   "Bootstrap": {
+    "properties": {
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "lessons_version": {
+      "type": "string",
+      "title": "Lessons Version"
+     },
+     "app_url": {
+      "type": "string",
+      "title": "App Url"
+     },
+     "settings": {
+      "$ref": "#/components/schemas/PracticeSettings"
+     },
+     "counts": {
+      "$ref": "#/components/schemas/Counts"
+     },
+     "streak": {
+      "type": "integer",
+      "title": "Streak"
+     },
+     "today": {
+      "$ref": "#/components/schemas/DayTotals"
+     },
+     "ai": {
+      "$ref": "#/components/schemas/AiInfo"
+     },
+     "pipeline": {
+      "$ref": "#/components/schemas/PipelineInfo"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version",
+     "lessons_version",
+     "app_url",
+     "settings",
+     "counts",
+     "streak",
+     "today",
+     "ai",
+     "pipeline"
+    ],
+    "title": "Bootstrap"
+   },
+   "CardRow": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "pattern": {
+      "type": "string",
+      "title": "Pattern"
+     },
+     "severity": {
+      "type": "string",
+      "enum": [
+       "error",
+       "unnatural",
+       "style",
+       "typo"
+      ],
+      "title": "Severity"
+     },
+     "times": {
+      "type": "integer",
+      "title": "Times"
+     },
+     "last": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "new",
+       "learning",
+       "mastered"
+      ],
+      "title": "Status"
+     },
+     "strength": {
+      "type": "integer",
+      "title": "Strength"
+     },
+     "due_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due At"
+     },
+     "sentence": {
+      "type": "string",
+      "title": "Sentence"
+     },
+     "corrected": {
+      "type": "string",
+      "title": "Corrected"
+     },
+     "wrong": {
+      "type": "string",
+      "title": "Wrong"
+     },
+     "right": {
+      "type": "string",
+      "title": "Right"
+     },
+     "explain": {
+      "type": "string",
+      "title": "Explain"
+     },
+     "explain_zh": {
+      "type": "string",
+      "title": "Explain Zh"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "pattern",
+     "severity",
+     "times",
+     "last",
+     "status",
+     "strength",
+     "due_at",
+     "sentence",
+     "corrected",
+     "wrong",
+     "right",
+     "explain",
+     "explain_zh"
+    ],
+    "title": "CardRow"
+   },
+   "CategoryGroup": {
+    "properties": {
+     "key": {
+      "type": "string",
+      "title": "Key"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "zh": {
+      "type": "string",
+      "title": "Zh"
+     },
+     "patterns": {
+      "items": {
+       "$ref": "#/components/schemas/PatternRow"
+      },
+      "type": "array",
+      "title": "Patterns"
+     }
+    },
+    "type": "object",
+    "required": [
+     "key",
+     "title",
+     "zh",
+     "patterns"
+    ],
+    "title": "CategoryGroup"
+   },
+   "CategoryMastery": {
+    "properties": {
+     "key": {
+      "type": "string",
+      "title": "Key"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "zh": {
+      "type": "string",
+      "title": "Zh"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "mastered": {
+      "type": "integer",
+      "title": "Mastered"
+     },
+     "learning": {
+      "type": "integer",
+      "title": "Learning"
+     }
+    },
+    "type": "object",
+    "required": [
+     "key",
+     "title",
+     "zh",
+     "total",
+     "mastered",
+     "learning"
+    ],
+    "title": "CategoryMastery"
+   },
+   "CheckOut": {
+    "properties": {
+     "ok": {
+      "type": "boolean",
+      "title": "Ok"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ok",
+     "message"
+    ],
+    "title": "CheckOut"
+   },
+   "Counts": {
+    "properties": {
+     "cards_due": {
+      "type": "integer",
+      "title": "Cards Due"
+     },
+     "words_due": {
+      "type": "integer",
+      "title": "Words Due"
+     },
+     "new_left_today": {
+      "type": "integer",
+      "title": "New Left Today"
+     },
+     "new_cards_ready": {
+      "type": "integer",
+      "title": "New Cards Ready"
+     },
+     "cards_total": {
+      "type": "integer",
+      "title": "Cards Total"
+     },
+     "words_total": {
+      "type": "integer",
+      "title": "Words Total"
+     },
+     "cards_mastered": {
+      "type": "integer",
+      "title": "Cards Mastered"
+     },
+     "words_mastered": {
+      "type": "integer",
+      "title": "Words Mastered"
+     }
+    },
+    "type": "object",
+    "required": [
+     "cards_due",
+     "words_due",
+     "new_left_today",
+     "new_cards_ready",
+     "cards_total",
+     "words_total",
+     "cards_mastered",
+     "words_mastered"
+    ],
+    "title": "Counts"
+   },
+   "DayPoint": {
+    "properties": {
+     "day": {
+      "type": "string",
+      "title": "Day"
+     },
+     "answered": {
+      "type": "integer",
+      "title": "Answered"
+     },
+     "correct": {
+      "type": "integer",
+      "title": "Correct"
+     }
+    },
+    "type": "object",
+    "required": [
+     "day",
+     "answered",
+     "correct"
+    ],
+    "title": "DayPoint"
+   },
+   "DayTotals": {
+    "properties": {
+     "answered": {
+      "type": "integer",
+      "title": "Answered"
+     },
+     "correct": {
+      "type": "integer",
+      "title": "Correct"
+     },
+     "seconds": {
+      "type": "integer",
+      "title": "Seconds"
+     }
+    },
+    "type": "object",
+    "required": [
+     "answered",
+     "correct",
+     "seconds"
+    ],
+    "title": "DayTotals"
+   },
+   "Example": {
+    "properties": {
+     "sentence": {
+      "type": "string",
+      "title": "Sentence"
+     },
+     "wrong": {
+      "type": "string",
+      "title": "Wrong"
+     },
+     "right": {
+      "type": "string",
+      "title": "Right"
+     },
+     "corrected": {
+      "type": "string",
+      "title": "Corrected"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sentence",
+     "wrong",
+     "right",
+     "corrected"
+    ],
+    "title": "Example"
+   },
+   "ExamplePair": {
+    "properties": {
+     "wrong": {
+      "type": "string",
+      "title": "Wrong"
+     },
+     "right": {
+      "type": "string",
+      "title": "Right"
+     }
+    },
+    "type": "object",
+    "required": [
+     "wrong",
+     "right"
+    ],
+    "title": "ExamplePair"
+   },
+   "Focus": {
+    "properties": {
+     "pattern": {
+      "type": "string",
+      "title": "Pattern"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "rule": {
+      "type": "string",
+      "title": "Rule"
+     },
+     "rule_zh": {
+      "type": "string",
+      "title": "Rule Zh"
+     },
+     "window": {
+      "type": "string",
+      "enum": [
+       "week",
+       "all"
+      ],
+      "title": "Window"
+     },
+     "count": {
+      "type": "integer",
+      "title": "Count"
+     },
+     "example": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Example"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "pattern",
+     "title",
+     "rule",
+     "rule_zh",
+     "window",
+     "count",
+     "example"
+    ],
+    "title": "Focus"
+   },
+   "Health": {
+    "properties": {
+     "app": {
+      "type": "string",
+      "const": "personal-english-tutor",
+      "title": "App",
+      "default": "personal-english-tutor"
+     },
+     "version": {
+      "type": "string",
+      "title": "Version"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version"
+    ],
+    "title": "Health"
+   },
+   "Home": {
+    "properties": {
+     "empty": {
+      "type": "boolean",
+      "title": "Empty"
+     },
+     "practice": {
+      "$ref": "#/components/schemas/PracticeSummary"
+     },
+     "focus": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Focus"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "latest_chat": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/LatestChat"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "word_of_the_day": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/WordBrief"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "writing": {
+      "$ref": "#/components/schemas/WritingTrend"
+     }
+    },
+    "type": "object",
+    "required": [
+     "empty",
+     "practice",
+     "focus",
+     "latest_chat",
+     "word_of_the_day",
+     "writing"
+    ],
+    "title": "Home"
+   },
+   "Kpis": {
+    "properties": {
+     "streak": {
+      "type": "integer",
+      "title": "Streak"
+     },
+     "right_pct_7d": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Right Pct 7D"
+     },
+     "cards_mastered": {
+      "type": "integer",
+      "title": "Cards Mastered"
+     },
+     "cards_total": {
+      "type": "integer",
+      "title": "Cards Total"
+     },
+     "words_mastered": {
+      "type": "integer",
+      "title": "Words Mastered"
+     },
+     "words_total": {
+      "type": "integer",
+      "title": "Words Total"
+     },
+     "answers_total": {
+      "type": "integer",
+      "title": "Answers Total"
+     },
+     "rounds": {
+      "type": "integer",
+      "title": "Rounds"
+     }
+    },
+    "type": "object",
+    "required": [
+     "streak",
+     "right_pct_7d",
+     "cards_mastered",
+     "cards_total",
+     "words_mastered",
+     "words_total",
+     "answers_total",
+     "rounds"
+    ],
+    "title": "Kpis"
+   },
+   "LatestChat": {
+    "properties": {
+     "day": {
+      "type": "string",
+      "title": "Day"
+     },
+     "messages": {
+      "type": "integer",
+      "title": "Messages"
+     },
+     "cards": {
+      "type": "integer",
+      "title": "Cards"
+     },
+     "top_patterns": {
+      "items": {
+       "$ref": "#/components/schemas/PatternCount"
+      },
+      "type": "array",
+      "title": "Top Patterns"
+     },
+     "sample": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/MarkedMessage"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "day",
+     "messages",
+     "cards",
+     "top_patterns",
+     "sample"
+    ],
+    "title": "LatestChat"
+   },
+   "LessonsInfo": {
+    "properties": {
+     "batches": {
+      "type": "integer",
+      "title": "Batches"
+     },
+     "app_lessons": {
+      "type": "integer",
+      "title": "App Lessons"
+     },
+     "messages": {
+      "type": "integer",
+      "title": "Messages"
+     },
+     "cards": {
+      "type": "integer",
+      "title": "Cards"
+     },
+     "words": {
+      "type": "integer",
+      "title": "Words"
+     },
+     "loaded_at": {
+      "type": "string",
+      "title": "Loaded At"
+     },
+     "errors": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Errors"
+     }
+    },
+    "type": "object",
+    "required": [
+     "batches",
+     "app_lessons",
+     "messages",
+     "cards",
+     "words",
+     "loaded_at",
+     "errors"
+    ],
+    "title": "LessonsInfo"
+   },
+   "MarkedMessage": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "fixed": {
+      "type": "string",
+      "title": "Fixed"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "text",
+     "fixed"
+    ],
+    "title": "MarkedMessage"
+   },
+   "Mastery": {
+    "properties": {
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "mastered": {
+      "type": "integer",
+      "title": "Mastered"
+     },
+     "learning": {
+      "type": "integer",
+      "title": "Learning"
+     },
+     "new": {
+      "type": "integer",
+      "title": "New"
+     }
+    },
+    "type": "object",
+    "required": [
+     "total",
+     "mastered",
+     "learning",
+     "new"
+    ],
+    "title": "Mastery"
+   },
+   "MessageCounts": {
+    "properties": {
+     "mistakes": {
+      "type": "integer",
+      "title": "Mistakes"
+     },
+     "all": {
+      "type": "integer",
+      "title": "All"
+     }
+    },
+    "type": "object",
+    "required": [
+     "mistakes",
+     "all"
+    ],
+    "title": "MessageCounts"
+   },
+   "MessagePage": {
+    "properties": {
+     "messages": {
+      "items": {
+       "$ref": "#/components/schemas/MessageRow"
+      },
+      "type": "array",
+      "title": "Messages"
+     },
+     "next_cursor": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Next Cursor"
+     },
+     "counts": {
+      "$ref": "#/components/schemas/MessageCounts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "messages",
+     "next_cursor",
+     "counts"
+    ],
+    "title": "MessagePage"
+   },
+   "MessageRow": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "ts": {
+      "type": "string",
+      "title": "Ts"
+     },
+     "day": {
+      "type": "string",
+      "title": "Day"
+     },
+     "project": {
+      "type": "string",
+      "title": "Project"
+     },
+     "source": {
+      "type": "string",
+      "enum": [
+       "claude-code",
+       "app"
+      ],
+      "title": "Source"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "fixed": {
+      "type": "string",
+      "title": "Fixed"
+     },
+     "polished": {
+      "type": "string",
+      "title": "Polished"
+     },
+     "words": {
+      "type": "integer",
+      "title": "Words"
+     },
+     "issues": {
+      "type": "integer",
+      "title": "Issues"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "ts",
+     "day",
+     "project",
+     "source",
+     "text",
+     "fixed",
+     "polished",
+     "words",
+     "issues"
+    ],
+    "title": "MessageRow"
+   },
+   "PatternCount": {
+    "properties": {
+     "pattern": {
+      "type": "string",
+      "title": "Pattern"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "count": {
+      "type": "integer",
+      "title": "Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pattern",
+     "title",
+     "count"
+    ],
+    "title": "PatternCount"
+   },
+   "PatternDetail": {
+    "properties": {
+     "key": {
+      "type": "string",
+      "title": "Key"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "category_title": {
+      "type": "string",
+      "title": "Category Title"
+     },
+     "rule": {
+      "type": "string",
+      "title": "Rule"
+     },
+     "rule_zh": {
+      "type": "string",
+      "title": "Rule Zh"
+     },
+     "mastery": {
+      "$ref": "#/components/schemas/Mastery"
+     },
+     "more_examples": {
+      "items": {
+       "$ref": "#/components/schemas/ExamplePair"
+      },
+      "type": "array",
+      "title": "More Examples"
+     },
+     "cards": {
+      "items": {
+       "$ref": "#/components/schemas/CardRow"
+      },
+      "type": "array",
+      "title": "Cards"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "pages": {
+      "type": "integer",
+      "title": "Pages"
+     }
+    },
+    "type": "object",
+    "required": [
+     "key",
+     "title",
+     "category",
+     "category_title",
+     "rule",
+     "rule_zh",
+     "mastery",
+     "more_examples",
+     "cards",
+     "total",
+     "page",
+     "pages"
+    ],
+    "title": "PatternDetail"
+   },
+   "PatternList": {
+    "properties": {
+     "categories": {
+      "items": {
+       "$ref": "#/components/schemas/CategoryGroup"
+      },
+      "type": "array",
+      "title": "Categories"
+     }
+    },
+    "type": "object",
+    "required": [
+     "categories"
+    ],
+    "title": "PatternList"
+   },
+   "PatternRow": {
+    "properties": {
+     "key": {
+      "type": "string",
+      "title": "Key"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "times": {
+      "type": "integer",
+      "title": "Times"
+     },
+     "last": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last"
+     },
+     "mastery": {
+      "$ref": "#/components/schemas/Mastery"
+     }
+    },
+    "type": "object",
+    "required": [
+     "key",
+     "title",
+     "times",
+     "last",
+     "mastery"
+    ],
+    "title": "PatternRow"
+   },
+   "PipelineInfo": {
+    "properties": {
+     "captured": {
+      "type": "integer",
+      "title": "Captured"
+     },
+     "waiting": {
+      "type": "integer",
+      "title": "Waiting"
+     },
+     "batches": {
+      "type": "integer",
+      "title": "Batches"
+     },
+     "app_lessons": {
+      "type": "integer",
+      "title": "App Lessons"
+     },
+     "analyzing": {
+      "type": "boolean",
+      "title": "Analyzing"
+     },
+     "last_analysis_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Analysis At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "captured",
+     "waiting",
+     "batches",
+     "app_lessons",
+     "analyzing",
+     "last_analysis_at"
+    ],
+    "title": "PipelineInfo"
+   },
+   "PracticeSettings": {
+    "properties": {
+     "zh": {
+      "type": "boolean",
+      "title": "Zh",
+      "default": false
+     },
+     "round_size": {
+      "type": "integer",
+      "enum": [
+       5,
+       8,
+       12,
+       16
+      ],
+      "title": "Round Size",
+      "default": 8
+     },
+     "new_per_day": {
+      "type": "integer",
+      "enum": [
+       6,
+       12,
+       20,
+       30
+      ],
+      "title": "New Per Day",
+      "default": 12
+     }
+    },
+    "type": "object",
+    "title": "PracticeSettings"
+   },
+   "PracticeSummary": {
+    "properties": {
+     "mode": {
+      "type": "string",
+      "enum": [
+       "review",
+       "new",
+       "extra"
+      ],
+      "title": "Mode"
+     },
+     "cards_due": {
+      "type": "integer",
+      "title": "Cards Due"
+     },
+     "new_cards": {
+      "type": "integer",
+      "title": "New Cards"
+     },
+     "words_due": {
+      "type": "integer",
+      "title": "Words Due"
+     },
+     "round_size": {
+      "type": "integer",
+      "title": "Round Size"
+     },
+     "est_minutes": {
+      "type": "integer",
+      "title": "Est Minutes"
+     }
+    },
+    "type": "object",
+    "required": [
+     "mode",
+     "cards_due",
+     "new_cards",
+     "words_due",
+     "round_size",
+     "est_minutes"
+    ],
+    "title": "PracticeSummary"
+   },
+   "PreviewAccount": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "files": {
+      "type": "integer",
+      "title": "Files"
+     },
+     "changed": {
+      "type": "integer",
+      "title": "Changed"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "files",
+     "changed"
+    ],
+    "title": "PreviewAccount"
+   },
+   "Progress": {
+    "properties": {
+     "kpis": {
+      "$ref": "#/components/schemas/Kpis"
+     },
+     "writing": {
+      "$ref": "#/components/schemas/WritingTrend"
+     },
+     "practice": {
+      "items": {
+       "$ref": "#/components/schemas/DayPoint"
+      },
+      "type": "array",
+      "title": "Practice"
+     },
+     "mastery": {
+      "items": {
+       "$ref": "#/components/schemas/CategoryMastery"
+      },
+      "type": "array",
+      "title": "Mastery"
+     },
+     "repeated": {
+      "items": {
+       "$ref": "#/components/schemas/RepeatRow"
+      },
+      "type": "array",
+      "title": "Repeated"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kpis",
+     "writing",
+     "practice",
+     "mastery",
+     "repeated"
+    ],
+    "title": "Progress"
+   },
+   "RepeatRow": {
+    "properties": {
+     "card_id": {
+      "type": "string",
+      "title": "Card Id"
+     },
+     "pattern": {
+      "type": "string",
+      "title": "Pattern"
+     },
+     "pattern_title": {
+      "type": "string",
+      "title": "Pattern Title"
+     },
+     "wrong": {
+      "type": "string",
+      "title": "Wrong"
+     },
+     "right": {
+      "type": "string",
+      "title": "Right"
+     },
+     "times": {
+      "type": "integer",
+      "title": "Times"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "new",
+       "learning",
+       "mastered"
+      ],
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "card_id",
+     "pattern",
+     "pattern_title",
+     "wrong",
+     "right",
+     "times",
+     "status"
+    ],
+    "title": "RepeatRow"
+   },
+   "SettingsUpdate": {
+    "properties": {
+     "zh": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Zh"
+     },
+     "round_size": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "enum": [
+         5,
+         8,
+         12,
+         16
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Round Size"
+     },
+     "new_per_day": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "enum": [
+         6,
+         12,
+         20,
+         30
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "New Per Day"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "SettingsUpdate"
+   },
+   "Status": {
+    "properties": {
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "root": {
+      "type": "string",
+      "title": "Root"
+     },
+     "db_path": {
+      "type": "string",
+      "title": "Db Path"
+     },
+     "db_version": {
+      "type": "integer",
+      "title": "Db Version"
+     },
+     "claude_path": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Claude Path"
+     },
+     "lessons": {
+      "$ref": "#/components/schemas/LessonsInfo"
+     },
+     "ai": {
+      "$ref": "#/components/schemas/AiInfo"
+     },
+     "pipeline": {
+      "$ref": "#/components/schemas/PipelineInfo"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version",
+     "root",
+     "db_path",
+     "db_version",
+     "claude_path",
+     "lessons",
+     "ai",
+     "pipeline"
+    ],
+    "title": "Status"
+   },
+   "UpdateErrorInfo": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "message"
+    ],
+    "title": "UpdateErrorInfo"
+   },
+   "UpdateIn": {
+    "properties": {
+     "account_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Account Ids"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "UpdateIn"
+   },
+   "UpdatePreview": {
+    "properties": {
+     "accounts": {
+      "items": {
+       "$ref": "#/components/schemas/PreviewAccount"
+      },
+      "type": "array",
+      "title": "Accounts"
+     },
+     "waiting": {
+      "type": "integer",
+      "title": "Waiting"
+     },
+     "last_finished_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Finished At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "accounts",
+     "waiting",
+     "last_finished_at"
+    ],
+    "title": "UpdatePreview"
+   },
+   "UpdateResult": {
+    "properties": {
+     "captured": {
+      "type": "integer",
+      "title": "Captured"
+     },
+     "analyzed": {
+      "type": "integer",
+      "title": "Analyzed"
+     },
+     "waiting": {
+      "type": "integer",
+      "title": "Waiting"
+     },
+     "new_cards": {
+      "type": "integer",
+      "title": "New Cards"
+     },
+     "new_words": {
+      "type": "integer",
+      "title": "New Words"
+     },
+     "batches": {
+      "type": "integer",
+      "title": "Batches"
+     }
+    },
+    "type": "object",
+    "required": [
+     "captured",
+     "analyzed",
+     "waiting",
+     "new_cards",
+     "new_words",
+     "batches"
+    ],
+    "title": "UpdateResult"
+   },
+   "UpdateStatus": {
+    "properties": {
+     "state": {
+      "type": "string",
+      "enum": [
+       "idle",
+       "running",
+       "done",
+       "failed",
+       "stopped"
+      ],
+      "title": "State"
+     },
+     "stage": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "reading",
+         "analyzing",
+         "vocabulary",
+         "done"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stage"
+     },
+     "done": {
+      "type": "integer",
+      "title": "Done"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "accounts": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Accounts"
+     },
+     "started_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Started At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "result": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/UpdateResult"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "error": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/UpdateErrorInfo"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "last_finished_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Finished At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state",
+     "stage",
+     "done",
+     "total",
+     "accounts",
+     "started_at",
+     "finished_at",
+     "result",
+     "error",
+     "last_finished_at"
+    ],
+    "title": "UpdateStatus"
+   },
+   "WeekPoint": {
+    "properties": {
+     "week_start": {
+      "type": "string",
+      "title": "Week Start"
+     },
+     "per_100_words": {
+      "type": "number",
+      "title": "Per 100 Words"
+     },
+     "messages": {
+      "type": "integer",
+      "title": "Messages"
+     },
+     "words": {
+      "type": "integer",
+      "title": "Words"
+     },
+     "issues": {
+      "type": "integer",
+      "title": "Issues"
+     }
+    },
+    "type": "object",
+    "required": [
+     "week_start",
+     "per_100_words",
+     "messages",
+     "words",
+     "issues"
+    ],
+    "title": "WeekPoint"
+   },
+   "WordBrief": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "spelling",
+       "know",
+       "clearer"
+      ],
+      "title": "Kind"
+     },
+     "word": {
+      "type": "string",
+      "title": "Word"
+     },
+     "pos": {
+      "type": "string",
+      "title": "Pos"
+     },
+     "meaning": {
+      "type": "string",
+      "title": "Meaning"
+     },
+     "meaning_zh": {
+      "type": "string",
+      "title": "Meaning Zh"
+     },
+     "example": {
+      "type": "string",
+      "title": "Example"
+     },
+     "wrote": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Wrote"
+     },
+     "times": {
+      "type": "integer",
+      "title": "Times"
+     },
+     "last": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "new",
+       "learning",
+       "mastered"
+      ],
+      "title": "Status"
+     },
+     "strength": {
+      "type": "integer",
+      "title": "Strength"
+     },
+     "due_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "kind",
+     "word",
+     "pos",
+     "meaning",
+     "meaning_zh",
+     "example",
+     "wrote",
+     "times",
+     "last",
+     "status",
+     "strength",
+     "due_at"
+    ],
+    "title": "WordBrief"
+   },
+   "WordKindCount": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "spelling",
+       "know",
+       "clearer"
+      ],
+      "title": "Kind"
+     },
+     "count": {
+      "type": "integer",
+      "title": "Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "count"
+    ],
+    "title": "WordKindCount"
+   },
+   "WordList": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "spelling",
+       "know",
+       "clearer"
+      ],
+      "title": "Kind"
+     },
+     "kinds": {
+      "items": {
+       "$ref": "#/components/schemas/WordKindCount"
+      },
+      "type": "array",
+      "title": "Kinds"
+     },
+     "due": {
+      "type": "integer",
+      "title": "Due"
+     },
+     "mastered": {
+      "type": "integer",
+      "title": "Mastered"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "words": {
+      "items": {
+       "$ref": "#/components/schemas/WordBrief"
+      },
+      "type": "array",
+      "title": "Words"
+     },
+     "total_in_kind": {
+      "type": "integer",
+      "title": "Total In Kind"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "pages": {
+      "type": "integer",
+      "title": "Pages"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "kinds",
+     "due",
+     "mastered",
+     "total",
+     "words",
+     "total_in_kind",
+     "page",
+     "pages"
+    ],
+    "title": "WordList"
+   },
+   "WritingTrend": {
+    "properties": {
+     "points": {
+      "items": {
+       "$ref": "#/components/schemas/WeekPoint"
+      },
+      "type": "array",
+      "title": "Points"
+     },
+     "latest": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latest"
+     },
+     "average_before": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Average Before"
+     },
+     "verdict": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "fewer",
+         "more",
+         "same"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Verdict"
+     }
+    },
+    "type": "object",
+    "required": [
+     "points",
+     "latest",
+     "average_before",
+     "verdict"
+    ],
+    "title": "WritingTrend"
+   }
+  }
+ }
+}

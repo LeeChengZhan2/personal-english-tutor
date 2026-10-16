@@ -1,0 +1,319 @@
+/* Personal English Tutor: a copy editor's desk. Cool paper and ink; corrections in blue pencil; deletions struck through in red.
+   Brand tokens first, then shadcn's variables mapped onto them, then Tailwind theme variables. */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/atkinson-hyperlegible-next/wght.css";
+@import "@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css";
+@import "@fontsource-variable/bricolage-grotesque/standard.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------- brand tokens ---------- */
+:root {
+  --desk: #e8ecf1;          /* behind the sidebar and the page sheet */
+  --paper: #f4f6f9;         /* the page sheet, practice background */
+  --surface: #ffffff;       /* cards, options, inputs, popovers */
+  --sunk: #eceff4;          /* tracks, segmented controls, kbd */
+  --line: #dde2ea;          /* hairlines, borders */
+  --input-line: #8a92a0;    /* form-control borders (3:1) */
+  --ink: #14171d;
+  --ink-2: #586070;         /* secondary text */
+  --ink-3: #8a92a0;         /* icons and decoration only: too light for text */
+  --pencil: #2b58cf;        /* primary, links, insertions, focus */
+  --pencil-hover: #244bb3;
+  --pencil-ink: #ffffff;    /* text on pencil */
+  --pencil-soft: #e5ebfa;
+  --pencil-line: #b6c7f1;
+  --mark: #c0362c;          /* deletions, wrong */
+  --mark-soft: #fbe7e4;
+  --ok: #17774a;            /* right, mastered */
+  --ok-soft: #dff2e7;
+  --amber: #9a5d00;         /* streak, unnatural, warnings */
+  --amber-soft: #fbefd9;
+  --highlight: #fff0b3;     /* marker highlight for a word in an example */
+  --scrim: rgb(10 14 22 / 0.42);
+  --chart-blue: #2b58cf;
+  --chart-blue-2: #7f9be6;
+  --chart-ok: #17774a;
+  --e1: 0 1px 2px rgb(18 27 46 / 0.06);
+  --e2: 0 1px 2px rgb(18 27 46 / 0.06), 0 8px 24px -12px rgb(18 27 46 / 0.12);
+  --e3: 0 24px 64px -12px rgb(18 27 46 / 0.28);
+
+  /* shadcn */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--pencil);
+  --primary-foreground: var(--pencil-ink);
+  --secondary: var(--sunk);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sunk);
+  --muted-foreground: var(--ink-2);
+  --accent: var(--pencil-soft);
+  --accent-foreground: var(--ink);
+  --destructive: var(--mark);
+  --border: var(--line);
+  --input: var(--input-line);
+  --ring: var(--pencil);
+  --chart-1: var(--chart-blue);
+  --chart-2: var(--chart-blue-2);
+  --chart-3: var(--chart-ok);
+  --chart-4: var(--amber);
+  --chart-5: var(--mark);
+  --radius: 0.75rem;
+  --sidebar: var(--desk);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--pencil);
+  --sidebar-primary-foreground: var(--pencil-ink);
+  --sidebar-accent: var(--surface);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--pencil);
+}
+
+.dark {
+  --desk: #0b0e12;
+  --paper: #101318;
+  --surface: #181c23;
+  --sunk: #1f242d;
+  --line: #2a303b;
+  --input-line: #6f7786;
+  --ink: #e8ebf1;
+  --ink-2: #a2a9b6;
+  --ink-3: #6f7786;
+  --pencil: #8eadff;
+  --pencil-hover: #a8c0ff;
+  --pencil-ink: #0d1530;
+  --pencil-soft: #1c2741;
+  --pencil-line: #34487a;
+  --mark: #ff8a7d;
+  --mark-soft: #3a1d1a;
+  --ok: #63d49c;
+  --ok-soft: #14301f;
+  --amber: #f0b45a;
+  --amber-soft: #33270f;
+  --highlight: #4a3f12;
+  --scrim: rgb(0 0 0 / 0.6);
+  --chart-blue: #8eadff;
+  --chart-blue-2: #4f6bbd;
+  --chart-ok: #2b9a63;
+  --e1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --e2: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+  --e3: 0 24px 64px -12px rgb(0 0 0 / 0.6);
+}
+
+/* ---------- Tailwind theme ---------- */
+@theme inline {
+  --font-sans: "Atkinson Hyperlegible Next Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Segoe UI", system-ui, sans-serif;
+  --font-heading: var(--font-display);
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --color-desk: var(--desk);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-sunk: var(--sunk);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-pencil: var(--pencil);
+  --color-pencil-hover: var(--pencil-hover);
+  --color-pencil-ink: var(--pencil-ink);
+  --color-pencil-soft: var(--pencil-soft);
+  --color-pencil-line: var(--pencil-line);
+  --color-mark: var(--mark);
+  --color-mark-soft: var(--mark-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-highlight: var(--highlight);
+  --color-scrim: var(--scrim);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 28px;
+
+  --shadow-e1: var(--e1);
+  --shadow-e2: var(--e2);
+  --shadow-e3: var(--e3);
+
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ---------- base ---------- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--pencil);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--pencil-soft);
+    color: var(--ink);
+  }
+  :lang(zh-Hans) {
+    font-family: "Microsoft YaHei UI", "PingFang SC", "Noto Sans SC", var(--font-sans);
+  }
+  button:not(:disabled), [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
+/* ---------- proofreading marks (the app's identity) ---------- */
+@layer components {
+  del.x {
+    color: var(--mark);
+    text-decoration-line: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--mark);
+    background: var(--mark-soft);
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+  ins.x {
+    color: var(--pencil);
+    text-decoration: none;
+    background: var(--pencil-soft);
+    border-radius: 3px;
+    padding: 0 2px;
+    font-weight: 700;
+  }
+  ins.x::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-right: 3px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 7px solid var(--pencil);
+    vertical-align: -1px;
+  }
+  mark {
+    background: var(--highlight);
+    color: var(--ink);
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+}
+
+/* ---------- type ---------- */
+@utility type-display {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.08;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+@utility type-lead {
+  font-size: 18px;
+  line-height: 28px;
+}
+@utility type-label {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@utility type-sentence {
+  font-size: 21px;
+  line-height: 33px;
+  overflow-wrap: anywhere;
+  @media (width >= 48rem) {
+    font-size: 24px;
+    line-height: 38px;
+  }
+}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

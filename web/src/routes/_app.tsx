@@ -4,7 +4,7 @@ import { ApiError } from '@/api/client'
 import { useBootstrap } from '@/api/queries'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/features/shell/app-sidebar'
-import { PencilMark } from '@/features/shell/pencil-mark'
+import { AppMark } from '@/features/shell/app-mark'
 import { useLessonUpdates } from '@/features/shell/use-lesson-updates'
 import { UpdateBanner } from '@/features/update/update-banner'
 
@@ -25,7 +25,7 @@ function AppLayout() {
       <SidebarInset className="min-h-svh bg-paper md:min-h-[calc(100svh-1rem)]">
         <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-paper/90 px-3 backdrop-blur md:hidden">
           <SidebarTrigger className="size-11" aria-label="Open the menu" />
-          <PencilMark className="size-5 text-pencil" />
+          <AppMark className="size-5 text-pencil" />
           <span className="font-display text-lg font-extrabold tracking-tight">Personal English Tutor</span>
         </header>
         <ServerBanner />

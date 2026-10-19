@@ -9,6 +9,8 @@ import {
   MessagesSquare,
   Monitor,
   Moon,
+  PanelLeftClose,
+  PanelLeftOpen,
   Play,
   RefreshCw,
   SlidersHorizontal,
@@ -38,12 +40,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { useUpdateFlow } from '@/features/update/use-update-flow'
 import { useTheme } from '@/hooks/use-theme'
 import type { Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
-import { PencilMark } from './pencil-mark'
+import { AppMark } from './app-mark'
 
 interface NavItem {
   to: string
@@ -82,8 +85,8 @@ export function AppSidebar() {
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader className="gap-3 pt-3">
-        <Link to="/" aria-label="Personal English Tutor, home" className="flex h-11 items-center gap-2.5 rounded-lg px-2 text-ink">
-          <PencilMark className="size-[22px] shrink-0 text-pencil" />
+        <Link to="/" aria-label="Personal English Tutor, home" className="flex h-11 items-center gap-2.5 rounded-lg px-2 text-ink group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+          <AppMark className="size-[22px] shrink-0 text-pencil" />
           <span className="grid gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
             <span className="text-[11px] font-bold tracking-[0.14em] text-ink-2 uppercase">Personal</span>
             <span className="truncate font-display text-[19px] font-extrabold tracking-tight">English Tutor</span>
@@ -95,7 +98,7 @@ export function AppSidebar() {
               size="lg"
               tooltip="Start a round"
               render={<Link to="/practice" search={{ mode: 'cards' }} />}
-              className="bg-pencil font-bold text-pencil-ink shadow-e1 hover:bg-pencil-hover hover:text-pencil-ink active:bg-pencil-hover active:text-pencil-ink"
+              className="bg-pencil font-bold text-pencil-ink shadow-e1 group-data-[collapsible=icon]:p-2! hover:bg-pencil-hover hover:text-pencil-ink active:bg-pencil-hover active:text-pencil-ink"
             >
               <Play className="fill-current" aria-hidden />
               <span>Start a round</span>
@@ -141,6 +144,7 @@ export function AppSidebar() {
               <span>How it works</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <CollapseItem />
         </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />
@@ -158,6 +162,22 @@ function UpdateItem() {
         <span>{flow.running ? 'Updating lessons…' : 'Update my lessons'}</span>
       </SidebarMenuButton>
       {flow.dialogs}
+    </SidebarMenuItem>
+  )
+}
+
+/** Shrinks the menu to its icons, or brings the labels back (also Ctrl+B). Phones use the slide-out menu instead. */
+function CollapseItem() {
+  const { state, isMobile, toggleSidebar } = useSidebar()
+  if (isMobile) return null
+  const collapsed = state === 'collapsed'
+  const Icon = collapsed ? PanelLeftOpen : PanelLeftClose
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton tooltip="Expand the menu (Ctrl+B)" onClick={toggleSidebar} aria-expanded={!collapsed}>
+        <Icon aria-hidden />
+        <span>{collapsed ? 'Expand the menu' : 'Collapse the menu'}</span>
+      </SidebarMenuButton>
     </SidebarMenuItem>
   )
 }

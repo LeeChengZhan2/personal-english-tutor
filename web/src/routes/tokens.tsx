@@ -98,15 +98,13 @@ function TokensPage() {
           </label>
           <Textarea placeholder="Your message" aria-label="Sample textarea" className="sm:col-span-2" />
         </div>
-        <Tabs defaultValue="spelling">
+        <Tabs defaultValue="new">
           <TabsList>
-            <TabsTrigger value="spelling">Mistyped</TabsTrigger>
-            <TabsTrigger value="know">Words to know</TabsTrigger>
-            <TabsTrigger value="clearer">Say it clearer</TabsTrigger>
+            <TabsTrigger value="new">New words</TabsTrigger>
+            <TabsTrigger value="fix">Typos & fixes</TabsTrigger>
           </TabsList>
-          <TabsContent value="spelling" className="pt-3 text-ink-2">Words you often type wrong.</TabsContent>
-          <TabsContent value="know" className="pt-3 text-ink-2">Words you used in the wrong form.</TabsContent>
-          <TabsContent value="clearer" className="pt-3 text-ink-2">Words that make your point sharper.</TabsContent>
+          <TabsContent value="new" className="pt-3 text-ink-2">Words you haven’t used yet.</TabsContent>
+          <TabsContent value="fix" className="pt-3 text-ink-2">Words you typed or used wrong.</TabsContent>
         </Tabs>
       </section>
 

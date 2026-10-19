@@ -11,7 +11,8 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 Severity = Literal["error", "unnatural", "style", "typo"]
-WordKind = Literal["spelling", "know", "clearer"]
+WordKind = Literal["spelling", "know", "clearer", "new"]
+WordGroup = Literal["new", "fix"]   # new = words not used yet; fix = spelling, know and clearer
 ItemStatus = Literal["new", "learning", "mastered"]
 RoundSize = Literal[5, 8, 12, 16]
 NewPerDay = Literal[6, 12, 20, 30]
@@ -121,7 +122,7 @@ class CheckOut(BaseModel):
 # ---------- update my lessons ----------
 
 UpdateState = Literal["idle", "running", "done", "failed", "stopped"]
-UpdateStage = Literal["reading", "analyzing", "vocabulary", "done"]
+UpdateStage = Literal["reading", "analyzing", "vocabulary", "new_words", "done"]
 
 
 class UpdateIn(Request):
@@ -247,6 +248,8 @@ class WordBrief(BaseModel):
     wrote: list[str]
     times: int
     last: str | None
+    level: str | None               # new words: CEFR level (B2, C1, C2)
+    rewrite: str                    # new words: the learner's sentence rewritten with the word; "" otherwise
     status: ItemStatus
     strength: int
     due_at: str | None
@@ -372,19 +375,19 @@ class PatternDetail(BaseModel):
 
 # ---------- words ----------
 
-class WordKindCount(BaseModel):
-    kind: WordKind
+class WordGroupCount(BaseModel):
+    group: WordGroup
     count: int
 
 
 class WordList(BaseModel):
-    kind: WordKind
-    kinds: list[WordKindCount]
+    group: WordGroup
+    groups: list[WordGroupCount]
     due: int
     mastered: int
     total: int
     words: list[WordBrief]
-    total_in_kind: int
+    total_in_group: int
     page: int
     pages: int
 

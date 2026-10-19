@@ -3,36 +3,48 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { BookA } from 'lucide-react'
 import { z } from 'zod'
 import type { Schemas } from '@/api/client'
-import { wordsQuery, type WordKind } from '@/api/queries'
-import { StatusBadge } from '@/components/domain/badges'
+import { wordsQuery, type WordGroup } from '@/api/queries'
+import { LevelBadge, StatusBadge } from '@/components/domain/badges'
 import { Pager } from '@/components/domain/bits'
 import { ChineseHint, HighlightText } from '@/components/domain/hints'
 import { EmptyState, Page, PageHeader, PageSkeleton, RouteError } from '@/components/domain/page'
+import { WordSource } from '@/components/domain/word-source'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { UpdateLessonsButton } from '@/features/update/update-button'
 
-const KINDS: Record<WordKind, { title: string; blurb: string }> = {
-  spelling: { title: 'Mistyped', blurb: 'Words you often type wrong. Typing them right a few times fixes the habit.' },
-  know: { title: 'Words to know', blurb: 'Words you used in the wrong form, or needed but didn’t have.' },
-  clearer: { title: 'Say it clearer', blurb: 'Words and phrases that make your point sharper than what you wrote.' },
+const GROUPS: Record<WordGroup, { title: string; blurb: string; empty: string; emptyText: string }> = {
+  new: {
+    title: 'New words',
+    blurb: 'Words you haven’t used yet, picked from your own messages. Each one says something you wrote more clearly or more professionally.',
+    empty: 'No new words yet',
+    emptyText: 'Update your lessons, and Claude reads your messages for words you haven’t used yet that say what you meant better.',
+  },
+  fix: {
+    title: 'Typos & fixes',
+    blurb: 'Words you already know but typed or used wrong: spelling slips, wrong word forms and small fixes.',
+    empty: 'Nothing to fix yet',
+    emptyText: 'Words you mistype or use in the wrong form show up here after your messages are checked.',
+  },
 }
 
 export const Route = createFileRoute('/_app/words')({
   validateSearch: z.object({
-    kind: z.enum(['spelling', 'know', 'clearer']).catch('spelling').optional(),
+    group: z.enum(['new', 'fix']).catch('new').optional(),
     page: z.number().int().min(1).catch(1).optional(),
   }),
-  loaderDeps: ({ search }) => ({ kind: search.kind ?? 'spelling', page: search.page ?? 1 }),
-  loader: ({ context: { queryClient }, deps }) => queryClient.ensureQueryData(wordsQuery(deps.kind, deps.page)),
+  loaderDeps: ({ search }) => ({ group: search.group ?? 'new', page: search.page ?? 1 }),
+  loader: ({ context: { queryClient }, deps }) => queryClient.ensureQueryData(wordsQuery(deps.group, deps.page)),
   pendingComponent: () => <PageSkeleton width="wide" />,
   errorComponent: RouteError,
   component: WordsPage,
 })
 
 function WordsPage() {
-  const { kind = 'spelling', page = 1 } = Route.useSearch()
+  const { group = 'new', page = 1 } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
-  const { data } = useSuspenseQuery(wordsQuery(kind, page))
+  const { data } = useSuspenseQuery(wordsQuery(group, page))
+  const info = GROUPS[group]
 
   return (
     <Page width="wide">
@@ -55,27 +67,37 @@ function WordsPage() {
         <EmptyState title="No words yet">Your word lists fill up as your messages are checked.</EmptyState>
       ) : (
         <div className="grid gap-6">
-          <Tabs value={kind} onValueChange={(value) => void navigate({ search: { kind: value as WordKind, page: 1 } })}>
+          <Tabs value={group} onValueChange={(value) => void navigate({ search: { group: value as WordGroup, page: 1 } })}>
             <TabsList className="h-11">
-              {data.kinds.map((k) => (
-                <TabsTrigger key={k.kind} value={k.kind} className="px-4 text-[15px]">
-                  {KINDS[k.kind].title} <span className="text-ink-2 tabular-nums">{k.count}</span>
+              {data.groups.map((g) => (
+                <TabsTrigger key={g.group} value={g.group} className="px-4 text-[15px]">
+                  {GROUPS[g.group].title} <span className="text-ink-2 tabular-nums">{g.count}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <p className="text-ink-2">{KINDS[kind].blurb}</p>
-            <Link to="/practice" search={{ mode: 'words', kind }} className="text-sm font-bold text-pencil hover:underline">
-              Practise these →
-            </Link>
+            <p className="max-w-[75ch] text-ink-2">{info.blurb}</p>
+            {data.total_in_group > 0 && (
+              <Link to="/practice" search={{ mode: 'words', group }} className="text-sm font-bold text-pencil hover:underline">
+                Practise these →
+              </Link>
+            )}
           </div>
-          <ul className="grid gap-4 lg:grid-cols-2">
-            {data.words.map((w) => (
-              <WordCard key={w.id} word={w} />
-            ))}
-          </ul>
-          <Pager page={data.page} pages={data.pages} onChange={(next) => void navigate({ search: { kind, page: next } })} />
+          {data.total_in_group === 0 ? (
+            <EmptyState title={info.empty} actions={<UpdateLessonsButton variant="default" />}>
+              {info.emptyText}
+            </EmptyState>
+          ) : (
+            <>
+              <ul className="grid gap-4 lg:grid-cols-2">
+                {data.words.map((w) => (
+                  <WordCard key={w.id} word={w} />
+                ))}
+              </ul>
+              <Pager page={data.page} pages={data.pages} onChange={(next) => void navigate({ search: { group, page: next } })} />
+            </>
+          )}
         </div>
       )}
     </Page>
@@ -88,6 +110,7 @@ function WordCard({ word: w }: { word: Schemas['WordBrief'] }) {
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="font-display text-[24px] leading-tight font-extrabold tracking-tight">{w.word}</span>
         {w.pos && <span className="text-sm text-ink-2 italic">{w.pos}</span>}
+        <LevelBadge level={w.level} />
         {w.times > 1 && <span className="text-sm font-bold text-ink-2">×{w.times}</span>}
         <span className="ml-auto">
           <StatusBadge status={w.status} strength={w.strength} dueAt={w.due_at} />
@@ -95,17 +118,7 @@ function WordCard({ word: w }: { word: Schemas['WordBrief'] }) {
       </div>
       <p>{w.meaning}</p>
       <ChineseHint text={w.meaning_zh} />
-      {w.wrote.length > 0 && (
-        <p className="text-sm text-ink-2">
-          You wrote{' '}
-          {w.wrote.slice(0, 3).map((x, i) => (
-            <span key={x}>
-              {i > 0 && ', '}
-              <del className="x">{x}</del>
-            </span>
-          ))}
-        </p>
-      )}
+      <WordSource word={w} />
       {w.example && <HighlightText className="text-[15px] text-ink-2 italic" text={w.example} word={w.word} />}
     </li>
   )

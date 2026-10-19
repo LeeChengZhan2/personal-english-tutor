@@ -82,7 +82,8 @@ Lessons you already made stay in `data/`, even after their conversations are del
 ```
 ~/.claude/projects/*/*.jsonl ─read──▶ data/inbox/messages.jsonl  only what you typed, new lines only
                              ─check─▶ data/batches/*.json        mistakes → cards, by Claude (Sonnet)
-                             ─words─▶ the same batches           words to learn, a second pass
+                             ─words─▶ the same batches           typos & fixes, a second pass
+                             ─new───▶ the same batches           new words you haven't used, a third pass
 the app (FastAPI + React)    reads data/batches; keeps progress in data/tutor.db
 ```
 
@@ -92,9 +93,12 @@ the app (FastAPI + React)    reads data/batches; keeps progress in data/tutor.db
    30 at a time. Each mistake comes back with the sentence, the wrong words, the fix, a short
    explanation in English and Chinese, wrong options for multiple choice, and a corrected and a
    natural version of every message.
-3. **Words** (`coach/vocab.py`, `prompts/vocab.md`): adds the words you mistype, words to know and
-   words that say it clearer.
-4. **Practise** (`coach/lessons.py`, `coach/srs.py`): the same mistake made twice is one card. Cards come
+3. **Typos & fixes** (`coach/vocab.py`, `prompts/vocab.md`): adds the words you mistype, use in the
+   wrong form, or could say more clearly. These are words you already know.
+4. **New words** (`coach/new_words.py`, `prompts/new_words.md`): where you wrote something in a plain or
+   long way, Claude suggests the word a fluent professional would use (level B2 and above), with your
+   sentence rewritten around it. A word you have typed in any message is never suggested.
+5. **Practise** (`coach/lessons.py`, `coach/srs.py`): the same mistake made twice is one card. Cards come
    back after 10 minutes, then 1, 3, 7, 16, 35 and 90 days.
 
 The analysis prompt is written for a software engineer with a Mandarin and Singlish background who

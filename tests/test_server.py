@@ -34,6 +34,7 @@ def test_bootstrap_and_home(client):
                        "reason": "Add your Claude account in Settings to make lessons and use the AI checks."}
     h = client.get("/api/home").json()
     assert h["practice"]["mode"] == "new" and h["focus"]["pattern"] == "do-support" and h["latest_chat"]["messages"] == 2
+    assert h["word_of_the_day"]["word"] == "investigate"
 
 
 def test_content_pages(client):
@@ -42,8 +43,11 @@ def test_content_pages(client):
     detail = client.get("/api/patterns/spelling").json()
     assert detail["cards"][0]["corrected"] == "Please check it"  # repaired on load
     assert client.get("/api/patterns/nope").json()["code"] == "not_found"
-    words = client.get("/api/words", params={"kind": "spelling"}).json()
-    assert words["total_in_kind"] == 1 and words["words"][0]["wrote"] == ["Pleas"]
+    new = client.get("/api/words").json()  # new words are the first list
+    assert new["group"] == "new" and new["groups"] == [{"group": "new", "count": 1}, {"group": "fix", "count": 1}]
+    assert new["words"][0]["level"] == "B2" and new["words"][0]["rewrite"].endswith("Please investigate.")
+    fixes = client.get("/api/words", params={"group": "fix"}).json()
+    assert fixes["total_in_group"] == 1 and fixes["words"][0]["wrote"] == ["Pleas"] and fixes["words"][0]["rewrite"] == ""
     msgs = client.get("/api/messages", params={"filter": "all"}).json()
     assert msgs["counts"] == {"mistakes": 1, "all": 2}
     one = client.get(f"/api/messages/{msgs['messages'][0]['id']}").json()

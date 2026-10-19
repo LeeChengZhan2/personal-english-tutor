@@ -1,4 +1,5 @@
-"""One update: read new messages from the accounts' Claude Code conversations, find the mistakes, add vocabulary.
+"""One update: read new messages from the accounts' Claude Code conversations, find the mistakes, add vocabulary
+and new words.
 
 Started by the app's "Update my lessons" button (or `python -m coach run`). Each conversation file is read from
 where the last update stopped, and only messages not analyzed yet are sent to Claude, so nothing is done twice.
@@ -11,13 +12,14 @@ import threading
 from collections.abc import Callable
 from pathlib import Path
 
-from . import analyze, capture, store, vocab
+from . import analyze, capture, new_words, store, vocab
 from .accounts import Account
 from .llm import LLMError
 
 log = logging.getLogger("coach")
 
-Progress = Callable[[str, int, int], None]   # (stage, done, total); stages: reading, analyzing, vocabulary, done
+# (stage, done, total); stages: reading, analyzing, vocabulary, new_words, done
+Progress = Callable[[str, int, int], None]
 
 
 def folders_of(accounts: list[Account]) -> list[Path]:
@@ -56,9 +58,14 @@ def run(accounts: list[Account], *, parallel: int = 2, on_progress: Progress | N
             report("vocabulary", 0, 1)
             filled = vocab.fill_missing(parallel=parallel, accounts=accounts, cancel=cancel,
                                         on_batch=lambda d, t: report("vocabulary", d, t))
+        fresh = 0
+        if not stopped() and new_words.missing():
+            report("new_words", 0, 1)
+            fresh = new_words.fill_missing(parallel=parallel, accounts=accounts, cancel=cancel,
+                                           on_batch=lambda d, t: report("new_words", d, t))
         left = len(store.pending_messages())
         report("done", 1, 1)
     log.info("update: %d new messages read, %d analyzed into %d batches, %d still waiting",
              captured, waiting - left, len(batches), left)
     return {"captured": captured, "analyzed": waiting - left, "batches": batches, "vocabulary": filled,
-            "waiting": left, "stopped": stopped()}
+            "new_words": fresh, "waiting": left, "stopped": stopped()}

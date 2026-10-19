@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from . import srs
-from .lessons import Card, Message, Snapshot, Word
+from .lessons import WORD_GROUPS, Card, Message, Snapshot, Word
 from .srs import DAY, MASTERED, State
 
 
@@ -208,15 +208,18 @@ def word_brief(view: View, w: Word) -> dict:
     return {
         "id": w.id, "kind": w.kind, "word": w.word, "pos": w.pos, "meaning": w.meaning, "meaning_zh": w.meaning_zh,
         "example": w.example, "wrote": list(w.wrote), "times": w.times, "last": w.last or None,
+        "level": w.level or None, "rewrite": w.rewrite,
         "status": srs.status(st), "strength": srs.strength(st), "due_at": _iso_ms(st.due_ms) if st else None,
     }
 
 
 def word_of_the_day(view: View) -> dict | None:
+    """A word not mastered yet, the same all day: a new word when there are any, else one that isn't a typo."""
     words = view.snap.words
     if not words:
         return None
-    pool = [w for w in words if w.kind != "spelling" and (view.states.get(w.id) or _NEVER).box < MASTERED]
+    learning = [w for w in words if (view.states.get(w.id) or _NEVER).box < MASTERED]
+    pool = [w for w in learning if w.kind == "new"] or [w for w in learning if w.kind != "spelling"]
     pool = sorted(pool or words, key=lambda w: w.id)
     today = srs.day_key(view.now_ms)
     return word_brief(view, pool[zlib.crc32(today.encode()) % len(pool)])
@@ -291,18 +294,19 @@ def pattern_detail(view: View, key: str, page: int = 1, page_size: int = 20) -> 
 
 # ---------- words ----------
 
-def word_list(view: View, kind: str, page: int = 1, page_size: int = 24) -> dict:
+def word_list(view: View, group: str, page: int = 1, page_size: int = 24) -> dict:
+    """One of the Words page's lists (lessons.WORD_GROUPS): new words, or typos & fixes."""
     words = view.snap.words
-    in_kind = sorted((w for w in words if w.kind == kind), key=lambda w: (w.times, w.last or ""), reverse=True)
-    shown, page, pages = _page(in_kind, page, page_size)
+    in_group = sorted((w for w in words if w.kind in WORD_GROUPS[group]), key=lambda w: (w.times, w.last or ""), reverse=True)
+    shown, page, pages = _page(in_group, page, page_size)
     return {
-        "kind": kind,
-        "kinds": [{"kind": k, "count": sum(1 for w in words if w.kind == k)} for k in ("spelling", "know", "clearer")],
+        "group": group,
+        "groups": [{"group": g, "count": sum(1 for w in words if w.kind in kinds)} for g, kinds in WORD_GROUPS.items()],
         "due": len(view.due_words()),
         "mastered": sum(1 for w in words if (view.states.get(w.id) or _NEVER).box >= MASTERED),
         "total": len(words),
         "words": [word_brief(view, w) for w in shown],
-        "total_in_kind": len(in_kind), "page": page, "pages": pages,
+        "total_in_group": len(in_group), "page": page, "pages": pages,
     }
 
 

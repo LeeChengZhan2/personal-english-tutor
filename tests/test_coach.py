@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from coach import analyze, store, vocab  # noqa: E402
+from coach import analyze, new_words, store, vocab  # noqa: E402
 from coach.transcripts import clean_text, message_from, user_text  # noqa: E402
 
 
@@ -109,3 +109,35 @@ def test_vocab_clean_keeps_real_items_only():
     assert items[0]["distractors"] == ["explian"]
     assert items[1]["you_wrote"] == ""  # not something the user really wrote
     assert items[0]["id"] == vocab.vocab_id("spelling", "Explain")
+
+
+def test_typed_words_include_other_forms_and_whole_phrases():
+    typed = new_words.Known(["We clarified the plans and narrowed it down", "Please walk me through it"])
+    assert typed.has("clarify") and typed.has("Clarified") and typed.has("plan") and typed.has("walk me through")
+    assert not typed.has("narrow down") and not typed.has("intermittent")
+    messages = [{"ts": "2026-10-01T03:00:00Z", "text": "please clarify"}, {"ts": "2026-10-05T03:00:00Z", "text": "it is intermittent"}]
+    then = new_words.typed_words(messages, until="2026-10-02T11:00:00+08:00")
+    assert then.has("clarify") and not then.has("intermittent")
+
+
+def test_new_words_clean_keeps_advanced_words_the_user_never_typed():
+    batch = {"messages": [{"id": "m1", "ts": "2026-10-13T06:38:00Z", "text": "sometimes can sometimes cannot connect, pls clarify"}]}
+
+    def item(word, **changes):
+        return {"word": word, "pos": "adjective", "level": "C1", "meaning": "m", "meaning_zh": "z",
+                "you_wrote": "sometimes can sometimes cannot", "rewrite": f"The connection is {word}.",
+                "example": f"The errors are {word}.", "message_id": "m1", "distractors": ["persistent", word], **changes}
+
+    answer = {"new_words": [
+        item("intermittent"),
+        item("clarify"),                    # the user typed it
+        item("unstable", level="B1"),       # too easy
+        item("intermittent"),               # a repeat
+        item("flaky", message_id="nope"),   # no such message
+        item("sporadic", you_wrote="not in the message", rewrite="It drops now and then."),
+    ]}
+    items = new_words.clean(batch, answer, new_words.Known(m["text"] for m in batch["messages"]))
+    assert [i["word"] for i in items] == ["intermittent", "sporadic"]
+    assert items[0]["id"] == vocab.vocab_id("new", "Intermittent") and items[0]["kind"] == "new" and items[0]["level"] == "C1"
+    assert items[0]["you_wrote"] == "sometimes can sometimes cannot" and items[0]["distractors"] == ["persistent"]
+    assert items[1]["you_wrote"] == "" and items[1]["rewrite"] == ""  # only real words, and a rewrite that uses the word

@@ -20,6 +20,17 @@ export function SeverityBadge({ severity }: { severity: Severity }) {
   return <span className={cn('rounded-md px-2 py-0.5 text-[13px] font-bold', s.className)}>{s.label}</span>
 }
 
+/** A new word's CEFR level (B2, C1, C2): how advanced it is. */
+export function LevelBadge({ level }: { level: string | null | undefined }) {
+  if (!level) return null
+  return (
+    <span title={`CEFR level ${level}`} className="rounded-md bg-pencil-soft px-2 py-0.5 text-[13px] font-bold text-pencil">
+      <span className="sr-only">Level </span>
+      {level}
+    </span>
+  )
+}
+
 /** How well a card is known: five dots, filled as it moves towards mastered. */
 export function StrengthDots({ strength, mastered = false }: { strength: number; mastered?: boolean }) {
   return (

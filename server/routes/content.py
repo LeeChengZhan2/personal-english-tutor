@@ -10,7 +10,7 @@ from coach import insights
 
 from ..context import AppContext, get_ctx
 from ..errors import ApiException
-from ..models import ApiError, Home, MessagePage, MessageRow, PatternDetail, PatternList, Progress, WordKind, WordList
+from ..models import ApiError, Home, MessagePage, MessageRow, PatternDetail, PatternList, Progress, WordGroup, WordList
 
 router = APIRouter(prefix="/api", tags=["content"],
                    responses={400: {"model": ApiError}, 404: {"model": ApiError}, 422: {"model": ApiError},
@@ -40,10 +40,10 @@ def pattern(key: str, page: int = Query(1, ge=1), page_size: int = Query(20, ge=
 
 
 @router.get("/words", response_model=WordList)
-def words(kind: WordKind = "spelling", page: int = Query(1, ge=1), page_size: int = Query(24, ge=6, le=100),
+def words(group: WordGroup = "new", page: int = Query(1, ge=1), page_size: int = Query(24, ge=6, le=100),
           ctx: AppContext = Depends(get_ctx)) -> dict:
     with ctx.conn() as conn:
-        return insights.word_list(ctx.view(conn), kind, page, page_size)
+        return insights.word_list(ctx.view(conn), group, page, page_size)
 
 
 @router.get("/messages", response_model=MessagePage)

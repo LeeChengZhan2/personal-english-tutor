@@ -4,9 +4,11 @@ import { ArrowRight, BookA, Check, CircleHelp, Play, SpellCheck, X } from 'lucid
 import type { ReactNode } from 'react'
 import type { Schemas } from '@/api/client'
 import { bootstrapQuery, homeQuery } from '@/api/queries'
+import { LevelBadge } from '@/components/domain/badges'
 import { ChineseHint, HighlightText } from '@/components/domain/hints'
 import { Page, PageSkeleton, RouteError, SectionHeader } from '@/components/domain/page'
 import { ProofText } from '@/components/domain/proof-text'
+import { WordSource } from '@/components/domain/word-source'
 import { Button } from '@/components/ui/button'
 import { Sparkline } from '@/features/home/sparkline'
 import { UpdateLessonsButton } from '@/features/update/update-button'
@@ -159,15 +161,12 @@ function WordOfTheDay({ word, wordsDue }: { word: Schemas['WordBrief']; wordsDue
       <p className="flex flex-wrap items-baseline gap-x-3">
         <span className="font-display text-[34px] leading-tight font-extrabold tracking-tight">{word.word}</span>
         {word.pos && <span className="text-ink-2 italic">{word.pos}</span>}
+        <LevelBadge level={word.level} />
       </p>
       <p className="type-lead">{word.meaning}</p>
       <ChineseHint text={word.meaning_zh} />
+      <WordSource word={word} max={1} />
       {word.example && <HighlightText className="text-ink-2" text={word.example} word={word.word} />}
-      {word.wrote[0] && (
-        <p className="text-sm text-ink-2">
-          You wrote <del className="x">{word.wrote[0]}</del>
-        </p>
-      )}
       <div className="flex flex-wrap gap-2 pt-1">
         <Button variant="outline" render={<Link to="/practice" search={{ mode: 'words' }} />}>
           <BookA aria-hidden /> Word round{wordsDue ? ` · ${wordsDue} due` : ''}

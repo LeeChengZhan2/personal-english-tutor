@@ -444,18 +444,17 @@
     "operationId": "words",
     "parameters": [
      {
-      "name": "kind",
+      "name": "group",
       "in": "query",
       "required": false,
       "schema": {
        "enum": [
-        "spelling",
-        "know",
-        "clearer"
+        "new",
+        "fix"
        ],
        "type": "string",
-       "default": "spelling",
-       "title": "Kind"
+       "default": "new",
+       "title": "Group"
       }
      },
      {
@@ -3165,6 +3164,7 @@
          "reading",
          "analyzing",
          "vocabulary",
+         "new_words",
          "done"
         ]
        },
@@ -3302,7 +3302,8 @@
       "enum": [
        "spelling",
        "know",
-       "clearer"
+       "clearer",
+       "new"
       ],
       "title": "Kind"
      },
@@ -3348,6 +3349,21 @@
       ],
       "title": "Last"
      },
+     "level": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Level"
+     },
+     "rewrite": {
+      "type": "string",
+      "title": "Rewrite"
+     },
      "status": {
       "type": "string",
       "enum": [
@@ -3385,22 +3401,23 @@
      "wrote",
      "times",
      "last",
+     "level",
+     "rewrite",
      "status",
      "strength",
      "due_at"
     ],
     "title": "WordBrief"
    },
-   "WordKindCount": {
+   "WordGroupCount": {
     "properties": {
-     "kind": {
+     "group": {
       "type": "string",
       "enum": [
-       "spelling",
-       "know",
-       "clearer"
+       "new",
+       "fix"
       ],
-      "title": "Kind"
+      "title": "Group"
      },
      "count": {
       "type": "integer",
@@ -3409,28 +3426,27 @@
     },
     "type": "object",
     "required": [
-     "kind",
+     "group",
      "count"
     ],
-    "title": "WordKindCount"
+    "title": "WordGroupCount"
    },
    "WordList": {
     "properties": {
-     "kind": {
+     "group": {
       "type": "string",
       "enum": [
-       "spelling",
-       "know",
-       "clearer"
+       "new",
+       "fix"
       ],
-      "title": "Kind"
+      "title": "Group"
      },
-     "kinds": {
+     "groups": {
       "items": {
-       "$ref": "#/components/schemas/WordKindCount"
+       "$ref": "#/components/schemas/WordGroupCount"
       },
       "type": "array",
-      "title": "Kinds"
+      "title": "Groups"
      },
      "due": {
       "type": "integer",
@@ -3451,9 +3467,9 @@
       "type": "array",
       "title": "Words"
      },
-     "total_in_kind": {
+     "total_in_group": {
       "type": "integer",
-      "title": "Total In Kind"
+      "title": "Total In Group"
      },
      "page": {
       "type": "integer",
@@ -3466,13 +3482,13 @@
     },
     "type": "object",
     "required": [
-     "kind",
-     "kinds",
+     "group",
+     "groups",
      "due",
      "mastered",
      "total",
      "words",
-     "total_in_kind",
+     "total_in_group",
      "page",
      "pages"
     ],

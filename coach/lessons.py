@@ -20,7 +20,9 @@ from pathlib import Path
 from . import store
 
 SEV_WEIGHT = {"error": 3, "unnatural": 2, "style": 1, "typo": 1}
-WORD_KINDS = ("spelling", "know", "clearer")
+WORD_KINDS = ("spelling", "know", "clearer", "new")
+# The Words page's two lists: words the learner hasn't used yet, and words they know but typed or used wrong
+WORD_GROUPS = {"new": ("new",), "fix": ("spelling", "know", "clearer")}
 FALLBACK_CATEGORIES = {
     "verbs": {"title": "Verbs", "zh": "动词"},
     "structure": {"title": "Sentence structure", "zh": "句子结构"},
@@ -75,6 +77,8 @@ class Word:
     wrote: list[str] = field(default_factory=list)
     distractors: list[str] = field(default_factory=list)
     times: int = 0
+    level: str = ""     # new words: CEFR level (B2, C1, C2)
+    rewrite: str = ""   # new words: the learner's sentence rewritten with the word
 
 
 @dataclass(slots=True)
@@ -226,14 +230,15 @@ def derive(batches: list[dict], catalog: dict) -> Snapshot:
 def _derive_words(ordered: list[dict], cards: list[Card]) -> dict[str, Word]:
     words: dict[str, Word] = {}
     for b in ordered:
-        for v in b.get("vocab") or []:
+        for v in (b.get("vocab") or []) + (b.get("new_words") or []):
             if not v or not v.get("id") or not v.get("word") or v.get("kind") not in WORD_KINDS:
                 continue
             w = words.get(v["id"])
             ts = v.get("ts") or ""
             if w is None:
                 w = Word(id=v["id"], kind=v["kind"], word=v["word"], pos=v.get("pos") or "", meaning=v.get("meaning") or "",
-                         meaning_zh=v.get("meaning_zh") or "", example=v.get("example") or "", first=ts, last=ts)
+                         meaning_zh=v.get("meaning_zh") or "", example=v.get("example") or "", first=ts, last=ts,
+                         level=v.get("level") or "", rewrite=v.get("rewrite") or "")
                 words[w.id] = w
             w.times += 1
             if v.get("you_wrote") and v["you_wrote"] not in w.wrote:
@@ -245,6 +250,8 @@ def _derive_words(ordered: list[dict], cards: list[Card]) -> dict[str, Word]:
                 w.last = ts
                 if v.get("example"):
                     w.example = v["example"]
+                if v.get("rewrite"):
+                    w.rewrite = v["rewrite"]
                 if v.get("meaning"):
                     w.meaning = v["meaning"]
                     w.meaning_zh = v.get("meaning_zh") or w.meaning_zh

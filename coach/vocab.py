@@ -51,6 +51,18 @@ def vocab_id(kind: str, word: str) -> str:
     return hashlib.sha1(f"vocab|{kind}|{store.norm(word)}".encode("utf-8")).hexdigest()[:10]
 
 
+def distinct(values, exclude) -> list[str]:
+    """The non-empty values, squashed, without repeats or anything in `exclude` (compared normalized)."""
+    seen = {store.norm(x) for x in exclude}
+    out = []
+    for value in values:
+        value = store.squash(str(value))
+        if value and store.norm(value) not in seen:
+            seen.add(store.norm(value))
+            out.append(value)
+    return out
+
+
 def build_prompt(batch: dict) -> str:
     by_msg: dict[str, list[str]] = {}
     for f in batch.get("findings", []):
@@ -78,11 +90,7 @@ def clean(batch: dict, answer: dict) -> list[dict]:
             continue  # a spelling item needs the wrong spelling, and a real difference
         if you_wrote and you_wrote.lower() not in m["text"].lower():
             you_wrote = ""  # only show what the user really wrote
-        distractors = []
-        for d in v.get("distractors", []):
-            d = store.squash(str(d))
-            if d and store.norm(d) not in {store.norm(word), store.norm(you_wrote)} | {store.norm(x) for x in distractors}:
-                distractors.append(d)
+        distractors = distinct(v.get("distractors", []), {word, you_wrote})
         item_id = vocab_id(kind, word)
         if item_id in items:
             continue
@@ -115,8 +123,8 @@ def add_vocab(batch: dict, accounts=None, cancel=None) -> dict:
     return batch
 
 
-def missing() -> list[dict]:
-    """Lesson batches that have no vocabulary yet (lessons saved from Check writing never get one)."""
+def batches_without(key: str) -> list[dict]:
+    """Lesson batches that have no `key` yet (lessons saved from Check writing never get word lists)."""
     todo = []
     for path in store.batch_paths():
         if path.stem.startswith("app-"):
@@ -126,15 +134,19 @@ def missing() -> list[dict]:
         except (OSError, ValueError) as e:
             log.warning("can't read %s: %s", path.name, e)
             continue
-        if "vocab" not in batch and batch.get("messages"):
+        if key not in batch and batch.get("messages"):
             todo.append(batch)
     return todo
 
 
-def fill_missing(parallel: int = 2, accounts=None, cancel=None, on_batch=None) -> int:
-    """Add vocabulary to every batch that has none yet. Returns how many batches were filled.
+def missing() -> list[dict]:
+    """Lesson batches that have no vocabulary yet."""
+    return batches_without("vocab")
+
+
+def fill(todo: list[dict], add, key: str, *, parallel: int = 2, cancel=None, on_batch=None) -> int:
+    """Run `add(batch)` (which fills `batch[key]`) on each batch and save it. Returns how many batches were filled.
     `on_batch(done, total)` is called after each batch; setting `cancel` stops before the next one."""
-    todo = missing()
     if not todo:
         return 0
     done = 0
@@ -144,22 +156,28 @@ def fill_missing(parallel: int = 2, accounts=None, cancel=None, on_batch=None) -
         if cancel is not None and cancel.is_set():
             return False
         try:
-            add_vocab(batch, accounts, cancel)
+            add(batch)
         except llm.LLMError as e:
             if e.kind in ("cancelled", "not_configured"):
                 return False
-            log.warning("vocabulary failed for %s: %s", batch["id"], e)
+            log.warning("%s failed for %s: %s", key, batch["id"], e)
             return False
         finally:
             done += 1
             if on_batch:
                 on_batch(done, len(todo))
         store.write_json(BATCHES / f"{batch['id']}.json", batch)
-        log.info("vocabulary for %s: %d words", batch["id"], len(batch["vocab"]))
+        log.info("%s for %s: %d words", key, batch["id"], len(batch[key]))
         return True
 
     with ThreadPoolExecutor(max_workers=max(1, parallel)) as pool:
         return sum(pool.map(work, todo))
+
+
+def fill_missing(parallel: int = 2, accounts=None, cancel=None, on_batch=None) -> int:
+    """Add vocabulary to every batch that has none yet. Returns how many batches were filled."""
+    return fill(missing(), lambda batch: add_vocab(batch, accounts, cancel), "vocab",
+                parallel=parallel, cancel=cancel, on_batch=on_batch)
 
 
 def rebuild_all() -> int:

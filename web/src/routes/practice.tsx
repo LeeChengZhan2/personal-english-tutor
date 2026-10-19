@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 const searchSchema = z.object({
   mode: z.enum(['cards', 'words', 'pattern', 'rewrite', 'generated']).catch('cards'),
   pattern: z.string().optional(),
-  kind: z.enum(['spelling', 'know', 'clearer']).optional(),
+  group: z.enum(['new', 'fix']).optional(),
   message: z.string().optional(),
 })
 

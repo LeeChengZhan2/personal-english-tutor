@@ -2,7 +2,7 @@ import { infiniteQueryOptions, queryOptions, useMutation, useQuery, useQueryClie
 import { toast } from 'sonner'
 import { api, unwrap, type Schemas } from './client'
 
-export type WordKind = Schemas['WordBrief']['kind']
+export type WordGroup = Schemas['WordList']['group']
 export type MessageFilter = 'mistakes' | 'all'
 
 export const keys = {
@@ -10,7 +10,7 @@ export const keys = {
   home: ['home'] as const,
   patterns: ['patterns'] as const,
   pattern: (key: string, page: number) => ['patterns', key, { page }] as const,
-  words: (kind: WordKind, page: number) => ['words', { kind, page }] as const,
+  words: (group: WordGroup, page: number) => ['words', { group, page }] as const,
   messages: (filter: MessageFilter) => ['messages', { filter }] as const,
   message: (id: string) => ['message', id] as const,
   progress: ['progress'] as const,
@@ -40,10 +40,10 @@ export const patternQuery = (key: string, page: number) =>
       unwrap(api.GET('/api/patterns/{key}', { params: { path: { key }, query: { page, page_size: 20 } }, signal })),
   })
 
-export const wordsQuery = (kind: WordKind, page: number) =>
+export const wordsQuery = (group: WordGroup, page: number) =>
   queryOptions({
-    queryKey: keys.words(kind, page),
-    queryFn: ({ signal }) => unwrap(api.GET('/api/words', { params: { query: { kind, page, page_size: 24 } }, signal })),
+    queryKey: keys.words(group, page),
+    queryFn: ({ signal }) => unwrap(api.GET('/api/words', { params: { query: { group, page, page_size: 24 } }, signal })),
   })
 
 export const messagesQuery = (filter: MessageFilter) =>

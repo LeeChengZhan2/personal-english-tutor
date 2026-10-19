@@ -916,7 +916,7 @@ export interface components {
              */
             state: "idle" | "running" | "done" | "failed" | "stopped";
             /** Stage */
-            stage: ("reading" | "analyzing" | "vocabulary" | "done") | null;
+            stage: ("reading" | "analyzing" | "vocabulary" | "new_words" | "done") | null;
             /** Done */
             done: number;
             /** Total */
@@ -953,7 +953,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "spelling" | "know" | "clearer";
+            kind: "spelling" | "know" | "clearer" | "new";
             /** Word */
             word: string;
             /** Pos */
@@ -970,6 +970,10 @@ export interface components {
             times: number;
             /** Last */
             last: string | null;
+            /** Level */
+            level: string | null;
+            /** Rewrite */
+            rewrite: string;
             /**
              * Status
              * @enum {string}
@@ -980,25 +984,25 @@ export interface components {
             /** Due At */
             due_at: string | null;
         };
-        /** WordKindCount */
-        WordKindCount: {
+        /** WordGroupCount */
+        WordGroupCount: {
             /**
-             * Kind
+             * Group
              * @enum {string}
              */
-            kind: "spelling" | "know" | "clearer";
+            group: "new" | "fix";
             /** Count */
             count: number;
         };
         /** WordList */
         WordList: {
             /**
-             * Kind
+             * Group
              * @enum {string}
              */
-            kind: "spelling" | "know" | "clearer";
-            /** Kinds */
-            kinds: components["schemas"]["WordKindCount"][];
+            group: "new" | "fix";
+            /** Groups */
+            groups: components["schemas"]["WordGroupCount"][];
             /** Due */
             due: number;
             /** Mastered */
@@ -1007,8 +1011,8 @@ export interface components {
             total: number;
             /** Words */
             words: components["schemas"]["WordBrief"][];
-            /** Total In Kind */
-            total_in_kind: number;
+            /** Total In Group */
+            total_in_group: number;
             /** Page */
             page: number;
             /** Pages */
@@ -1404,7 +1408,7 @@ export interface operations {
     words: {
         parameters: {
             query?: {
-                kind?: "spelling" | "know" | "clearer";
+                group?: "new" | "fix";
                 page?: number;
                 page_size?: number;
             };

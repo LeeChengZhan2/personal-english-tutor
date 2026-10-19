@@ -12,6 +12,7 @@ const STAGES: Record<string, string> = {
   reading: 'Reading your conversations',
   analyzing: 'Finding mistakes',
   vocabulary: 'Collecting words to learn',
+  new_words: 'Finding new words for you',
   done: 'Finishing',
 }
 
@@ -26,7 +27,7 @@ export function UpdateBanner() {
   const detail =
     stage === 'analyzing' && data.total > 1
       ? ` · part ${Math.min(data.done + 1, data.total)} of ${data.total}`
-      : stage === 'vocabulary' && data.total > 1
+      : (stage === 'vocabulary' || stage === 'new_words') && data.total > 1
         ? ` · ${data.done} of ${data.total}`
         : ''
   return (

@@ -51,6 +51,12 @@ def make_batch(batch_id="b20261001-030016-3e1b0ad1-3e8d", day="2026-10-01", sour
         "vocab": [{"id": vocab.vocab_id("spelling", "please"), "kind": "spelling", "word": "please", "pos": "adverb",
                    "meaning": "a polite word for asking", "meaning_zh": "请", "example": "Please check it.",
                    "you_wrote": "Pleas", "message_id": f"{batch_id[-4:]}m1", "ts": ts1, "distractors": ["pleese"]}],
+        "new_words": [{"id": vocab.vocab_id("new", "investigate"), "kind": "new", "word": "investigate", "pos": "verb",
+                       "level": "B2", "meaning": "to look at something carefully to find the cause", "meaning_zh": "调查",
+                       "you_wrote": "check it", "rewrite": "Why does my table have only one row? Please investigate.",
+                       "example": "Could you investigate the slow login?", "message_id": f"{batch_id[-4:]}m1", "ts": ts1,
+                       "distractors": ["integrate", "illustrate"]}],
+        "new_words_at": f"{day}T11:05:00+08:00",
     }
 
 

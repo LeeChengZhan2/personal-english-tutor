@@ -45,6 +45,17 @@ def test_words_and_spelling_counts():
     assert w.wrote == ["Pleas"] and w.times == 2
 
 
+def test_new_words_are_their_own_list():
+    snap = snap_of(make_batch(), make_batch("b20261002-030016-3e1b0ad1-9999", day="2026-10-02"))
+    w = snap.word_by_id[vocab.vocab_id("new", "investigate")]
+    assert w.kind == "new" and w.level == "B2" and w.wrote == ["check it"] and w.times == 2
+    view = view_of(snap)
+    new, fix = insights.word_list(view, "new"), insights.word_list(view, "fix")
+    assert [x["word"] for x in new["words"]] == ["investigate"] and [x["word"] for x in fix["words"]] == ["please"]
+    assert new["groups"] == [{"group": "new", "count": 1}, {"group": "fix", "count": 1}]
+    assert insights.word_of_the_day(view)["word"] == "investigate"  # a new word before the others
+
+
 def test_unknown_pattern_gets_a_fallback_title():
     b = make_batch()
     b["findings"][0]["pattern"] = "made-up-pattern"
@@ -75,7 +86,8 @@ def test_real_lessons_load_cleanly():
     snap = lessons.derive(batches, store.read_patterns())
     assert all(e.located for c in snap.cards for e in c.examples)
     assert all(f["card"] == store.card_id(f["pattern"], f["wrong"], f["right"]) for b in batches for f in b["findings"])
-    assert all(v["id"] == vocab.vocab_id(v["kind"], v["word"]) for b in batches for v in b.get("vocab", []))
+    assert all(v["id"] == vocab.vocab_id(v["kind"], v["word"])
+               for b in batches for v in b.get("vocab", []) + b.get("new_words", []))
 
 
 # ---------- spaced repetition ----------

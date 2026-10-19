@@ -19,7 +19,7 @@ Their most frequent mistakes:
 
 ## Layout
 
-- `coach/`: the pipeline (read, analyze, vocab) and the practice domain (lessons, srs, insights, db, importer).
+- `coach/`: the pipeline (read, analyze, vocab, new_words) and the practice domain (lessons, srs, insights, db, importer).
   - It must never import `server/` or a web framework. `tests/test_layering.py` checks this.
 - `server/`: the FastAPI app and the `tutor` CLI.
   - `server/models.py` (Pydantic) is the API contract.
@@ -37,7 +37,9 @@ Their most frequent mistakes:
   - Tests use made-up data (`tests/conftest.py`). Tests that need real data skip when it isn't there.
 - **No hooks or background jobs:** lessons are made only when the user presses Update my lessons
   (`POST /api/update`) or runs `uv run python -m coach run`.
-  - The job runs `coach/run.py`: read each account's folder, then analyze, then vocab.
+  - The job runs `coach/run.py`: read each account's folder, then analyze, then vocab, then new words.
+  - The Words page has two lists: new words (kind `new`) and typos & fixes (`spelling`, `know`, `clearer`).
+    New words never include a word the user has typed in any message.
   - It is incremental: per-file offsets are kept in `data/inbox/state.json`.
 - **Accounts** (`coach/accounts.py`, `data/accounts.json`): each account is a conversations folder plus one method.
   - The folder is `~/.claude`, or the account's own `CLAUDE_CONFIG_DIR`.
@@ -69,3 +71,6 @@ Their most frequent mistakes:
   ```bash
   uv run python -c "from coach import analyze; print(analyze.rebuild_all())"
   ```
+
+  - For `prompts/new_words.md` or `new_words.clean`, do the same from `raw-new-words/`:
+    `uv run python -c "from coach import new_words; print(new_words.rebuild_all())"`.

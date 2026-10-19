@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 BATCHES = DATA / "batches"
+GRAMMAR = DATA / "grammar"      # grammar lessons for the user's most frequent grammar mistakes
 PATTERNS_FILE = DATA / "patterns.json"
 DB_FILE = DATA / "tutor.db"     # the app's practice progress (git-ignored)
 BACKUPS = DATA / "backups"

@@ -70,7 +70,7 @@ function PracticeCard({ settings }: { settings: Schemas['PracticeSettings'] }) {
   const save = useSaveSettings()
   return (
     <Card title="Practice">
-      <Row label={<>Chinese hints · <span lang="zh-Hans">中文提示</span></>} hint="Show a short Simplified Chinese hint next to rules and explanations." htmlFor="zh">
+      <Row label={<>Chinese hints · <span lang="zh-Hans">中文提示</span></>} hint="Show a short Simplified Chinese hint next to rules and explanations. New words always show their Chinese meaning." htmlFor="zh">
         <Switch id="zh" checked={settings.zh} onCheckedChange={(zh: boolean) => save.mutate({ zh })} />
       </Row>
       <Row label="Cards per round" hint="Reviews are never limited.">

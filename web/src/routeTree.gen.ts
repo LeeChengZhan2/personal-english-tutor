@@ -19,6 +19,8 @@ import { Route as AppMessagesRouteImport } from './routes/_app/messages'
 import { Route as AppProgressRouteImport } from './routes/_app/progress'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppWordsRouteImport } from './routes/_app/words'
+import { Route as AppGrammarIndexRouteImport } from './routes/_app/grammar/index'
+import { Route as AppGrammarPatternKeyRouteImport } from './routes/_app/grammar/$patternKey'
 import { Route as AppMistakesIndexRouteImport } from './routes/_app/mistakes/index'
 import { Route as AppMistakesPatternKeyRouteImport } from './routes/_app/mistakes/$patternKey'
 
@@ -71,6 +73,16 @@ const AppWordsRoute = AppWordsRouteImport.update({
   path: '/words',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGrammarIndexRoute = AppGrammarIndexRouteImport.update({
+  id: '/grammar/',
+  path: '/grammar/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGrammarPatternKeyRoute = AppGrammarPatternKeyRouteImport.update({
+  id: '/grammar/$patternKey',
+  path: '/grammar/$patternKey',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMistakesIndexRoute = AppMistakesIndexRouteImport.update({
   id: '/mistakes/',
   path: '/mistakes/',
@@ -92,7 +104,9 @@ export interface FileRoutesByFullPath {
   '/progress': typeof AppProgressRoute
   '/settings': typeof AppSettingsRoute
   '/words': typeof AppWordsRoute
+  '/grammar/$patternKey': typeof AppGrammarPatternKeyRoute
   '/mistakes/$patternKey': typeof AppMistakesPatternKeyRoute
+  '/grammar/': typeof AppGrammarIndexRoute
   '/mistakes/': typeof AppMistakesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -105,7 +119,9 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/words': typeof AppWordsRoute
   '/': typeof AppIndexRoute
+  '/grammar/$patternKey': typeof AppGrammarPatternKeyRoute
   '/mistakes/$patternKey': typeof AppMistakesPatternKeyRoute
+  '/grammar': typeof AppGrammarIndexRoute
   '/mistakes': typeof AppMistakesIndexRoute
 }
 export interface FileRoutesById {
@@ -120,7 +136,9 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/words': typeof AppWordsRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/grammar/$patternKey': typeof AppGrammarPatternKeyRoute
   '/_app/mistakes/$patternKey': typeof AppMistakesPatternKeyRoute
+  '/_app/grammar/': typeof AppGrammarIndexRoute
   '/_app/mistakes/': typeof AppMistakesIndexRoute
 }
 export interface FileRouteTypes {
@@ -135,7 +153,9 @@ export interface FileRouteTypes {
     | '/progress'
     | '/settings'
     | '/words'
+    | '/grammar/$patternKey'
     | '/mistakes/$patternKey'
+    | '/grammar/'
     | '/mistakes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -148,7 +168,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/words'
     | '/'
+    | '/grammar/$patternKey'
     | '/mistakes/$patternKey'
+    | '/grammar'
     | '/mistakes'
   id:
     | '__root__'
@@ -162,7 +184,9 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/words'
     | '/_app/'
+    | '/_app/grammar/$patternKey'
     | '/_app/mistakes/$patternKey'
+    | '/_app/grammar/'
     | '/_app/mistakes/'
   fileRoutesById: FileRoutesById
 }
@@ -244,6 +268,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWordsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/grammar/': {
+      id: '/_app/grammar/'
+      path: '/grammar'
+      fullPath: '/grammar/'
+      preLoaderRoute: typeof AppGrammarIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/grammar/$patternKey': {
+      id: '/_app/grammar/$patternKey'
+      path: '/grammar/$patternKey'
+      fullPath: '/grammar/$patternKey'
+      preLoaderRoute: typeof AppGrammarPatternKeyRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/mistakes/': {
       id: '/_app/mistakes/'
       path: '/mistakes'
@@ -269,7 +307,9 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppWordsRoute: typeof AppWordsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppGrammarPatternKeyRoute: typeof AppGrammarPatternKeyRoute
   AppMistakesPatternKeyRoute: typeof AppMistakesPatternKeyRoute
+  AppGrammarIndexRoute: typeof AppGrammarIndexRoute
   AppMistakesIndexRoute: typeof AppMistakesIndexRoute
 }
 
@@ -281,7 +321,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppWordsRoute: AppWordsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppGrammarPatternKeyRoute: AppGrammarPatternKeyRoute,
   AppMistakesPatternKeyRoute: AppMistakesPatternKeyRoute,
+  AppGrammarIndexRoute: AppGrammarIndexRoute,
   AppMistakesIndexRoute: AppMistakesIndexRoute,
 }
 

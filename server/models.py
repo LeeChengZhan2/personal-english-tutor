@@ -122,7 +122,7 @@ class CheckOut(BaseModel):
 # ---------- update my lessons ----------
 
 UpdateState = Literal["idle", "running", "done", "failed", "stopped"]
-UpdateStage = Literal["reading", "analyzing", "vocabulary", "new_words", "done"]
+UpdateStage = Literal["reading", "analyzing", "vocabulary", "new_words", "grammar", "done"]
 
 
 class UpdateIn(Request):
@@ -371,6 +371,69 @@ class PatternDetail(BaseModel):
     total: int
     page: int
     pages: int
+    lesson: bool = False            # a grammar lesson exists for this pattern
+
+
+# ---------- grammar ----------
+
+class GrammarRow(BaseModel):
+    pattern: str
+    title: str
+    summary: str
+    category: str
+    category_title: str
+    mistakes: int
+    last: str | None
+    mastery: Mastery
+
+
+class GrammarList(BaseModel):
+    lessons: list[GrammarRow]       # the point that needs work most first
+    coming: int                     # top grammar points with no lesson yet: the next update writes them
+
+
+class GrammarRule(BaseModel):
+    rule: str
+    example: str
+
+
+class GrammarExample(BaseModel):
+    sentence: str
+    note: str
+
+
+class GrammarPair(BaseModel):
+    wrong: str
+    right: str
+    why: str
+
+
+class QuizQuestion(BaseModel):
+    sentence: str                   # one gap, written as ___
+    answer: str
+    options: list[str]              # wrong choices
+    why: str
+
+
+class GrammarLesson(BaseModel):
+    pattern: str
+    title: str
+    category: str
+    category_title: str
+    summary: str
+    summary_zh: str
+    your_habit: str
+    rules: list[GrammarRule]
+    examples: list[GrammarExample]
+    watch_out: list[GrammarPair]
+    quiz: list[QuizQuestion]
+    tip: str
+    tip_zh: str
+    mistakes: int
+    last: str | None
+    mastery: Mastery
+    from_you: list[Example]         # the learner's latest real mistakes on this point
+    written_at: str | None
 
 
 # ---------- words ----------

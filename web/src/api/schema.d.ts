@@ -124,6 +124,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/grammar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Grammar List */
+        get: operations["grammar_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/grammar/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Grammar Lesson */
+        get: operations["grammar_lesson"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/words": {
         parameters: {
             query?: never;
@@ -570,6 +604,92 @@ export interface components {
             count: number;
             example: components["schemas"]["Example"] | null;
         };
+        /** GrammarExample */
+        GrammarExample: {
+            /** Sentence */
+            sentence: string;
+            /** Note */
+            note: string;
+        };
+        /** GrammarLesson */
+        GrammarLesson: {
+            /** Pattern */
+            pattern: string;
+            /** Title */
+            title: string;
+            /** Category */
+            category: string;
+            /** Category Title */
+            category_title: string;
+            /** Summary */
+            summary: string;
+            /** Summary Zh */
+            summary_zh: string;
+            /** Your Habit */
+            your_habit: string;
+            /** Rules */
+            rules: components["schemas"]["GrammarRule"][];
+            /** Examples */
+            examples: components["schemas"]["GrammarExample"][];
+            /** Watch Out */
+            watch_out: components["schemas"]["GrammarPair"][];
+            /** Quiz */
+            quiz: components["schemas"]["QuizQuestion"][];
+            /** Tip */
+            tip: string;
+            /** Tip Zh */
+            tip_zh: string;
+            /** Mistakes */
+            mistakes: number;
+            /** Last */
+            last: string | null;
+            mastery: components["schemas"]["Mastery"];
+            /** From You */
+            from_you: components["schemas"]["Example"][];
+            /** Written At */
+            written_at: string | null;
+        };
+        /** GrammarList */
+        GrammarList: {
+            /** Lessons */
+            lessons: components["schemas"]["GrammarRow"][];
+            /** Coming */
+            coming: number;
+        };
+        /** GrammarPair */
+        GrammarPair: {
+            /** Wrong */
+            wrong: string;
+            /** Right */
+            right: string;
+            /** Why */
+            why: string;
+        };
+        /** GrammarRow */
+        GrammarRow: {
+            /** Pattern */
+            pattern: string;
+            /** Title */
+            title: string;
+            /** Summary */
+            summary: string;
+            /** Category */
+            category: string;
+            /** Category Title */
+            category_title: string;
+            /** Mistakes */
+            mistakes: number;
+            /** Last */
+            last: string | null;
+            mastery: components["schemas"]["Mastery"];
+        };
+        /** GrammarRule */
+        GrammarRule: {
+            /** Rule */
+            rule: string;
+            /** Example */
+            example: string;
+        };
         /** Health */
         Health: {
             /**
@@ -734,6 +854,11 @@ export interface components {
             page: number;
             /** Pages */
             pages: number;
+            /**
+             * Lesson
+             * @default false
+             */
+            lesson: boolean;
         };
         /** PatternList */
         PatternList: {
@@ -827,6 +952,17 @@ export interface components {
             /** Repeated */
             repeated: components["schemas"]["RepeatRow"][];
         };
+        /** QuizQuestion */
+        QuizQuestion: {
+            /** Sentence */
+            sentence: string;
+            /** Answer */
+            answer: string;
+            /** Options */
+            options: string[];
+            /** Why */
+            why: string;
+        };
         /** RepeatRow */
         RepeatRow: {
             /** Card Id */
@@ -916,7 +1052,7 @@ export interface components {
              */
             state: "idle" | "running" | "done" | "failed" | "stopped";
             /** Stage */
-            stage: ("reading" | "analyzing" | "vocabulary" | "new_words" | "done") | null;
+            stage: ("reading" | "analyzing" | "vocabulary" | "new_words" | "grammar" | "done") | null;
             /** Done */
             done: number;
             /** Total */
@@ -1365,6 +1501,120 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PatternDetail"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    grammar_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarList"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    grammar_lesson: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLesson"];
                 };
             };
             /** @description Bad Request */

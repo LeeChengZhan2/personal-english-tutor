@@ -20,6 +20,7 @@ from coach.lessons import LessonStore
 class Paths:
     root: Path
     batches: Path
+    grammar: Path
     patterns: Path
     db: Path
     backups: Path
@@ -29,17 +30,17 @@ class Paths:
 
     @classmethod
     def default(cls) -> Paths:
-        return cls(root=coach_config.ROOT, batches=coach_config.BATCHES, patterns=coach_config.PATTERNS_FILE,
-                   db=coach_config.DB_FILE, backups=coach_config.BACKUPS, inbox=coach_config.INBOX,
-                   web_dist=coach_config.WEB_DIST, accounts=accounts.ACCOUNTS_FILE)
+        return cls(root=coach_config.ROOT, batches=coach_config.BATCHES, grammar=coach_config.GRAMMAR,
+                   patterns=coach_config.PATTERNS_FILE, db=coach_config.DB_FILE, backups=coach_config.BACKUPS,
+                   inbox=coach_config.INBOX, web_dist=coach_config.WEB_DIST, accounts=accounts.ACCOUNTS_FILE)
 
     @classmethod
     def under(cls, root: Path) -> Paths:
         """The same layout under another folder (tests)."""
         data = root / "data"
-        return cls(root=root, batches=data / "batches", patterns=data / "patterns.json", db=data / "tutor.db",
-                   backups=data / "backups", inbox=data / "inbox", web_dist=root / "web" / "dist",
-                   accounts=data / "accounts.json")
+        return cls(root=root, batches=data / "batches", grammar=data / "grammar", patterns=data / "patterns.json",
+                   db=data / "tutor.db", backups=data / "backups", inbox=data / "inbox",
+                   web_dist=root / "web" / "dist", accounts=data / "accounts.json")
 
 
 class AppContext:

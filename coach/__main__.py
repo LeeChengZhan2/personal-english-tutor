@@ -5,8 +5,9 @@
   analyze [-n N] [-j J]   analyze waiting messages (N batches at most, J at a time)
   vocab [-j J]      add vocabulary to batches that have none
   new-words [-j J]  add new words (vocabulary you haven't used yet) to batches that have none
-  run               a full update: read new conversations, analyze them, add vocabulary and new words
-                    (what the app's "Update my lessons" button does)
+  grammar [-j J]    write the grammar lessons that are due (your most frequent grammar mistakes)
+  run               a full update: read new conversations, analyze them, add vocabulary and new words,
+                    write grammar lessons (what the app's "Update my lessons" button does)
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ import argparse
 import logging
 import sys
 
-from . import analyze, capture, new_words, run, store, vocab
+from . import analyze, capture, grammar, new_words, run, srs, store, vocab
 from .accounts import load_accounts
 from .config import LOGS, TRANSCRIPTS
 from .llm import LLMError
@@ -38,6 +39,8 @@ def cmd_status() -> None:
     print(f"captured messages : {len(messages)}")
     print(f"waiting analysis  : {len(pending)}")
     print(f"lesson batches    : {len(batches)} ({len(no_vocab)} without vocabulary, {len(no_new_words)} without new words)")
+    lessons_due = grammar.due(grammar.snapshot(), srs.now_ms())
+    print(f"grammar lessons   : {len(grammar.read_all())} ({len(lessons_due)} to write next update)")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -47,7 +50,7 @@ def main(argv: list[str] | None = None) -> int:
         except (AttributeError, ValueError):
             pass
     parser = argparse.ArgumentParser(prog="coach", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["status", "backfill", "analyze", "vocab", "new-words", "run"])
+    parser.add_argument("command", choices=["status", "backfill", "analyze", "vocab", "new-words", "grammar", "run"])
     parser.add_argument("-n", type=int, default=None, help="analyze: at most N batches")
     parser.add_argument("-j", type=int, default=2, help="analyze: batches at a time")
     parser.add_argument("-q", action="store_true", help="log to the file only")
@@ -65,6 +68,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"vocabulary added to {vocab.fill_missing(parallel=args.j, accounts=load_accounts())} batches")
     elif args.command == "new-words":
         print(f"new words added to {new_words.fill_missing(parallel=args.j, accounts=load_accounts())} batches")
+    elif args.command == "grammar":
+        snap = grammar.snapshot()
+        keys = grammar.due(snap, srs.now_ms())
+        print(f"{grammar.write_lessons(snap, keys, parallel=args.j, accounts=load_accounts())} of {len(keys)} grammar lessons written")
     elif args.command == "run":
         accounts = load_accounts()
         if not accounts:

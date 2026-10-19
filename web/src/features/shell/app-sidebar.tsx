@@ -4,6 +4,7 @@ import {
   ChartLine,
   CircleHelp,
   Flame,
+  GraduationCap,
   House,
   MessagesSquare,
   Monitor,
@@ -54,6 +55,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: '/', label: 'Home', icon: House, exact: true },
   { to: '/mistakes', label: 'Mistakes', icon: Strikethrough },
+  { to: '/grammar', label: 'Grammar', icon: GraduationCap },
   { to: '/words', label: 'Words', icon: BookA },
   { to: '/messages', label: 'Messages', icon: MessagesSquare },
   { to: '/check', label: 'Check writing', icon: SpellCheck },

@@ -24,6 +24,17 @@ CATALOG = {
 DO = ("do-support", "Why my table has", "Why does my table have")
 PLEAS = ("spelling", "Pleas", "Please")
 
+# A grammar lesson as coach.grammar.clean returns it (and as data/grammar/<pattern>.json keeps it)
+LESSON = {
+    "title": "Questions with do and does", "summary": "Questions in the present need do or does before the subject.",
+    "summary_zh": "一般现在时的问句要在主语前加 do/does。", "your_habit": 'You often leave out does: "Why my table has".',
+    "rules": [{"rule": "Put do or does before the subject.", "example": "Why does the job stop?"}],
+    "examples": [{"sentence": "Does the build pass on main?", "note": "does + subject + base verb"}],
+    "watch_out": [{"wrong": "Why it fails?", "right": "Why does it fail?", "why": "A question needs does."}],
+    "quiz": [{"sentence": "Why ___ the test fail?", "answer": "does", "options": ["do", "is"], "why": "The test is one thing."}],
+    "tip": "A question? Find the helper verb first.", "tip_zh": "问句先找助动词。",
+}
+
 
 def finding(pattern, wrong, right, sentence, corrected, message_id, ts, severity="error"):
     return {"card": store.card_id(pattern, wrong, right), "message_id": message_id, "ts": ts, "pattern": pattern,

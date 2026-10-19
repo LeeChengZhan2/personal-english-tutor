@@ -19,7 +19,7 @@ Their most frequent mistakes:
 
 ## Layout
 
-- `coach/`: the pipeline (read, analyze, vocab, new_words) and the practice domain (lessons, srs, insights, db, importer).
+- `coach/`: the pipeline (read, analyze, vocab, new_words, grammar) and the practice domain (lessons, srs, insights, db, importer).
   - It must never import `server/` or a web framework. `tests/test_layering.py` checks this.
 - `server/`: the FastAPI app and the `tutor` CLI.
   - `server/models.py` (Pydantic) is the API contract.
@@ -37,7 +37,8 @@ Their most frequent mistakes:
   - Tests use made-up data (`tests/conftest.py`). Tests that need real data skip when it isn't there.
 - **No hooks or background jobs:** lessons are made only when the user presses Update my lessons
   (`POST /api/update`) or runs `uv run python -m coach run`.
-  - The job runs `coach/run.py`: read each account's folder, then analyze, then vocab, then new words.
+  - The job runs `coach/run.py`: read each account's folder, then analyze, then vocab, then new words, then
+    the grammar lessons that are due (`data/grammar/<pattern>.json`, for the most frequent grammar mistakes).
   - The Words page has two lists: new words (kind `new`) and typos & fixes (`spelling`, `know`, `clearer`).
     New words never include a word the user has typed in any message.
   - It is incremental: per-file offsets are kept in `data/inbox/state.json`.
@@ -74,3 +75,5 @@ Their most frequent mistakes:
 
   - For `prompts/new_words.md` or `new_words.clean`, do the same from `raw-new-words/`:
     `uv run python -c "from coach import new_words; print(new_words.rebuild_all())"`.
+  - For `grammar.clean`, re-validate the lessons from `raw-grammar/` with `grammar.rebuild_all()`.
+    A change to `prompts/grammar.md` only affects lessons written after it.

@@ -64,6 +64,7 @@ Everything personal is in `data/`, and git ignores the whole folder:
 | `data/accounts.json` | your accounts and API keys (a key is never shown again after you save it) |
 | `data/inbox/` | the messages read so far, how far each conversation was read, Claude's raw answers |
 | `data/batches/` | your lessons: messages, mistakes and words, with secrets removed |
+| `data/grammar/` | grammar lessons for the grammar you get wrong most |
 | `data/patterns.json` | new mistake patterns Claude added for you |
 | `data/tutor.db` | your practice progress and settings, backed up every day to `data/backups/` |
 | `data/config.json` | optional settings (see below) |
@@ -84,7 +85,8 @@ Lessons you already made stay in `data/`, even after their conversations are del
                              ─check─▶ data/batches/*.json        mistakes → cards, by Claude (Sonnet)
                              ─words─▶ the same batches           typos & fixes, a second pass
                              ─new───▶ the same batches           new words you haven't used, a third pass
-the app (FastAPI + React)    reads data/batches; keeps progress in data/tutor.db
+your mistakes                ─teach─▶ data/grammar/*.json        a lesson for each frequent grammar mistake
+the app (FastAPI + React)    reads data/batches and data/grammar; keeps progress in data/tutor.db
 ```
 
 1. **Read** (`coach/capture.py`, `coach/transcripts.py`): keeps the messages you typed and records
@@ -98,7 +100,10 @@ the app (FastAPI + React)    reads data/batches; keeps progress in data/tutor.db
 4. **New words** (`coach/new_words.py`, `prompts/new_words.md`): where you wrote something in a plain or
    long way, Claude suggests the word a fluent professional would use (level B2 and above), with your
    sentence rewritten around it. A word you have typed in any message is never suggested.
-5. **Practise** (`coach/lessons.py`, `coach/srs.py`): the same mistake made twice is one card. Cards come
+5. **Grammar lessons** (`coach/grammar.py`, `prompts/grammar.md`): for the 12 grammar points you get wrong
+   most (recent mistakes count more), Claude writes a short lesson: what you usually get wrong, the rules,
+   new example sentences and a quick check. A lesson is rewritten when its mistakes grow a lot.
+6. **Practise** (`coach/lessons.py`, `coach/srs.py`): the same mistake made twice is one card. Cards come
    back after 10 minutes, then 1, 3, 7, 16, 35 and 90 days.
 
 The analysis prompt is written for a software engineer with a Mandarin and Singlish background who

@@ -1,5 +1,5 @@
 """One update: read new messages from the accounts' Claude Code conversations, find the mistakes, add vocabulary
-and new words.
+and new words, and write the grammar lessons that are due.
 
 Started by the app's "Update my lessons" button (or `python -m coach run`). Each conversation file is read from
 where the last update stopped, and only messages not analyzed yet are sent to Claude, so nothing is done twice.
@@ -12,13 +12,13 @@ import threading
 from collections.abc import Callable
 from pathlib import Path
 
-from . import analyze, capture, new_words, store, vocab
+from . import analyze, capture, grammar, new_words, srs, store, vocab
 from .accounts import Account
 from .llm import LLMError
 
 log = logging.getLogger("coach")
 
-# (stage, done, total); stages: reading, analyzing, vocabulary, new_words, done
+# (stage, done, total); stages: reading, analyzing, vocabulary, new_words, grammar, done
 Progress = Callable[[str, int, int], None]
 
 
@@ -63,9 +63,17 @@ def run(accounts: list[Account], *, parallel: int = 2, on_progress: Progress | N
             report("new_words", 0, 1)
             fresh = new_words.fill_missing(parallel=parallel, accounts=accounts, cancel=cancel,
                                            on_batch=lambda d, t: report("new_words", d, t))
+        written = 0
+        if not stopped():
+            snap = grammar.snapshot()
+            keys = grammar.due(snap, srs.now_ms())
+            if keys:
+                report("grammar", 0, len(keys))
+                written = grammar.write_lessons(snap, keys, parallel=parallel, accounts=accounts, cancel=cancel,
+                                                on_done=lambda d, t: report("grammar", d, t))
         left = len(store.pending_messages())
         report("done", 1, 1)
     log.info("update: %d new messages read, %d analyzed into %d batches, %d still waiting",
              captured, waiting - left, len(batches), left)
     return {"captured": captured, "analyzed": waiting - left, "batches": batches, "vocabulary": filled,
-            "new_words": fresh, "waiting": left, "stopped": stopped()}
+            "new_words": fresh, "grammar": written, "waiting": left, "stopped": stopped()}

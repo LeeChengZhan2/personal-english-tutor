@@ -435,6 +435,139 @@
     }
    }
   },
+  "/api/grammar": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Grammar List",
+    "operationId": "grammar_list",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/GrammarList"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/grammar/{key}": {
+   "get": {
+    "tags": [
+     "content"
+    ],
+    "summary": "Grammar Lesson",
+    "operationId": "grammar_lesson",
+    "parameters": [
+     {
+      "name": "key",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Key"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/GrammarLesson"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
   "/api/words": {
    "get": {
     "tags": [
@@ -2162,6 +2295,266 @@
     ],
     "title": "Focus"
    },
+   "GrammarExample": {
+    "properties": {
+     "sentence": {
+      "type": "string",
+      "title": "Sentence"
+     },
+     "note": {
+      "type": "string",
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sentence",
+     "note"
+    ],
+    "title": "GrammarExample"
+   },
+   "GrammarLesson": {
+    "properties": {
+     "pattern": {
+      "type": "string",
+      "title": "Pattern"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "category_title": {
+      "type": "string",
+      "title": "Category Title"
+     },
+     "summary": {
+      "type": "string",
+      "title": "Summary"
+     },
+     "summary_zh": {
+      "type": "string",
+      "title": "Summary Zh"
+     },
+     "your_habit": {
+      "type": "string",
+      "title": "Your Habit"
+     },
+     "rules": {
+      "items": {
+       "$ref": "#/components/schemas/GrammarRule"
+      },
+      "type": "array",
+      "title": "Rules"
+     },
+     "examples": {
+      "items": {
+       "$ref": "#/components/schemas/GrammarExample"
+      },
+      "type": "array",
+      "title": "Examples"
+     },
+     "watch_out": {
+      "items": {
+       "$ref": "#/components/schemas/GrammarPair"
+      },
+      "type": "array",
+      "title": "Watch Out"
+     },
+     "quiz": {
+      "items": {
+       "$ref": "#/components/schemas/QuizQuestion"
+      },
+      "type": "array",
+      "title": "Quiz"
+     },
+     "tip": {
+      "type": "string",
+      "title": "Tip"
+     },
+     "tip_zh": {
+      "type": "string",
+      "title": "Tip Zh"
+     },
+     "mistakes": {
+      "type": "integer",
+      "title": "Mistakes"
+     },
+     "last": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last"
+     },
+     "mastery": {
+      "$ref": "#/components/schemas/Mastery"
+     },
+     "from_you": {
+      "items": {
+       "$ref": "#/components/schemas/Example"
+      },
+      "type": "array",
+      "title": "From You"
+     },
+     "written_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Written At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pattern",
+     "title",
+     "category",
+     "category_title",
+     "summary",
+     "summary_zh",
+     "your_habit",
+     "rules",
+     "examples",
+     "watch_out",
+     "quiz",
+     "tip",
+     "tip_zh",
+     "mistakes",
+     "last",
+     "mastery",
+     "from_you",
+     "written_at"
+    ],
+    "title": "GrammarLesson"
+   },
+   "GrammarList": {
+    "properties": {
+     "lessons": {
+      "items": {
+       "$ref": "#/components/schemas/GrammarRow"
+      },
+      "type": "array",
+      "title": "Lessons"
+     },
+     "coming": {
+      "type": "integer",
+      "title": "Coming"
+     }
+    },
+    "type": "object",
+    "required": [
+     "lessons",
+     "coming"
+    ],
+    "title": "GrammarList"
+   },
+   "GrammarPair": {
+    "properties": {
+     "wrong": {
+      "type": "string",
+      "title": "Wrong"
+     },
+     "right": {
+      "type": "string",
+      "title": "Right"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     }
+    },
+    "type": "object",
+    "required": [
+     "wrong",
+     "right",
+     "why"
+    ],
+    "title": "GrammarPair"
+   },
+   "GrammarRow": {
+    "properties": {
+     "pattern": {
+      "type": "string",
+      "title": "Pattern"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "summary": {
+      "type": "string",
+      "title": "Summary"
+     },
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "category_title": {
+      "type": "string",
+      "title": "Category Title"
+     },
+     "mistakes": {
+      "type": "integer",
+      "title": "Mistakes"
+     },
+     "last": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last"
+     },
+     "mastery": {
+      "$ref": "#/components/schemas/Mastery"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pattern",
+     "title",
+     "summary",
+     "category",
+     "category_title",
+     "mistakes",
+     "last",
+     "mastery"
+    ],
+    "title": "GrammarRow"
+   },
+   "GrammarRule": {
+    "properties": {
+     "rule": {
+      "type": "string",
+      "title": "Rule"
+     },
+     "example": {
+      "type": "string",
+      "title": "Example"
+     }
+    },
+    "type": "object",
+    "required": [
+     "rule",
+     "example"
+    ],
+    "title": "GrammarRule"
+   },
    "Health": {
     "properties": {
      "app": {
@@ -2618,6 +3011,11 @@
      "pages": {
       "type": "integer",
       "title": "Pages"
+     },
+     "lesson": {
+      "type": "boolean",
+      "title": "Lesson",
+      "default": false
      }
     },
     "type": "object",
@@ -2880,6 +3278,37 @@
      "repeated"
     ],
     "title": "Progress"
+   },
+   "QuizQuestion": {
+    "properties": {
+     "sentence": {
+      "type": "string",
+      "title": "Sentence"
+     },
+     "answer": {
+      "type": "string",
+      "title": "Answer"
+     },
+     "options": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Options"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sentence",
+     "answer",
+     "options",
+     "why"
+    ],
+    "title": "QuizQuestion"
    },
    "RepeatRow": {
     "properties": {
@@ -3165,6 +3594,7 @@
          "analyzing",
          "vocabulary",
          "new_words",
+         "grammar",
          "done"
         ]
        },

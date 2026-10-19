@@ -9,7 +9,6 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-from concurrent.futures import ThreadPoolExecutor
 
 from . import llm, store
 from .config import BATCHES, INBOX, PROMPTS
@@ -147,31 +146,14 @@ def missing() -> list[dict]:
 def fill(todo: list[dict], add, key: str, *, parallel: int = 2, cancel=None, on_batch=None) -> int:
     """Run `add(batch)` (which fills `batch[key]`) on each batch and save it. Returns how many batches were filled.
     `on_batch(done, total)` is called after each batch; setting `cancel` stops before the next one."""
-    if not todo:
-        return 0
-    done = 0
 
-    def work(batch: dict) -> bool:
-        nonlocal done
-        if cancel is not None and cancel.is_set():
-            return False
-        try:
-            add(batch)
-        except llm.LLMError as e:
-            if e.kind in ("cancelled", "not_configured"):
-                return False
-            log.warning("%s failed for %s: %s", key, batch["id"], e)
-            return False
-        finally:
-            done += 1
-            if on_batch:
-                on_batch(done, len(todo))
+    def work(batch: dict) -> None:
+        add(batch)
         store.write_json(BATCHES / f"{batch['id']}.json", batch)
         log.info("%s for %s: %d words", key, batch["id"], len(batch[key]))
-        return True
 
-    with ThreadPoolExecutor(max_workers=max(1, parallel)) as pool:
-        return sum(pool.map(work, todo))
+    return llm.each(todo, work, label=lambda batch: f"{key} for {batch['id']}", parallel=parallel, cancel=cancel,
+                    on_done=on_batch)
 
 
 def fill_missing(parallel: int = 2, accounts=None, cancel=None, on_batch=None) -> int:

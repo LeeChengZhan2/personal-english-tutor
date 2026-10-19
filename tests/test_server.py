@@ -7,6 +7,8 @@ import pytest
 
 TestClient = pytest.importorskip("fastapi.testclient").TestClient  # needs fastapi and httpx2 (or httpx)
 
+from conftest import LESSON  # noqa: E402
+
 from coach import srs  # noqa: E402
 from server.app import create_app  # noqa: E402
 from server.context import Paths  # noqa: E402
@@ -57,6 +59,23 @@ def test_content_pages(client):
     assert len(p["practice"]) == 28 and p["kpis"]["cards_total"] == 2
 
 
+def test_grammar_lessons(client, data_root):
+    folder = data_root / "data" / "grammar"
+    folder.mkdir()
+    doc = {"pattern": "do-support", "written_at": "2026-10-02T10:00:00+08:00", "based_on": 1, "lesson": LESSON}
+    (folder / "do-support.json").write_text(json.dumps(doc), encoding="utf-8")
+    listing = client.get("/api/grammar").json()
+    assert listing["coming"] == 0 and [r["pattern"] for r in listing["lessons"]] == ["do-support"]
+    assert listing["lessons"][0]["title"] == LESSON["title"] and listing["lessons"][0]["mistakes"] == 1
+    lesson = client.get("/api/grammar/do-support").json()
+    assert lesson["quiz"] == LESSON["quiz"] and lesson["category_title"] == "Verbs"
+    assert lesson["from_you"][0]["wrong"] == "Why my table has"
+    assert client.get("/api/grammar/spelling").json()["code"] == "not_found"
+    assert client.get("/api/grammar/..%5Cpatterns").status_code == 404  # never a file outside data/grammar
+    assert client.get("/api/patterns/do-support").json()["lesson"] is True
+    assert client.get("/api/patterns/spelling").json()["lesson"] is False
+
+
 def test_settings_validate_and_save(client):
     assert client.put("/api/settings", json={"round_size": 12}).json()["round_size"] == 12
     bad = client.put("/api/settings", json={"round_size": 7})
@@ -91,4 +110,4 @@ def test_serves_the_web_app_with_a_fallback(client):
 def test_openapi_has_readable_operation_ids(client):
     schema = client.get("/api/openapi.json").json()
     ids = {op["operationId"] for path in schema["paths"].values() for op in path.values()}
-    assert {"bootstrap", "home", "patterns", "pattern", "words", "messages", "progress"} <= ids
+    assert {"bootstrap", "home", "patterns", "pattern", "grammar_list", "grammar_lesson", "words", "messages", "progress"} <= ids

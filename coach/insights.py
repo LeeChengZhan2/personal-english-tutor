@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from . import srs
+from . import grammar, srs
 from .lessons import WORD_GROUPS, Card, Message, Snapshot, Word
 from .srs import DAY, MASTERED, State
 
@@ -282,14 +282,56 @@ def pattern_detail(view: View, key: str, page: int = 1, page_size: int = 20) -> 
     p = p or {}
     cards.sort(key=lambda c: (c.times, c.last or ""), reverse=True)
     shown, page, pages = _page(cards, page, page_size)
-    category = p.get("category") or "words"
+    category, category_title = _category(snap, key)
     return {
-        "key": key, "title": snap.pattern_title(key), "category": category,
-        "category_title": (snap.categories.get(category) or {}).get("title") or category,
+        "key": key, "title": snap.pattern_title(key), "category": category, "category_title": category_title,
         "rule": p.get("rule", ""), "rule_zh": p.get("rule_zh", ""), "mastery": _mastery(view, cards),
         "more_examples": [{"wrong": e.get("wrong", ""), "right": e.get("right", "")} for e in p.get("examples") or []],
         "cards": [card_row(view, c) for c in shown], "total": len(cards), "page": page, "pages": pages,
     }
+
+
+# ---------- grammar ----------
+
+def grammar_list(view: View, docs: dict[str, dict]) -> dict:
+    """The saved grammar lessons, the point that needs work most first, and how many top points have none yet."""
+    snap = view.snap
+    ranked = grammar.ranked(snap, view.now_ms)
+    order = {key: i for i, (key, _) in enumerate(ranked)}
+    points = grammar.by_point(snap)
+    rows = []
+    for key, doc in docs.items():
+        cards = points.get(key, [])
+        category, category_title = _category(snap, key)
+        rows.append({
+            "pattern": key, "title": doc["lesson"].get("title") or snap.pattern_title(key),
+            "summary": doc["lesson"].get("summary", ""), "category": category, "category_title": category_title,
+            "mistakes": grammar.mistakes(cards), "last": max((c.last for c in cards if c.last), default="") or None,
+            "mastery": _mastery(view, cards),
+        })
+    rows.sort(key=lambda r: (order.get(r["pattern"], len(order)), -r["mistakes"]))
+    return {"lessons": rows, "coming": sum(1 for key, _ in ranked[:grammar.MAX_LESSONS] if key not in docs)}
+
+
+def grammar_lesson(view: View, key: str, doc: dict) -> dict:
+    """One saved lesson, with the learner's latest real mistakes on the point."""
+    snap = view.snap
+    cards = sorted(grammar.by_point(snap).get(key, []), key=lambda c: c.last or "", reverse=True)
+    category, category_title = _category(snap, key)
+    return {
+        **doc["lesson"],
+        "pattern": key, "category": category, "category_title": category_title,
+        "mistakes": grammar.mistakes(cards), "last": (cards[0].last or None) if cards else None,
+        "mastery": _mastery(view, cards),
+        "from_you": [_example(c) for c in cards if c.examples[-1].located][:4],
+        "written_at": doc.get("written_at"),
+    }
+
+
+def _category(snap: Snapshot, pattern: str) -> tuple[str, str]:
+    """A pattern's category key and title."""
+    category = (snap.patterns.get(pattern) or {}).get("category") or "words"
+    return category, (snap.categories.get(category) or {}).get("title") or category
 
 
 # ---------- words ----------

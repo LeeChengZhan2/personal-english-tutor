@@ -1,4 +1,4 @@
-"""The read-only pages: home, mistakes (patterns), words, messages and progress."""
+"""The read-only pages: home, mistakes (patterns), grammar, words, messages and progress."""
 
 from __future__ import annotations
 
@@ -6,11 +6,12 @@ from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
 
-from coach import insights
+from coach import grammar, insights
 
 from ..context import AppContext, get_ctx
 from ..errors import ApiException
-from ..models import ApiError, Home, MessagePage, MessageRow, PatternDetail, PatternList, Progress, WordGroup, WordList
+from ..models import (ApiError, GrammarLesson, GrammarList, Home, MessagePage, MessageRow, PatternDetail, PatternList,
+                      Progress, WordGroup, WordList)
 
 router = APIRouter(prefix="/api", tags=["content"],
                    responses={400: {"model": ApiError}, 404: {"model": ApiError}, 422: {"model": ApiError},
@@ -36,7 +37,24 @@ def pattern(key: str, page: int = Query(1, ge=1), page_size: int = Query(20, ge=
         detail = insights.pattern_detail(ctx.view(conn), key, page, page_size)
     if detail is None:
         raise ApiException(404, "not_found", "This mistake pattern isn't in your lessons.")
+    detail["lesson"] = grammar.read(ctx.paths.grammar, key) is not None
     return detail
+
+
+@router.get("/grammar", response_model=GrammarList)
+def grammar_list(ctx: AppContext = Depends(get_ctx)) -> dict:
+    docs = grammar.read_all(ctx.paths.grammar)
+    with ctx.conn() as conn:
+        return insights.grammar_list(ctx.view(conn), docs)
+
+
+@router.get("/grammar/{key}", response_model=GrammarLesson)
+def grammar_lesson(key: str, ctx: AppContext = Depends(get_ctx)) -> dict:
+    doc = grammar.read(ctx.paths.grammar, key)
+    if doc is None:
+        raise ApiException(404, "not_found", "There's no grammar lesson for this yet.")
+    with ctx.conn() as conn:
+        return insights.grammar_lesson(ctx.view(conn), key, doc)
 
 
 @router.get("/words", response_model=WordList)

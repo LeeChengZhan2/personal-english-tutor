@@ -9,6 +9,8 @@ import copy
 import json
 import logging
 import threading
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 
 from . import accounts as accounts_mod, claude_cli
 from .accounts import Account
@@ -106,6 +108,35 @@ def _ask_cli(account: Account, prompt: str, schema: dict, alias: str, cancel, ti
     if not isinstance(answer, dict):
         raise LLMError("Claude's answer wasn't a JSON object.", kind="invalid_output")
     return answer
+
+
+def each(items: list, work: Callable, *, label: Callable[..., str], parallel: int = 2,
+         cancel: threading.Event | None = None, on_done: Callable[[int, int], None] | None = None) -> int:
+    """Run `work(item)`, which asks Claude, on every item, `parallel` at a time. Returns how many finished.
+    An item whose model call fails is skipped (the next update tries it again); with no account set up, or once
+    `cancel` is set, the rest are skipped. `on_done(done, total)` is called after each item."""
+    if not items:
+        return 0
+    done = 0
+
+    def run_one(item) -> bool:
+        nonlocal done
+        if cancel is not None and cancel.is_set():
+            return False
+        try:
+            work(item)
+        except LLMError as e:
+            if e.kind not in ("cancelled", "not_configured"):
+                log.warning("%s failed: %s", label(item), e)
+            return False
+        finally:
+            done += 1
+            if on_done:
+                on_done(done, len(items))
+        return True
+
+    with ThreadPoolExecutor(max_workers=max(1, parallel)) as pool:
+        return sum(pool.map(run_one, items))
 
 
 def _ask_api(account: Account, prompt: str, schema: dict, alias: str, tier: str, cancel, timeout: float) -> dict:

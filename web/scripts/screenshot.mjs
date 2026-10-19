@@ -12,6 +12,8 @@ const SHOTS = [
   { name: 'home-dark', path: '/', width: 1440, height: 1250, theme: 'dark' },
   { name: 'mistakes', path: '/mistakes', width: 1440, height: 1100 },
   { name: 'mistake', path: '/mistakes/do-support', width: 1440, height: 1250 },
+  { name: 'grammar', path: '/grammar', width: 1440, height: 1100 },
+  { name: 'grammar-lesson', path: '/grammar/do-support', width: 1440, height: 2400 },
   { name: 'words', path: '/words', width: 1440, height: 1250 },
   { name: 'words-fix', path: '/words?group=fix', width: 1440, height: 1250 },
   { name: 'messages', path: '/messages', width: 1440, height: 1250 },

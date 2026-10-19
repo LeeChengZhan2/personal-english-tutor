@@ -164,7 +164,7 @@ function WordOfTheDay({ word, wordsDue }: { word: Schemas['WordBrief']; wordsDue
         <LevelBadge level={word.level} />
       </p>
       <p className="type-lead">{word.meaning}</p>
-      <ChineseHint text={word.meaning_zh} />
+      <ChineseHint text={word.meaning_zh} always={word.kind === 'new'} />
       <WordSource word={word} max={1} />
       {word.example && <HighlightText className="text-ink-2" text={word.example} word={word.word} />}
       <div className="flex flex-wrap gap-2 pt-1">

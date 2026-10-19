@@ -10,6 +10,8 @@ export const keys = {
   home: ['home'] as const,
   patterns: ['patterns'] as const,
   pattern: (key: string, page: number) => ['patterns', key, { page }] as const,
+  grammar: ['grammar'] as const,
+  grammarLesson: (key: string) => ['grammar', key] as const,
   words: (group: WordGroup, page: number) => ['words', { group, page }] as const,
   messages: (filter: MessageFilter) => ['messages', { filter }] as const,
   message: (id: string) => ['message', id] as const,
@@ -18,7 +20,7 @@ export const keys = {
 }
 
 /** Queries that show lesson content: refreshed when new lessons arrive or after practice. */
-export const CONTENT_KEYS = [keys.home, keys.patterns, ['words'], ['messages'], ['message'], keys.progress] as const
+export const CONTENT_KEYS = [keys.home, keys.patterns, keys.grammar, ['words'], ['messages'], ['message'], keys.progress] as const
 
 export const bootstrapQuery = () =>
   queryOptions({
@@ -38,6 +40,15 @@ export const patternQuery = (key: string, page: number) =>
     queryKey: keys.pattern(key, page),
     queryFn: ({ signal }) =>
       unwrap(api.GET('/api/patterns/{key}', { params: { path: { key }, query: { page, page_size: 20 } }, signal })),
+  })
+
+export const grammarQuery = () =>
+  queryOptions({ queryKey: keys.grammar, queryFn: ({ signal }) => unwrap(api.GET('/api/grammar', { signal })) })
+
+export const grammarLessonQuery = (key: string) =>
+  queryOptions({
+    queryKey: keys.grammarLesson(key),
+    queryFn: ({ signal }) => unwrap(api.GET('/api/grammar/{key}', { params: { path: { key } }, signal })),
   })
 
 export const wordsQuery = (group: WordGroup, page: number) =>

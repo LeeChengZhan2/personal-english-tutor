@@ -117,7 +117,7 @@ function WordCard({ word: w }: { word: Schemas['WordBrief'] }) {
         </span>
       </div>
       <p>{w.meaning}</p>
-      <ChineseHint text={w.meaning_zh} />
+      <ChineseHint text={w.meaning_zh} always={w.kind === 'new'} />
       <WordSource word={w} />
       {w.example && <HighlightText className="text-[15px] text-ink-2 italic" text={w.example} word={w.word} />}
     </li>

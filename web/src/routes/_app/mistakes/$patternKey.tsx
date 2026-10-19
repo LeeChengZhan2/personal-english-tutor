@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { Play, Sparkles } from 'lucide-react'
+import { GraduationCap, Play, Sparkles } from 'lucide-react'
 import { z } from 'zod'
 import { patternQuery, useBootstrap } from '@/api/queries'
 import { SeverityBadge, StatusBadge } from '@/components/domain/badges'
@@ -54,6 +54,11 @@ function PatternPage() {
             />
             <TooltipContent>{aiAvailable ? 'Claude writes 6 new sentences with this mistake' : 'Needs Claude (see Settings)'}</TooltipContent>
           </Tooltip>
+          {p.lesson && (
+            <Button variant="outline" render={<Link to="/grammar/$patternKey" params={{ patternKey }} />}>
+              <GraduationCap aria-hidden /> Grammar lesson
+            </Button>
+          )}
           <span className="ml-auto grid w-64 gap-1.5 text-right">
             <MasteryBar mastery={p.mastery} />
             <span className="text-[13px] text-ink-2 tabular-nums">

@@ -1,5 +1,6 @@
 import type { Schemas } from '@/api/client'
 import { HighlightText } from './hints'
+import { SpeakButton } from './speak-button'
 
 /**
  * Where a word comes from in your messages. A new word: the plainer words it replaces, and your sentence
@@ -27,7 +28,7 @@ export function WordSource({ word: w, max = 3 }: { word: Schemas['WordBrief']; m
       {w.rewrite && (
         <p className="text-[15px]">
           <span className="font-bold text-ink-2">Better: </span>
-          <HighlightText text={w.rewrite} word={w.word} />
+          <HighlightText text={w.rewrite} word={w.word} end={<SpeakButton text={w.rewrite} label="the better sentence" inline />} />
         </p>
       )}
     </>

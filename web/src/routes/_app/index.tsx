@@ -8,6 +8,7 @@ import { LevelBadge } from '@/components/domain/badges'
 import { ChineseHint, HighlightText } from '@/components/domain/hints'
 import { Page, PageSkeleton, RouteError, SectionHeader } from '@/components/domain/page'
 import { ProofText } from '@/components/domain/proof-text'
+import { SpeakButton } from '@/components/domain/speak-button'
 import { WordSource } from '@/components/domain/word-source'
 import { Button } from '@/components/ui/button'
 import { Sparkline } from '@/features/home/sparkline'
@@ -160,13 +161,21 @@ function WordOfTheDay({ word, wordsDue }: { word: Schemas['WordBrief']; wordsDue
       <p className="type-label text-ink-2">Word of the day</p>
       <p className="flex flex-wrap items-baseline gap-x-3">
         <span className="font-display text-[34px] leading-tight font-extrabold tracking-tight">{word.word}</span>
+        <SpeakButton text={word.word} label={word.word} className="-ml-2 self-center" />
         {word.pos && <span className="text-ink-2 italic">{word.pos}</span>}
         <LevelBadge level={word.level} />
       </p>
       <p className="type-lead">{word.meaning}</p>
       <ChineseHint text={word.meaning_zh} always={word.kind === 'new'} />
       <WordSource word={word} max={1} />
-      {word.example && <HighlightText className="text-ink-2" text={word.example} word={word.word} />}
+      {word.example && (
+        <HighlightText
+          className="text-ink-2"
+          text={word.example}
+          word={word.word}
+          end={<SpeakButton text={word.example} label="the example" inline />}
+        />
+      )}
       <div className="flex flex-wrap gap-2 pt-1">
         <Button variant="outline" render={<Link to="/practice" search={{ mode: 'words' }} />}>
           <BookA aria-hidden /> Word round{wordsDue ? ` · ${wordsDue} due` : ''}

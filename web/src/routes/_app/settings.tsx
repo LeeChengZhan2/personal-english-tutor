@@ -1,17 +1,20 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { Monitor, Moon, Sun } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { Monitor, Moon, Sun, Volume2 } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
 import type { Schemas } from '@/api/client'
 import { bootstrapQuery, statusQuery, useSaveSettings } from '@/api/queries'
 import { Page, PageHeader, PageSkeleton, RouteError } from '@/components/domain/page'
+import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { AccountsCard } from '@/features/settings/accounts-card'
 import { UpdateLessonsButton } from '@/features/update/update-button'
 import { useLocalFlag } from '@/hooks/use-local-flag'
 import { useTheme } from '@/hooks/use-theme'
+import { useVoices } from '@/hooks/use-voices'
 import { fromNow } from '@/lib/format'
+import { canSpeak, chosenVoice, englishVoices, setChosenVoice, speak, voiceLabel } from '@/lib/speech'
 import type { Theme } from '@/lib/theme'
 
 export const Route = createFileRoute('/_app/settings')({
@@ -129,7 +132,47 @@ function DeviceCard() {
       <Row label="Tap-only practice" hint="No typing in rounds: good on a touch screen." htmlFor="tap-only">
         <Switch id="tap-only" checked={tapOnly} onCheckedChange={(v: boolean) => setTapOnly(v)} />
       </Row>
+      <VoiceRow />
     </Card>
+  )
+}
+
+const VOICE_SAMPLE = 'Could you explain the rationale behind this change?'
+
+function VoiceRow() {
+  const voices = useVoices()
+  const [chosen, setChosen] = useState(chosenVoice)
+  if (!canSpeak()) return <Row label="Voice" hint="This browser can’t read words aloud.">{null}</Row>
+  const english = englishVoices(voices)
+  const best = english[0]
+  return (
+    <Row
+      label="Voice"
+      hint="Reads your words aloud when you press a speaker button. Natural voices sound the most like a person, and need the internet."
+      htmlFor="voice"
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <select
+          id="voice"
+          value={chosen}
+          onChange={(e) => {
+            setChosen(e.target.value)
+            setChosenVoice(e.target.value)
+          }}
+          className="h-10 w-[28rem] max-w-full rounded-lg border border-input bg-surface px-3 text-[15px] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <option value="">Automatic{best ? ` · ${voiceLabel(best)}` : ''}</option>
+          {english.map((v) => (
+            <option key={v.voiceURI} value={v.voiceURI}>
+              {voiceLabel(v)}
+            </option>
+          ))}
+        </select>
+        <Button variant="outline" className="h-10" onClick={() => speak(VOICE_SAMPLE, voices, { voice: chosen })}>
+          <Volume2 aria-hidden /> Listen
+        </Button>
+      </div>
+    </Row>
   )
 }
 

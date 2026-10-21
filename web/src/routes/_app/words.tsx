@@ -8,6 +8,7 @@ import { LevelBadge, StatusBadge } from '@/components/domain/badges'
 import { Pager } from '@/components/domain/bits'
 import { ChineseHint, HighlightText } from '@/components/domain/hints'
 import { EmptyState, Page, PageHeader, PageSkeleton, RouteError } from '@/components/domain/page'
+import { SpeakButton } from '@/components/domain/speak-button'
 import { WordSource } from '@/components/domain/word-source'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -109,6 +110,7 @@ function WordCard({ word: w }: { word: Schemas['WordBrief'] }) {
     <li className="grid content-start gap-2 rounded-xl border bg-surface p-5 shadow-e1">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="font-display text-[24px] leading-tight font-extrabold tracking-tight">{w.word}</span>
+        <SpeakButton text={w.word} label={w.word} className="-ml-2 self-center" />
         {w.pos && <span className="text-sm text-ink-2 italic">{w.pos}</span>}
         <LevelBadge level={w.level} />
         {w.times > 1 && <span className="text-sm font-bold text-ink-2">×{w.times}</span>}
@@ -119,7 +121,14 @@ function WordCard({ word: w }: { word: Schemas['WordBrief'] }) {
       <p>{w.meaning}</p>
       <ChineseHint text={w.meaning_zh} always={w.kind === 'new'} />
       <WordSource word={w} />
-      {w.example && <HighlightText className="text-[15px] text-ink-2 italic" text={w.example} word={w.word} />}
+      {w.example && (
+        <HighlightText
+          className="text-[15px] text-ink-2 italic"
+          text={w.example}
+          word={w.word}
+          end={<SpeakButton text={w.example} label="the example" inline />}
+        />
+      )}
     </li>
   )
 }

@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { AccountsCard } from '@/features/settings/accounts-card'
 import { UpdateLessonsButton } from '@/features/update/update-button'
-import { useLocalFlag } from '@/hooks/use-local-flag'
+import { useTapOnly } from '@/hooks/use-tap-only'
 import { useTheme } from '@/hooks/use-theme'
 import { useVoices } from '@/hooks/use-voices'
 import { fromNow } from '@/lib/format'
@@ -116,8 +116,7 @@ const THEMES: { value: Theme; label: string; icon: typeof Sun }[] = [
 
 function DeviceCard() {
   const { theme, setTheme } = useTheme()
-  const coarse = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches
-  const [tapOnly, setTapOnly] = useLocalFlag('tutor-tap-only', coarse)
+  const [tapOnly, setTapOnly] = useTapOnly()
   return (
     <Card title="This device" description="Saved in this browser only.">
       <Row label="Theme">

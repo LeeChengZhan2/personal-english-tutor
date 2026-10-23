@@ -55,7 +55,9 @@ function HelpPage() {
           <Exercise title="Fix it" text="Type the sentence correctly. Claude checks answers that aren't an exact match." />
         </ul>
         <p className="text-ink-2">
-          Word rounds practise your word lists: choose the spelling, choose the word for the gap, choose the meaning, and type the word.
+          Word rounds practise your word lists. A new word starts with its meaning; next you choose it for a gap in
+          your own sentence, and once you know it you type it. A word you miss comes back once more at the end of the
+          round.
         </p>
       </section>
 

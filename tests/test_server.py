@@ -59,6 +59,25 @@ def test_content_pages(client):
     assert len(p["practice"]) == 28 and p["kpis"]["cards_total"] == 2
 
 
+def test_a_word_round_from_start_to_finish(client):
+    started = client.post("/api/rounds", json={"client_id": "tab-1"}).json()
+    assert {it["word"]["word"] for it in started["items"]} == {"please", "investigate"}
+    assert client.post("/api/rounds", json={"client_id": "tab-1"}).json()["id"] == started["id"]
+    new = next(it for it in started["items"] if it["word"]["kind"] == "new")
+    assert new["exercise"] == "meaning" and new["answer"] in new["options"]
+    url = f"/api/rounds/{started['id']}"
+    out = client.post(f"{url}/answers", json={"item_id": new["item_id"], "answer": new["answer"], "seconds": 4}).json()
+    assert out["correct"] and out["status"] == "learning" and out["due_at"]
+    missing = client.post(f"{url}/answers", json={"item_id": "nope", "answer": "x"})
+    assert missing.status_code == 404 and missing.json()["code"] == "not_found"
+    assert client.post(f"{url}/finish").json() == {"answered": 1, "correct": 1, "words_due": 0}
+    kpis = client.get("/api/progress").json()["kpis"]
+    assert kpis["rounds"] == 1 and kpis["answers_total"] == 1
+    assert client.get("/api/words").json()["words"][0]["status"] == "learning"
+    assert client.post("/api/rounds", json={"mode": "cards"}).status_code == 422
+    assert client.post("/api/rounds/nope/finish").json()["code"] == "not_found"
+
+
 def test_grammar_lessons(client, data_root):
     folder = data_root / "data" / "grammar"
     folder.mkdir()
@@ -110,4 +129,5 @@ def test_serves_the_web_app_with_a_fallback(client):
 def test_openapi_has_readable_operation_ids(client):
     schema = client.get("/api/openapi.json").json()
     ids = {op["operationId"] for path in schema["paths"].values() for op in path.values()}
-    assert {"bootstrap", "home", "patterns", "pattern", "grammar_list", "grammar_lesson", "words", "messages", "progress"} <= ids
+    assert {"bootstrap", "home", "patterns", "pattern", "grammar_list", "grammar_lesson", "words", "messages", "progress",
+            "start_round", "answer", "finish_round"} <= ids

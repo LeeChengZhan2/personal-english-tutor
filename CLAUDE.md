@@ -19,7 +19,9 @@ Their most frequent mistakes:
 
 ## Layout
 
-- `coach/`: the pipeline (read, analyze, vocab, new_words, grammar) and the practice domain (lessons, srs, insights, db, importer).
+- `coach/`: the pipeline (read, analyze, vocab, new_words, grammar) and the practice domain (lessons, srs, insights, practice, db, importer).
+  - A word round (`coach/practice.py`, `POST /api/rounds`) is saved in the `sessions` table with its questions,
+    and each answer is checked against it.
   - It must never import `server/` or a web framework. `tests/test_layering.py` checks this.
 - `server/`: the FastAPI app and the `tutor` CLI.
   - `server/models.py` (Pydantic) is the API contract.

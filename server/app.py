@@ -20,7 +20,7 @@ from coach import db
 from . import __version__
 from .context import AppContext, Paths
 from .errors import ApiException, install_handlers
-from .routes import accounts, content, meta, update
+from .routes import accounts, content, meta, practice, update
 from .security import LocalOnlyMiddleware
 from .update import UpdateManager
 
@@ -100,6 +100,7 @@ def create_app(paths: Paths | None = None, *, config: dict | None = None, clock:
     install_handlers(app)
     app.include_router(meta.router)
     app.include_router(content.router)
+    app.include_router(practice.router)
     app.include_router(accounts.router)
     app.include_router(update.router)
     _mount_web(app, paths.web_dist)

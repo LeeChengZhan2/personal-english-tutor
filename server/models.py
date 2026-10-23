@@ -455,6 +455,61 @@ class WordList(BaseModel):
     pages: int
 
 
+# ---------- practice ----------
+
+WordExercise = Literal["meaning", "choose", "type"]
+
+
+class Gap(BaseModel):
+    before: str
+    match: str                      # the words taken out, as the sentence has them
+    after: str
+    source: Literal["rewrite", "example"]   # rewrite = the learner's own sentence said better (new words)
+
+
+class WordItem(BaseModel):
+    item_id: str
+    exercise: WordExercise
+    word: WordBrief
+    gap: Gap | None                 # choose and type: the sentence with the word taken out, if it has one
+    options: list[str]              # meaning and choose: every choice, mixed; type: none
+    answer: str                     # the right choice, or the word to type
+
+
+class RoundIn(Request):
+    mode: Literal["words"] = "words"
+    group: WordGroup | None = None  # None = new words first, with a few typos & fixes
+    tap_only: bool = False          # never ask to type (this device's setting)
+    client_id: str | None = Field(None, max_length=64)   # the same id gets the same round back
+
+
+class WordRound(BaseModel):
+    id: str
+    group: WordGroup | None
+    items: list[WordItem]           # empty when there are no words to practise
+
+
+class AnswerIn(Request):
+    item_id: str = Field(max_length=64)
+    answer: str = Field("", max_length=400)   # the choice, or what was typed; "" = gave up
+    seconds: float = Field(0, ge=0)
+
+
+class AnswerOut(BaseModel):
+    item_id: str
+    correct: bool
+    answer: str                     # the right answer
+    status: ItemStatus
+    strength: int
+    due_at: str | None              # when the word comes back
+
+
+class RoundScore(BaseModel):
+    answered: int
+    correct: int
+    words_due: int
+
+
 # ---------- messages ----------
 
 class MessageRow(BaseModel):

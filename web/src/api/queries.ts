@@ -78,6 +78,31 @@ export const progressQuery = () =>
 export const statusQuery = () =>
   queryOptions({ queryKey: keys.status, queryFn: ({ signal }) => unwrap(api.GET('/api/status', { signal })) })
 
+// ---------- practice ----------
+
+/** Starts a word round. The same client_id gets the same round back, so asking twice is safe. */
+export function useStartRound() {
+  return useMutation({ mutationFn: (body: Schemas['RoundIn']) => unwrap(api.POST('/api/rounds', { body })) })
+}
+
+export function useAnswerWord(roundId: string) {
+  return useMutation({
+    mutationFn: (body: Schemas['AnswerIn']) =>
+      unwrap(api.POST('/api/rounds/{round_id}/answers', { params: { path: { round_id: roundId } }, body })),
+  })
+}
+
+/** Ends a round; the pages then show the new progress. */
+export function useFinishRound(roundId: string) {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: () => unwrap(api.POST('/api/rounds/{round_id}/finish', { params: { path: { round_id: roundId } } })),
+    onSettled: () => {
+      for (const key of [...CONTENT_KEYS, keys.bootstrap]) void client.invalidateQueries({ queryKey: key })
+    },
+  })
+}
+
 // ---------- accounts and "Update my lessons" ----------
 
 export const accountKeys = {

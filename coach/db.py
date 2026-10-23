@@ -271,6 +271,59 @@ def recent_answer_seconds(conn: sqlite3.Connection, limit: int = 100) -> list[fl
     return [row[0] for row in conn.execute("SELECT seconds FROM answers ORDER BY answered_ms DESC LIMIT ?", (limit,))]
 
 
+# ---------- practice rounds ----------
+
+def add_session(conn: sqlite3.Connection, session_id: str, *, client_id: str | None, mode: str, word_kind: str | None,
+                created_ms: int, items: list[dict], pattern: str | None = None) -> None:
+    """A round as it was asked: `items` keeps every question with its right answer."""
+    conn.execute(
+        "INSERT INTO sessions (id, client_id, mode, pattern, word_kind, created_ms, items) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (session_id, client_id, mode, pattern, word_kind, created_ms, json.dumps(items, ensure_ascii=False)),
+    )
+
+
+def _session(row: sqlite3.Row | None) -> dict | None:
+    if row is None:
+        return None
+    return {"id": row["id"], "client_id": row["client_id"], "mode": row["mode"], "pattern": row["pattern"],
+            "word_kind": row["word_kind"], "created_ms": row["created_ms"], "finished_ms": row["finished_ms"],
+            "items": json.loads(row["items"])}
+
+
+def get_session(conn: sqlite3.Connection, session_id: str) -> dict | None:
+    return _session(conn.execute("SELECT * FROM sessions WHERE id = ?", (session_id,)).fetchone())
+
+
+def session_for_client(conn: sqlite3.Connection, client_id: str) -> dict | None:
+    return _session(conn.execute("SELECT * FROM sessions WHERE client_id = ?", (client_id,)).fetchone())
+
+
+def finish_session(conn: sqlite3.Connection, session_id: str, ms: int) -> bool:
+    """Mark a round finished. True only the first time, when the round should be counted."""
+    return conn.execute("UPDATE sessions SET finished_ms = ? WHERE id = ? AND finished_ms IS NULL",
+                        (ms, session_id)).rowcount > 0
+
+
+def add_answer(conn: sqlite3.Connection, session_id: str, item_id: str, *, ref_type: str, kind: str, correct: bool,
+               seconds: float, answered_ms: int, day: str, box_after: int, ref_id: str | None = None) -> None:
+    conn.execute(
+        "INSERT INTO answers (session_id, item_id, ref_type, ref_id, kind, correct, seconds, answered_ms, day, box_after)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (session_id, item_id, ref_type, ref_id, kind, 1 if correct else 0, seconds, answered_ms, day, box_after),
+    )
+
+
+def answer_of(conn: sqlite3.Connection, session_id: str, item_id: str) -> sqlite3.Row | None:
+    return conn.execute("SELECT * FROM answers WHERE session_id = ? AND item_id = ?", (session_id, item_id)).fetchone()
+
+
+def session_score(conn: sqlite3.Connection, session_id: str) -> tuple[int, int]:
+    """(answered, correct) in a round."""
+    row = conn.execute("SELECT COUNT(*), COALESCE(SUM(correct), 0) FROM answers WHERE session_id = ?",
+                       (session_id,)).fetchone()
+    return row[0], row[1]
+
+
 # ---------- settings ----------
 
 def get_settings(conn: sqlite3.Connection) -> dict:

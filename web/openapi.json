@@ -906,6 +906,201 @@
     }
    }
   },
+  "/api/rounds": {
+   "post": {
+    "tags": [
+     "practice"
+    ],
+    "summary": "Start Round",
+    "operationId": "start_round",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RoundIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/WordRound"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Unprocessable Content",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     },
+     "500": {
+      "description": "Internal Server Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/rounds/{round_id}/answers": {
+   "post": {
+    "tags": [
+     "practice"
+    ],
+    "summary": "Answer",
+    "operationId": "answer",
+    "parameters": [
+     {
+      "name": "round_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Round Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AnswerIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AnswerOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/api/rounds/{round_id}/finish": {
+   "post": {
+    "tags": [
+     "practice"
+    ],
+    "summary": "Finish Round",
+    "operationId": "finish_round",
+    "parameters": [
+     {
+      "name": "round_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Round Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RoundScore"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Unprocessable Content"
+     },
+     "500": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ApiError"
+        }
+       }
+      },
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
   "/api/accounts": {
    "get": {
     "tags": [
@@ -1831,6 +2026,83 @@
     ],
     "title": "AiInfo"
    },
+   "AnswerIn": {
+    "properties": {
+     "item_id": {
+      "type": "string",
+      "maxLength": 64,
+      "title": "Item Id"
+     },
+     "answer": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Answer",
+      "default": ""
+     },
+     "seconds": {
+      "type": "number",
+      "minimum": 0.0,
+      "title": "Seconds",
+      "default": 0
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "item_id"
+    ],
+    "title": "AnswerIn"
+   },
+   "AnswerOut": {
+    "properties": {
+     "item_id": {
+      "type": "string",
+      "title": "Item Id"
+     },
+     "correct": {
+      "type": "boolean",
+      "title": "Correct"
+     },
+     "answer": {
+      "type": "string",
+      "title": "Answer"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "new",
+       "learning",
+       "mastered"
+      ],
+      "title": "Status"
+     },
+     "strength": {
+      "type": "integer",
+      "title": "Strength"
+     },
+     "due_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "item_id",
+     "correct",
+     "answer",
+     "status",
+     "strength",
+     "due_at"
+    ],
+    "title": "AnswerOut"
+   },
    "ApiError": {
     "properties": {
      "code": {
@@ -2294,6 +2566,38 @@
      "example"
     ],
     "title": "Focus"
+   },
+   "Gap": {
+    "properties": {
+     "before": {
+      "type": "string",
+      "title": "Before"
+     },
+     "match": {
+      "type": "string",
+      "title": "Match"
+     },
+     "after": {
+      "type": "string",
+      "title": "After"
+     },
+     "source": {
+      "type": "string",
+      "enum": [
+       "rewrite",
+       "example"
+      ],
+      "title": "Source"
+     }
+    },
+    "type": "object",
+    "required": [
+     "before",
+     "match",
+     "after",
+     "source"
+    ],
+    "title": "Gap"
    },
    "GrammarExample": {
     "properties": {
@@ -3358,6 +3662,74 @@
     ],
     "title": "RepeatRow"
    },
+   "RoundIn": {
+    "properties": {
+     "mode": {
+      "type": "string",
+      "const": "words",
+      "title": "Mode",
+      "default": "words"
+     },
+     "group": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "new",
+         "fix"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Group"
+     },
+     "tap_only": {
+      "type": "boolean",
+      "title": "Tap Only",
+      "default": false
+     },
+     "client_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Client Id"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "RoundIn"
+   },
+   "RoundScore": {
+    "properties": {
+     "answered": {
+      "type": "integer",
+      "title": "Answered"
+     },
+     "correct": {
+      "type": "integer",
+      "title": "Correct"
+     },
+     "words_due": {
+      "type": "integer",
+      "title": "Words Due"
+     }
+    },
+    "type": "object",
+    "required": [
+     "answered",
+     "correct",
+     "words_due"
+    ],
+    "title": "RoundScore"
+   },
    "SettingsUpdate": {
     "properties": {
      "zh": {
@@ -3861,6 +4233,57 @@
     ],
     "title": "WordGroupCount"
    },
+   "WordItem": {
+    "properties": {
+     "item_id": {
+      "type": "string",
+      "title": "Item Id"
+     },
+     "exercise": {
+      "type": "string",
+      "enum": [
+       "meaning",
+       "choose",
+       "type"
+      ],
+      "title": "Exercise"
+     },
+     "word": {
+      "$ref": "#/components/schemas/WordBrief"
+     },
+     "gap": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Gap"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "options": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Options"
+     },
+     "answer": {
+      "type": "string",
+      "title": "Answer"
+     }
+    },
+    "type": "object",
+    "required": [
+     "item_id",
+     "exercise",
+     "word",
+     "gap",
+     "options",
+     "answer"
+    ],
+    "title": "WordItem"
+   },
    "WordList": {
     "properties": {
      "group": {
@@ -3923,6 +4346,43 @@
      "pages"
     ],
     "title": "WordList"
+   },
+   "WordRound": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "group": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "new",
+         "fix"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Group"
+     },
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/WordItem"
+      },
+      "type": "array",
+      "title": "Items"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "group",
+     "items"
+    ],
+    "title": "WordRound"
    },
    "WritingTrend": {
     "properties": {

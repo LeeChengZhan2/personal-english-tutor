@@ -39,7 +39,8 @@ The app opens in your browser. Then:
 2. Press **Update my lessons**, in the sidebar or on Home. Choose the accounts to read, then confirm.
    - The first update reads every past conversation, so it can take a while.
    - Later updates read only what's new since the last one.
-3. Look through your mistakes, words and messages. Practice rounds are coming next (see Status).
+3. Practise your words with **Word round**, on Home or the Words page. Look through your mistakes and
+   messages too. Rounds for your mistakes are coming next (see Status).
 
 If you press **Update my lessons** before you add an account, the app asks you to add one first.
 
@@ -105,6 +106,10 @@ the app (FastAPI + React)    reads data/batches and data/grammar; keeps progress
    new example sentences and a quick check. A lesson is rewritten when its mistakes grow a lot.
 6. **Practise** (`coach/lessons.py`, `coach/srs.py`): the same mistake made twice is one card. Cards come
    back after 10 minutes, then 1, 3, 7, 16, 35 and 90 days.
+   - **Word rounds** (`coach/practice.py`): words due come first, then new words, with a few typos & fixes.
+     A new word gets harder as you learn it: choose its meaning, then choose it for a gap in your own
+     sentence, then type it (not with Tap-only practice). A word you miss is asked once more at the end
+     of the round; that extra try isn't scored.
 
 The analysis prompt is written for a software engineer with a Mandarin and Singlish background who
 is improving their workplace English. Edit `prompts/analyze.md` to suit another learner.
@@ -115,8 +120,9 @@ is improving their workplace English. Edit `prompts/analyze.md` to suit another 
   - the accounts
   - **Update my lessons**
   - the Home, Mistakes, Words, Messages, Progress, Settings and Help pages
+  - word rounds
 - Coming next:
-  - practice rounds
+  - rounds for your mistakes (cards)
   - Check writing
   - the AI answer checks
 

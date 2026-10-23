@@ -53,7 +53,7 @@ class View:
 
 # ---------- small helpers ----------
 
-def _iso_ms(ms: int | None) -> str | None:
+def iso_ms(ms: int | None) -> str | None:
     return datetime.fromtimestamp(ms / 1000).astimezone().isoformat(timespec="seconds") if ms else None
 
 
@@ -209,7 +209,7 @@ def word_brief(view: View, w: Word) -> dict:
         "id": w.id, "kind": w.kind, "word": w.word, "pos": w.pos, "meaning": w.meaning, "meaning_zh": w.meaning_zh,
         "example": w.example, "wrote": list(w.wrote), "times": w.times, "last": w.last or None,
         "level": w.level or None, "rewrite": w.rewrite,
-        "status": srs.status(st), "strength": srs.strength(st), "due_at": _iso_ms(st.due_ms) if st else None,
+        "status": srs.status(st), "strength": srs.strength(st), "due_at": iso_ms(st.due_ms) if st else None,
     }
 
 
@@ -267,7 +267,7 @@ def card_row(view: View, c: Card) -> dict:
     ex = c.examples[-1]
     return {
         "id": c.id, "pattern": c.pattern, "severity": c.severity, "times": c.times, "last": c.last or None,
-        "status": srs.status(st), "strength": srs.strength(st), "due_at": _iso_ms(st.due_ms) if st else None,
+        "status": srs.status(st), "strength": srs.strength(st), "due_at": iso_ms(st.due_ms) if st else None,
         "sentence": ex.sentence, "corrected": ex.corrected, "wrong": ex.wrong, "right": ex.right,
         "explain": c.explain, "explain_zh": c.explain_zh,
     }

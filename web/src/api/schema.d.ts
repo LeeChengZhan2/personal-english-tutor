@@ -226,6 +226,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/rounds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start Round */
+        post: operations["start_round"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/rounds/{round_id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer */
+        post: operations["answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/rounds/{round_id}/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Finish Round */
+        post: operations["finish_round"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/accounts": {
         parameters: {
             query?: never;
@@ -433,6 +484,39 @@ export interface components {
             /** Accounts */
             accounts: components["schemas"]["AccountInfo"][];
         };
+        /** AnswerIn */
+        AnswerIn: {
+            /** Item Id */
+            item_id: string;
+            /**
+             * Answer
+             * @default
+             */
+            answer: string;
+            /**
+             * Seconds
+             * @default 0
+             */
+            seconds: number;
+        };
+        /** AnswerOut */
+        AnswerOut: {
+            /** Item Id */
+            item_id: string;
+            /** Correct */
+            correct: boolean;
+            /** Answer */
+            answer: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "new" | "learning" | "mastered";
+            /** Strength */
+            strength: number;
+            /** Due At */
+            due_at: string | null;
+        };
         /** ApiError */
         ApiError: {
             /** Code */
@@ -603,6 +687,20 @@ export interface components {
             /** Count */
             count: number;
             example: components["schemas"]["Example"] | null;
+        };
+        /** Gap */
+        Gap: {
+            /** Before */
+            before: string;
+            /** Match */
+            match: string;
+            /** After */
+            after: string;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "rewrite" | "example";
         };
         /** GrammarExample */
         GrammarExample: {
@@ -983,6 +1081,33 @@ export interface components {
              */
             status: "new" | "learning" | "mastered";
         };
+        /** RoundIn */
+        RoundIn: {
+            /**
+             * Mode
+             * @default words
+             * @constant
+             */
+            mode: "words";
+            /** Group */
+            group?: ("new" | "fix") | null;
+            /**
+             * Tap Only
+             * @default false
+             */
+            tap_only: boolean;
+            /** Client Id */
+            client_id?: string | null;
+        };
+        /** RoundScore */
+        RoundScore: {
+            /** Answered */
+            answered: number;
+            /** Correct */
+            correct: number;
+            /** Words Due */
+            words_due: number;
+        };
         /** SettingsUpdate */
         SettingsUpdate: {
             /** Zh */
@@ -1130,6 +1255,22 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** WordItem */
+        WordItem: {
+            /** Item Id */
+            item_id: string;
+            /**
+             * Exercise
+             * @enum {string}
+             */
+            exercise: "meaning" | "choose" | "type";
+            word: components["schemas"]["WordBrief"];
+            gap: components["schemas"]["Gap"] | null;
+            /** Options */
+            options: string[];
+            /** Answer */
+            answer: string;
+        };
         /** WordList */
         WordList: {
             /**
@@ -1153,6 +1294,15 @@ export interface components {
             page: number;
             /** Pages */
             pages: number;
+        };
+        /** WordRound */
+        WordRound: {
+            /** Id */
+            id: string;
+            /** Group */
+            group: ("new" | "fix") | null;
+            /** Items */
+            items: components["schemas"]["WordItem"][];
         };
         /** WritingTrend */
         WritingTrend: {
@@ -1858,6 +2008,159 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    start_round: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoundIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WordRound"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                round_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    finish_round: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                round_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoundScore"];
                 };
             };
             /** @description Not Found */
